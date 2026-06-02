@@ -3265,31 +3265,290 @@ function FinalCTA() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   LEGAL MODAL
+═══════════════════════════════════════════════════════════════════════ */
+type LegalKey = "Impressum" | "Datenschutz";
+
+function ImpressumContent() {
+  const h = (t: string) => (
+    <h3 style={{ fontFamily: C.H, fontSize: 13, fontWeight: 600, color: C.acc, letterSpacing: "0.06em", textTransform: "uppercase", margin: "28px 0 8px" }}>{t}</h3>
+  );
+  const p = (t: string) => (
+    <p style={{ fontFamily: C.H, fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, margin: "6px 0" }}>{t}</p>
+  );
+  const link = (url: string) => (
+    <a href={url} target="_blank" rel="noopener noreferrer"
+      style={{ color: C.acc, textDecoration: "none", fontFamily: C.H, fontSize: 14 }}>{url}</a>
+  );
+  return (
+    <div>
+      {h("Angaben gemäß § 5 TMG")}
+      {p("AFA – Agentur für Automatisierung")}
+      <p style={{ fontFamily: C.H, fontSize: 14, lineHeight: 1.75, margin: "6px 0", fontWeight: 600, color: C.text }}>Inhaber: Ahmitti El Goul Ibrahim</p>
+      {p("Halder Str. 21")}
+      {p("58095 Hagen")}
+      {p("Deutschland")}
+
+      {h("Kontakt")}
+      <p style={{ fontFamily: C.H, fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, margin: "6px 0" }}>
+        E-Mail: <a href="mailto:info@afa-ai.com" style={{ color: C.acc, textDecoration: "none" }}>info@afa-ai.com</a>
+      </p>
+
+      {h("Umsatzsteuer-ID")}
+      {p("Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: wird nach Erteilung durch das Finanzamt ergänzt")}
+
+      {h("Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV")}
+      {p("Ahmitti El Goul Ibrahim")}
+      {p("Halder Str. 21")}
+      {p("58095 Hagen")}
+      {p("Deutschland")}
+
+      {h("EU-Streitschlichtung")}
+      {p("Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:")}
+      <div style={{ margin: "6px 0" }}>{link("https://ec.europa.eu/consumers/odr/")}</div>
+      {p("Unsere E-Mail-Adresse finden Sie oben im Impressum.")}
+
+      {h("Verbraucherstreitbeilegung")}
+      {p("Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.")}
+
+      {h("Haftung für Inhalte")}
+      {p("Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.")}
+
+      {h("Haftung für Links")}
+      {p("Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Für diese fremden Inhalte übernehmen wir keine Gewähr.")}
+
+      {h("Urheberrecht")}
+      {p("Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht.")}
+    </div>
+  );
+}
+
+function DatenschutzContent() {
+  const h = (t: string) => (
+    <h3 style={{ fontFamily: C.H, fontSize: 13, fontWeight: 600, color: C.acc, letterSpacing: "0.06em", textTransform: "uppercase", margin: "28px 0 8px" }}>{t}</h3>
+  );
+  const p = (t: string) => (
+    <p style={{ fontFamily: C.H, fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, margin: "6px 0" }}>{t}</p>
+  );
+  return (
+    <div>
+      <p style={{ fontFamily: C.H, fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, margin: "0 0 8px" }}>Stand: Juni 2025</p>
+
+      {h("1. Verantwortlicher")}
+      {p("Verantwortlicher im Sinne der DSGVO:")}
+      {p("AFA – Agentur für Automatisierung")}
+      <p style={{ fontFamily: C.H, fontSize: 14, lineHeight: 1.75, margin: "6px 0", fontWeight: 600, color: C.text }}>Inhaber: Ahmitti El Goul Ibrahim</p>
+      {p("Halder Str. 21, 58095 Hagen, Deutschland")}
+      <p style={{ fontFamily: C.H, fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, margin: "6px 0" }}>
+        E-Mail: <a href="mailto:info@afa-ai.com" style={{ color: C.acc, textDecoration: "none" }}>info@afa-ai.com</a>
+      </p>
+
+      {h("2. Hosting")}
+      {p("Diese Website wird gehostet bei:")}
+      {p("Vercel Inc., 340 Pine Street, Suite 900, San Francisco, CA 94104, USA")}
+      {p("Vercel ist Auftragsverarbeiter gemäß Art. 28 DSGVO. Beim Abrufen dieser Website werden automatisch technische Verbindungsdaten (Server-Logfiles) an Vercel übermittelt. Die Datenübertragung in die USA erfolgt auf Grundlage der Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO). Weitere Informationen: https://vercel.com/legal/privacy-policy")}
+
+      {h("3. Server-Logfiles")}
+      {p("Der Hosting-Anbieter erhebt und speichert automatisch Informationen in sogenannten Server-Logfiles, die Ihr Browser automatisch übermittelt. Dies sind:")}
+      <ul style={{ paddingLeft: 20, margin: "8px 0" }}>
+        {["Browsertyp und Browserversion", "Verwendetes Betriebssystem", "Referrer URL", "Hostname des zugreifenden Rechners", "Uhrzeit der Serveranfrage", "IP-Adresse"].map(item => (
+          <li key={item} style={{ fontFamily: C.H, fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, marginBottom: 2 }}>{item}</li>
+        ))}
+      </ul>
+      {p("Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am sicheren und effizienten Betrieb der Website).")}
+
+      {h("4. Kontaktaufnahme per E-Mail")}
+      {p("Wenn Sie uns per E-Mail kontaktieren, werden Ihre Angaben zur Bearbeitung der Anfrage und für mögliche Rückfragen bei uns gespeichert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse). Diese Daten werden nicht ohne Ihre Einwilligung weitergegeben.")}
+
+      {h("5. E-Mail-Kommunikation via Google Workspace")}
+      {p("Unsere E-Mail-Kommunikation wird über Google Workspace (Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) abgewickelt. Google ist Auftragsverarbeiter gemäß Art. 28 DSGVO. Die Datenübertragung in die USA erfolgt auf Grundlage der Standardvertragsklauseln der EU-Kommission. Weitere Informationen: https://workspace.google.com/terms/dpa_terms.html")}
+
+      {h("6. Cookies und lokale Speicherung")}
+      {p("Diese Website verwendet keine Tracking-Cookies, keine Analytics-Tools und keine Werbenetzwerke. Es werden lediglich technisch notwendige Funktionen des Browsers genutzt, soweit dies für den Betrieb der Website erforderlich ist.")}
+
+      {h("7. Externe Links")}
+      {p("Diese Website enthält Links zu externen Websites. Für deren Datenschutzpraktiken sind ausschließlich die jeweiligen Betreiber verantwortlich. Wir haben keinen Einfluss auf deren Inhalte oder Datenschutzrichtlinien.")}
+
+      {h("8. SSL-/TLS-Verschlüsselung")}
+      {p("Diese Website nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von \"http://\" auf \"https://\" wechselt.")}
+
+      {h("9. Datenspeicherung und Löschung")}
+      {p("Wir speichern personenbezogene Daten nur so lange, wie es für den jeweiligen Zweck erforderlich ist oder gesetzliche Aufbewahrungsfristen dies verlangen. Nach Wegfall des Zwecks oder Ablauf der gesetzlichen Fristen werden die Daten routinemäßig gelöscht.")}
+
+      {h("10. Ihre Rechte (DSGVO)")}
+      {p("Sie haben gegenüber uns folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:")}
+      <ul style={{ paddingLeft: 20, margin: "8px 0" }}>
+        {[
+          "Recht auf Auskunft (Art. 15 DSGVO)",
+          "Recht auf Berichtigung (Art. 16 DSGVO)",
+          "Recht auf Löschung (Art. 17 DSGVO)",
+          "Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)",
+          "Recht auf Datenübertragbarkeit (Art. 20 DSGVO)",
+          "Recht auf Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)",
+          "Recht auf Widerruf einer erteilten Einwilligung (Art. 7 Abs. 3 DSGVO)",
+        ].map(item => (
+          <li key={item} style={{ fontFamily: C.H, fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, marginBottom: 2 }}>{item}</li>
+        ))}
+      </ul>
+      {p("Zur Ausübung Ihrer Rechte wenden Sie sich bitte an: info@afa-ai.com")}
+
+      {h("11. Beschwerderecht bei einer Aufsichtsbehörde")}
+      {p("Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer personenbezogenen Daten durch uns zu beschweren. Zuständige Aufsichtsbehörde für Nordrhein-Westfalen:")}
+      {p("Landesbeauftragte für Datenschutz und Informationsfreiheit NRW (LDI NRW)")}
+      {p("Postfach 20 04 44, 40102 Düsseldorf")}
+      <p style={{ fontFamily: C.H, fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, margin: "6px 0" }}>
+        Web: <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener noreferrer" style={{ color: C.acc, textDecoration: "none" }}>www.ldi.nrw.de</a>
+      </p>
+    </div>
+  );
+}
+
+function LegalModal({ type, onClose }: { type: LegalKey | null; onClose: () => void }) {
+  useEffect(() => {
+    if (!type) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [type, onClose]);
+
+  return (
+    <AnimatePresence>
+      {type && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          onClick={onClose}
+          style={{
+            position: "fixed", inset: 0, zIndex: 9999,
+            background: "rgba(9,9,11,0.82)",
+            backdropFilter: "blur(18px)",
+            WebkitBackdropFilter: "blur(18px)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "24px 16px",
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 28, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 18, scale: 0.97 }}
+            transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "relative",
+              background: "rgba(14,14,17,0.98)",
+              border: `1px solid rgba(0,187,253,0.16)`,
+              borderRadius: 18,
+              boxShadow: "0 0 0 1px rgba(0,187,253,0.06), 0 0 80px rgba(0,187,253,0.07), 0 40px 80px rgba(0,0,0,0.7)",
+              width: "100%", maxWidth: 700,
+              maxHeight: "calc(100dvh - 64px)",
+              overflow: "hidden",
+              display: "flex", flexDirection: "column",
+            }}
+          >
+            {/* Top glow accent */}
+            <div style={{
+              position: "absolute", top: 0, left: "10%", right: "10%", height: 1,
+              background: `linear-gradient(90deg, transparent, ${C.acc}44, transparent)`,
+              pointerEvents: "none",
+            }} />
+
+            {/* Header */}
+            <div style={{
+              padding: "24px 28px 18px",
+              borderBottom: `1px solid rgba(255,255,255,0.05)`,
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              flexShrink: 0,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{
+                  width: 34, height: 34, borderRadius: 8,
+                  background: C.aLow, border: `1px solid rgba(0,187,253,0.18)`,
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={C.acc} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </div>
+                <div>
+                  <p style={{ fontFamily: C.M, fontSize: 10, color: C.acc, letterSpacing: "0.12em", textTransform: "uppercase", margin: "0 0 2px" }}>Rechtliches</p>
+                  <h2 style={{ fontFamily: C.H, fontSize: 17, fontWeight: 600, color: C.text, margin: 0 }}>{type}</h2>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                style={{
+                  background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)",
+                  borderRadius: 8, width: 32, height: 32,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer", color: "rgba(255,255,255,0.4)",
+                  transition: "background 0.18s, color 0.18s", flexShrink: 0,
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.1)"; (e.currentTarget as HTMLButtonElement).style.color = C.text; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.05)"; (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.4)"; }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+
+            {/* Scrollable body */}
+            <div style={{ overflowY: "auto", padding: "24px 28px 36px", flex: 1 }}>
+              {type === "Impressum" ? <ImpressumContent /> : <DatenschutzContent />}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
    FOOTER
 ═══════════════════════════════════════════════════════════════════════ */
 function Footer() {
+  const [legal, setLegal] = useState<LegalKey | null>(null);
   return (
-    <footer style={{
-      borderTop: `1px solid ${C.bd}`,
-      background: C.bg, padding: "48px 0",
-    }}>
-      <div className="ctr" style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 24,
+    <>
+      <LegalModal type={legal} onClose={() => setLegal(null)} />
+      <footer style={{
+        borderTop: `1px solid ${C.bd}`,
+        background: C.bg, padding: "48px 0",
       }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/afa-logo-cropped.png" alt="AFA"
-          style={{ height: 28, width: "auto", objectFit: "contain", opacity: 0.45, maxWidth: 200, display: "block" }} />
-        <p style={{ fontFamily: C.M, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
-          © 2025 AFA — Agentur für Automatisierung
-        </p>
-        <div style={{ display: "flex", gap: 24 }}>
-          {["Impressum", "Datenschutz"].map(l => (
-            <a key={l} href="#"
-               style={{ fontFamily: C.M, fontSize: 12, color: "rgba(255,255,255,0.25)" }}>{l}</a>
-          ))}
+        <div className="ctr" style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 24,
+        }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/afa-logo-cropped.png" alt="AFA"
+            style={{ height: 28, width: "auto", objectFit: "contain", opacity: 0.45, maxWidth: 200, display: "block" }} />
+          <p style={{ fontFamily: C.M, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
+            © 2025 AFA — Agentur für Automatisierung
+          </p>
+          <div style={{ display: "flex", gap: 24 }}>
+            {(["Impressum", "Datenschutz"] as LegalKey[]).map(l => (
+              <button key={l} onClick={() => setLegal(l)}
+                style={{
+                  fontFamily: C.M, fontSize: 12, color: "rgba(255,255,255,0.25)",
+                  background: "none", border: "none", cursor: "pointer", padding: 0,
+                  transition: "color 0.18s",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.6)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.25)"; }}
+              >{l}</button>
+            ))}
+          </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }
 
