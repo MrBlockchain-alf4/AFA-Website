@@ -17,7 +17,7 @@ const chivo = Chivo_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AFA | KI-Mitarbeiter für moderne Unternehmen",
+  title: "KI-Mitarbeiter für moderne Unternehmen | AFA",
   description:
     "AFA entwickelt autonome KI-Mitarbeiter, die Leads anrufen, Interessenten qualifizieren, Termine buchen und Support übernehmen — rund um die Uhr.",
   icons: {
