@@ -72,7 +72,8 @@ function CardReveal({ children, delay = 0 }: { children: React.ReactNode; delay?
 /** Re-mounts children each time the element enters the viewport — restarts inner animations */
 function InViewReset({ children, margin = "-60px" }: { children: React.ReactNode; margin?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: false, margin });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const inView = useInView(ref, { once: false, margin: margin as any });
   const [epoch, setEpoch] = useState(0);
   const prevInView = useRef<boolean | null>(null);
   useEffect(() => {
