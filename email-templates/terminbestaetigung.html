@@ -123,12 +123,21 @@
             <td align="center" class="hero-section"
               style="padding:52px 40px 44px;background-color:#0c0c0f;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;">
 
-              <!-- Check icon — single table cell, Gmail/Outlook/Apple Mail safe -->
+              <!-- Confirmation badge — nested tables, no flex/transforms/animation -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 28px;">
                 <tr>
+                  <!-- Outer dark ring: 72x72, subtle blue border + static glow -->
                   <td align="center" valign="middle"
-                    style="width:64px;height:64px;border-radius:50%;background-color:#00B7FD;padding:0;text-align:center;vertical-align:middle;line-height:64px;">
-                    <span style="font-family:Arial,Helvetica,sans-serif;font-size:32px;font-weight:700;color:#ffffff;line-height:64px;mso-line-height-rule:exactly;">✓</span>
+                    style="width:72px;height:72px;padding:0;border-radius:50%;background-color:#0e0e14;border:1px solid rgba(0,183,253,0.28);box-shadow:0 0 0 4px rgba(0,183,253,0.06),0 0 20px 2px rgba(0,183,253,0.10);text-align:center;vertical-align:middle;mso-line-height-rule:exactly;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto;">
+                      <tr>
+                        <!-- Inner brand-blue badge: 52x52 -->
+                        <td align="center" valign="middle"
+                          style="width:52px;height:52px;padding:0;border-radius:50%;background-color:#00B7FD;text-align:center;vertical-align:middle;line-height:52px;">
+                          <span style="font-family:Arial,Helvetica,sans-serif;font-size:26px;font-weight:700;color:#ffffff;line-height:52px;mso-line-height-rule:exactly;">&#10003;</span>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>
