@@ -21,12 +21,9 @@
       -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
     }
-    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
     img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; display: block; }
     body { margin: 0; padding: 0; width: 100% !important; background-color: #09090b; }
-
-    /* ── Typography ────────────────────────────────────── */
-    .font-jakarta { font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
 
     /* ── Links ─────────────────────────────────────────── */
     a { color: #00bbfd; text-decoration: none; }
@@ -35,18 +32,19 @@
     /* ── Responsive ────────────────────────────────────── */
     @media only screen and (max-width: 620px) {
       .email-wrapper  { width: 100% !important; }
-      .email-body     { padding: 0 16px !important; }
-      .card           { padding: 28px 20px !important; border-radius: 12px !important; }
-      .hero-section   { padding: 40px 20px 32px !important; }
-      .logo-cell      { padding: 24px 20px !important; }
-      .footer-cell    { padding: 28px 20px !important; }
-      .step-row td    { display: block !important; width: 100% !important; }
+      .email-body     { padding-left: 20px !important; padding-right: 20px !important; }
+      .card-pad       { padding: 24px 20px !important; }
+      .hero-section   { padding: 44px 20px 36px !important; }
+      .logo-cell      { padding: 28px 20px !important; }
+      .footer-cell    { padding: 28px 20px 32px !important; }
       .h1             { font-size: 26px !important; line-height: 1.25 !important; }
-      .detail-label   { width: 100px !important; }
-      .cta-btn        { padding: 14px 28px !important; font-size: 14px !important; }
+      .detail-label   { width: 90px !important; }
+      .cta-btn        { padding: 15px 24px !important; font-size: 14px !important; }
+      .steps-pad      { padding: 0 20px 12px !important; }
+      .cta-pad        { padding: 32px 20px 40px !important; }
     }
 
-    /* ── Dark mode pass-through (Gmail already renders dark) ── */
+    /* ── Dark mode ──────────────────────────────────────── */
     @media (prefers-color-scheme: dark) {
       body, .outer-bg { background-color: #09090b !important; }
     }
@@ -55,18 +53,18 @@
 
 <body style="margin:0;padding:0;background-color:#09090b;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
 
-  <!-- Preheader (hidden preview text) -->
+  <!-- Preheader -->
   <div style="display:none;font-size:1px;color:#09090b;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-    Dein Termin mit AFA ist bestätigt – {{datum}} um {{uhrzeit}} Uhr. Wir freuen uns auf das Gespräch.
+    Dein Termin mit AFA ist bestätigt – {{datum}} um {{uhrzeit}} Uhr. Wir freuen uns auf das Gespräch.&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
   </div>
 
   <!-- Outer wrapper -->
   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="outer-bg"
-    style="background-color:#09090b;min-width:100%;">
+    style="background-color:#09090b;">
     <tr>
-      <td align="center" valign="top" style="padding:32px 16px 48px;">
+      <td align="center" valign="top" style="padding:40px 16px 56px;">
 
-        <!-- Email container -->
+        <!-- Email container — 600px -->
         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="email-wrapper"
           style="max-width:600px;width:100%;">
 
@@ -76,7 +74,7 @@
           ══════════════════════════════════════════ -->
           <tr>
             <td align="center" class="logo-cell"
-              style="padding:32px 40px 28px;border-radius:16px 16px 0 0;background-color:#0c0c0f;border:1px solid #1a1a22;border-bottom:1px solid #131318;">
+              style="padding:36px 40px 32px;border-radius:16px 16px 0 0;background-color:#0c0c0f;border:1px solid #1a1a22;border-bottom:1px solid #131318;">
               <a href="https://afa-ai.com" target="_blank" style="display:inline-block;">
                 <img src="https://afa-ai.com/afa-logo-cropped.png"
                   alt="AFA – Agentur für Automatisierung"
@@ -92,45 +90,51 @@
           ══════════════════════════════════════════ -->
           <tr>
             <td align="center" class="hero-section"
-              style="padding:48px 40px 40px;background-color:#0c0c0f;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;position:relative;">
+              style="padding:52px 40px 44px;background-color:#0c0c0f;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;">
 
-              <!-- Glow circle behind check icon -->
-              <div style="display:inline-block;position:relative;margin-bottom:24px;">
-                <!-- Outer glow ring -->
-                <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
-                  <tr>
-                    <td align="center" valign="middle"
-                      style="width:72px;height:72px;border-radius:50%;background-color:#00bbfd18;border:1px solid #00bbfd30;">
-                      <!-- Inner icon circle -->
-                      <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
-                        <tr>
-                          <td align="center" valign="middle"
-                            style="width:48px;height:48px;border-radius:50%;background-color:#00bbfd22;border:1px solid #00bbfd55;">
-                            <span style="font-size:22px;line-height:1;color:#00bbfd;font-family:Arial,sans-serif;">✓</span>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </table>
-              </div>
+              <!-- Check icon rings -->
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin-bottom:28px;">
+                <tr>
+                  <td align="center" valign="middle"
+                    style="width:72px;height:72px;border-radius:50%;background-color:#00bbfd14;border:1px solid #00bbfd2a;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
+                      <tr>
+                        <td align="center" valign="middle"
+                          style="width:48px;height:48px;border-radius:50%;background-color:#00bbfd22;border:1px solid #00bbfd50;">
+                          <span style="font-size:20px;line-height:1;color:#00bbfd;font-family:Arial,sans-serif;display:block;text-align:center;">✓</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
 
-              <!-- Mono label -->
-              <p style="margin:0 0 10px;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:11px;font-weight:400;letter-spacing:0.14em;text-transform:uppercase;color:#00bbfd;">
+              <!-- Mono eyebrow -->
+              <p style="margin:0 0 12px;font-family:'Courier New',Courier,monospace;font-size:11px;font-weight:400;letter-spacing:0.16em;text-transform:uppercase;color:#00bbfd;">
                 Terminbestätigung
               </p>
 
               <!-- Headline -->
               <h1 class="h1"
-                style="margin:0 0 14px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:30px;font-weight:700;color:#f4f4f5;line-height:1.2;letter-spacing:-0.02em;">
+                style="margin:0 0 16px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:30px;font-weight:700;color:#f4f4f5;line-height:1.22;letter-spacing:-0.025em;">
                 Dein Termin ist bestätigt
               </h1>
 
               <!-- Subtitle -->
-              <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:400;color:#71717a;line-height:1.65;max-width:420px;">
-                Hallo {{vorname}}, wir haben deinen Termin erfolgreich eingetragen. Alle Details findest du unten.
+              <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:400;color:#71717a;line-height:1.75;max-width:400px;">
+                Hallo {{vorname}}, wir haben deinen Termin erfolgreich eingetragen.<br>Alle Details findest du unten.
               </p>
 
+            </td>
+          </tr>
+
+
+          <!-- Section gap -->
+          <tr>
+            <td style="background-color:#0c0c0f;padding:0 40px;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;" class="email-body">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr><td style="height:8px;font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>
             </td>
           </tr>
 
@@ -142,37 +146,36 @@
             <td style="background-color:#0c0c0f;padding:0 40px;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;"
               class="email-body">
 
-              <!-- Card -->
-              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="card"
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"
                 style="background-color:#111115;border:1px solid #1e1e28;border-radius:14px;overflow:hidden;">
 
-                <!-- Card top accent line -->
+                <!-- Blue top accent -->
                 <tr>
-                  <td style="height:2px;background:linear-gradient(90deg,transparent,#00bbfd55,transparent);font-size:0;line-height:0;">&nbsp;</td>
+                  <td style="height:2px;background:linear-gradient(90deg,transparent,#00bbfd60,transparent);font-size:0;line-height:0;">&nbsp;</td>
                 </tr>
 
-                <!-- Card body -->
+                <!-- Card content -->
                 <tr>
-                  <td style="padding:28px 28px 24px;" class="card">
+                  <td class="card-pad" style="padding:28px 28px 24px;">
 
-                    <!-- Card label -->
-                    <p style="margin:0 0 20px;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:10px;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;color:#71717a;">
+                    <!-- Card eyebrow -->
+                    <p style="margin:0 0 22px;font-family:'Courier New',Courier,monospace;font-size:10px;font-weight:400;letter-spacing:0.14em;text-transform:uppercase;color:#52525b;">
                       Termindetails
                     </p>
 
-                    <!-- Detail rows -->
+                    <!-- Rows -->
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
 
-                      <!-- Date -->
+                      <!-- Datum -->
                       <tr>
-                        <td style="padding:10px 0;border-bottom:1px solid #1a1a22;vertical-align:top;">
+                        <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                               <td class="detail-label"
-                                style="width:120px;padding-right:16px;vertical-align:top;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:11px;color:#71717a;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;line-height:1.8;">
+                                style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#52525b;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">
                                 Datum
                               </td>
-                              <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.8;">
+                              <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.6;vertical-align:middle;">
                                 {{datum}}
                               </td>
                             </tr>
@@ -180,34 +183,34 @@
                         </td>
                       </tr>
 
-                      <!-- Time -->
+                      <!-- Uhrzeit -->
                       <tr>
-                        <td style="padding:10px 0;border-bottom:1px solid #1a1a22;vertical-align:top;">
+                        <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                               <td class="detail-label"
-                                style="width:120px;padding-right:16px;vertical-align:top;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:11px;color:#71717a;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;line-height:1.8;">
+                                style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#52525b;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">
                                 Uhrzeit
                               </td>
-                              <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.8;">
-                                {{uhrzeit}} Uhr <span style="font-weight:400;color:#71717a;">({{dauer}})</span>
+                              <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.6;vertical-align:middle;">
+                                {{uhrzeit}} Uhr
                               </td>
                             </tr>
                           </table>
                         </td>
                       </tr>
 
-                      <!-- Topic -->
+                      <!-- Dauer -->
                       <tr>
-                        <td style="padding:10px 0;border-bottom:1px solid #1a1a22;vertical-align:top;">
+                        <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                               <td class="detail-label"
-                                style="width:120px;padding-right:16px;vertical-align:top;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:11px;color:#71717a;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;line-height:1.8;">
-                                Thema
+                                style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#52525b;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">
+                                Dauer
                               </td>
-                              <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.8;">
-                                {{thema}}
+                              <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.6;vertical-align:middle;">
+                                {{dauer}}
                               </td>
                             </tr>
                           </table>
@@ -216,40 +219,21 @@
 
                       <!-- Format -->
                       <tr>
-                        <td style="padding:10px 0;vertical-align:top;">
+                        <td style="padding:12px 0;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                               <td class="detail-label"
-                                style="width:120px;padding-right:16px;vertical-align:top;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:11px;color:#71717a;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;line-height:1.8;">
+                                style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#52525b;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">
                                 Format
                               </td>
-                              <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.8;">
-                                Video-Call <span style="font-weight:400;color:#71717a;">(Link unten)</span>
+                              <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.6;vertical-align:middle;">
+                                Google Meet
                               </td>
                             </tr>
                           </table>
                         </td>
                       </tr>
 
-                    </table>
-                  </td>
-                </tr>
-
-                <!-- Meeting link row -->
-                <tr>
-                  <td style="padding:0 28px 28px;">
-                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
-                      <tr>
-                        <td style="padding:14px 18px;background-color:#00bbfd0d;border:1px solid #00bbfd28;border-radius:8px;">
-                          <p style="margin:0 0 4px;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#00bbfd88;">
-                            Meeting-Link
-                          </p>
-                          <a href="{{meeting_link}}"
-                            style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:500;color:#00bbfd;text-decoration:none;word-break:break-all;">
-                            {{meeting_link}}
-                          </a>
-                        </td>
-                      </tr>
                     </table>
                   </td>
                 </tr>
@@ -259,12 +243,12 @@
           </tr>
 
 
-          <!-- ══════════════════════════════════════════
-               SPACER
-          ══════════════════════════════════════════ -->
+          <!-- Section gap -->
           <tr>
-            <td style="background-color:#0c0c0f;padding:28px 40px 0;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;"
-              class="email-body">
+            <td style="background-color:#0c0c0f;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr><td style="height:36px;font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>
             </td>
           </tr>
 
@@ -273,39 +257,39 @@
                NEXT STEPS
           ══════════════════════════════════════════ -->
           <tr>
-            <td style="background-color:#0c0c0f;padding:0 40px 8px;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;"
-              class="email-body">
+            <td style="background-color:#0c0c0f;padding:0 40px 16px;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;"
+              class="steps-pad email-body">
 
               <!-- Section label -->
-              <p style="margin:0 0 20px;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:10px;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;color:#71717a;">
+              <p style="margin:0 0 24px;font-family:'Courier New',Courier,monospace;font-size:11px;font-weight:400;letter-spacing:0.13em;text-transform:uppercase;color:#a1a1aa;">
                 Was passiert als Nächstes?
               </p>
 
-              <!-- Steps -->
+              <!-- Steps table -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
 
                 <!-- Step 1 -->
-                <tr class="step-row">
-                  <td style="padding:0 0 16px;vertical-align:top;">
+                <tr>
+                  <td style="padding:0 0 20px;vertical-align:top;">
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
-                        <!-- Number badge -->
-                        <td style="width:36px;vertical-align:top;padding-right:16px;">
-                          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <!-- Badge -->
+                        <td style="width:32px;padding-right:18px;vertical-align:top;">
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
                             <tr>
                               <td align="center" valign="middle"
-                                style="width:32px;height:32px;border-radius:50%;background-color:#00bbfd18;border:1px solid #00bbfd40;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:12px;font-weight:600;color:#00bbfd;line-height:1;">
-                                1
+                                style="width:32px;height:32px;min-width:32px;border-radius:50%;background-color:#00bbfd16;border:1px solid #00bbfd40;padding:0;text-align:center;vertical-align:middle;">
+                                <span style="display:block;width:32px;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;color:#00bbfd;text-align:center;line-height:30px;">1</span>
                               </td>
                             </tr>
                           </table>
                         </td>
                         <!-- Text -->
-                        <td style="vertical-align:top;padding-top:4px;">
-                          <p style="margin:0 0 3px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.4;">
+                        <td style="vertical-align:top;padding-top:5px;">
+                          <p style="margin:0 0 5px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#e4e4e7;line-height:1.45;">
                             Termin in den Kalender eintragen
                           </p>
-                          <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;color:#71717a;line-height:1.6;">
+                          <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;color:#71717a;line-height:1.7;">
                             Speichere den Termin, damit du ihn nicht verpasst.
                           </p>
                         </td>
@@ -315,25 +299,25 @@
                 </tr>
 
                 <!-- Step 2 -->
-                <tr class="step-row">
-                  <td style="padding:0 0 16px;vertical-align:top;">
+                <tr>
+                  <td style="padding:0 0 20px;vertical-align:top;">
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
-                        <td style="width:36px;vertical-align:top;padding-right:16px;">
-                          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <td style="width:32px;padding-right:18px;vertical-align:top;">
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
                             <tr>
                               <td align="center" valign="middle"
-                                style="width:32px;height:32px;border-radius:50%;background-color:#00bbfd18;border:1px solid #00bbfd40;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:12px;font-weight:600;color:#00bbfd;line-height:1;">
-                                2
+                                style="width:32px;height:32px;min-width:32px;border-radius:50%;background-color:#00bbfd16;border:1px solid #00bbfd40;padding:0;text-align:center;vertical-align:middle;">
+                                <span style="display:block;width:32px;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;color:#00bbfd;text-align:center;line-height:30px;">2</span>
                               </td>
                             </tr>
                           </table>
                         </td>
-                        <td style="vertical-align:top;padding-top:4px;">
-                          <p style="margin:0 0 3px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.4;">
-                            Ziele & Fragen vorbereiten
+                        <td style="vertical-align:top;padding-top:5px;">
+                          <p style="margin:0 0 5px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#e4e4e7;line-height:1.45;">
+                            Ziele &amp; Fragen vorbereiten
                           </p>
-                          <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;color:#71717a;line-height:1.6;">
+                          <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;color:#71717a;line-height:1.7;">
                             Überlege kurz, welche Prozesse du automatisieren möchtest.
                           </p>
                         </td>
@@ -343,26 +327,26 @@
                 </tr>
 
                 <!-- Step 3 -->
-                <tr class="step-row">
-                  <td style="padding:0 0 8px;vertical-align:top;">
+                <tr>
+                  <td style="padding:0;vertical-align:top;">
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
-                        <td style="width:36px;vertical-align:top;padding-right:16px;">
-                          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <td style="width:32px;padding-right:18px;vertical-align:top;">
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
                             <tr>
                               <td align="center" valign="middle"
-                                style="width:32px;height:32px;border-radius:50%;background-color:#00bbfd18;border:1px solid #00bbfd40;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:12px;font-weight:600;color:#00bbfd;line-height:1;">
-                                3
+                                style="width:32px;height:32px;min-width:32px;border-radius:50%;background-color:#00bbfd16;border:1px solid #00bbfd40;padding:0;text-align:center;vertical-align:middle;">
+                                <span style="display:block;width:32px;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;color:#00bbfd;text-align:center;line-height:30px;">3</span>
                               </td>
                             </tr>
                           </table>
                         </td>
-                        <td style="vertical-align:top;padding-top:4px;">
-                          <p style="margin:0 0 3px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f4f4f5;line-height:1.4;">
+                        <td style="vertical-align:top;padding-top:5px;">
+                          <p style="margin:0 0 5px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#e4e4e7;line-height:1.45;">
                             5 Minuten vorher einwählen
                           </p>
-                          <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;color:#71717a;line-height:1.6;">
-                            Klicke auf den Meeting-Link und teste vorher Kamera & Mikrofon.
+                          <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;color:#71717a;line-height:1.7;">
+                            Klicke auf den Meeting-Link und teste Kamera &amp; Mikrofon kurz vorher.
                           </p>
                         </td>
                       </tr>
@@ -376,33 +360,49 @@
 
 
           <!-- ══════════════════════════════════════════
-               CTA BUTTON
+               CTA — Google Meet
           ══════════════════════════════════════════ -->
           <tr>
-            <td align="center" style="background-color:#0c0c0f;padding:32px 40px 40px;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;"
-              class="email-body">
+            <td align="center" class="cta-pad email-body"
+              style="background-color:#0c0c0f;padding:36px 40px 44px;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;">
+
+              <!-- Google Meet button — white, enterprise-grade -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td align="center" style="border-radius:10px;background-color:#00bbfd;">
+                  <td align="center"
+                    style="border-radius:10px;background-color:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.18),0 4px 16px rgba(0,0,0,0.12);">
                     <a href="{{meeting_link}}" class="cta-btn"
-                      style="display:inline-block;padding:14px 36px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#09090b;text-decoration:none;letter-spacing:-0.01em;white-space:nowrap;">
-                      Zum Meeting-Link →
+                      style="display:inline-block;padding:15px 32px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#111111;text-decoration:none;letter-spacing:-0.01em;white-space:nowrap;vertical-align:middle;">
+                      <!--[if mso]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td style="vertical-align:middle;padding-right:10px;"><![endif]-->
+                      <!-- Google Meet camera icon (inline SVG) -->
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="display:inline-block;vertical-align:middle;margin-right:10px;position:relative;top:-1px;">
+                        <!-- Camera body -->
+                        <rect x="1" y="4.5" width="12" height="11" rx="2" fill="#00897B"/>
+                        <!-- Highlight inside body -->
+                        <rect x="3.5" y="7" width="4" height="4" rx="2" fill="white" opacity="0.85"/>
+                        <!-- Video panel (right triangle) -->
+                        <path d="M13 8.2L18.5 5.5V14.5L13 11.8V8.2Z" fill="#43A047"/>
+                      </svg>
+                      <!--[if mso]></td><td style="vertical-align:middle;"><![endif]-->
+                      <span style="vertical-align:middle;">Google Meet öffnen →</span>
+                      <!--[if mso]></td></tr></table><![endif]-->
                     </a>
                   </td>
                 </tr>
               </table>
 
               <!-- Divider -->
-              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top:32px;">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top:36px;">
                 <tr>
                   <td style="height:1px;background-color:#1a1a22;font-size:0;line-height:0;">&nbsp;</td>
                 </tr>
               </table>
 
               <!-- Reschedule note -->
-              <p style="margin:20px 0 0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;color:#71717a;line-height:1.65;text-align:center;">
+              <p style="margin:22px 0 0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;color:#71717a;line-height:1.75;text-align:center;">
                 Du musst den Termin verschieben?<br>
-                Schreib uns einfach an&nbsp;<a href="mailto:info@afa-ai.com" style="color:#00bbfd;text-decoration:none;">info@afa-ai.com</a>
+                Schreib uns einfach an&nbsp;<a href="mailto:info@afa-ai.com" style="color:#00bbfd;text-decoration:none;font-weight:500;">info@afa-ai.com</a>
               </p>
             </td>
           </tr>
@@ -413,45 +413,41 @@
           ══════════════════════════════════════════ -->
           <tr>
             <td align="center" class="footer-cell"
-              style="padding:28px 40px 32px;border-radius:0 0 16px 16px;background-color:#0a0a0d;border:1px solid #1a1a22;border-top:1px solid #131318;">
+              style="padding:32px 40px 36px;border-radius:0 0 16px 16px;background-color:#0a0a0d;border:1px solid #1a1a22;border-top:1px solid #131318;">
 
-              <!-- Logo small -->
-              <a href="https://afa-ai.com" target="_blank" style="display:inline-block;margin-bottom:16px;">
+              <!-- Logo -->
+              <a href="https://afa-ai.com" target="_blank" style="display:inline-block;margin-bottom:18px;">
                 <img src="https://afa-ai.com/afa-logo-cropped.png"
                   alt="AFA"
-                  width="100" height="auto"
-                  style="max-width:100px;height:auto;display:block;opacity:0.4;">
+                  width="90" height="auto"
+                  style="max-width:90px;height:auto;display:block;opacity:0.35;">
               </a>
 
-              <!-- Company info -->
-              <p style="margin:0 0 6px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;font-weight:400;color:#3f3f47;line-height:1.6;text-align:center;">
-                AFA – Agentur für Automatisierung<br>
-                Halder Str. 21 · 58095 Hagen · Deutschland
+              <!-- Company name -->
+              <p style="margin:0 0 14px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;font-weight:400;color:#3f3f47;line-height:1.7;text-align:center;">
+                AFA – Agentur für Automatisierung
               </p>
 
-              <!-- Links -->
-              <p style="margin:12px 0 0;font-family:'Chivo Mono','Courier New',Courier,monospace;font-size:10px;font-weight:400;letter-spacing:0.08em;color:#2a2a32;text-align:center;">
-                <a href="https://afa-ai.com" style="color:#2a2a32;text-decoration:none;">afa-ai.com</a>
-                &nbsp;·&nbsp;
-                <a href="mailto:info@afa-ai.com" style="color:#2a2a32;text-decoration:none;">info@afa-ai.com</a>
-                &nbsp;·&nbsp;
-                <a href="https://afa-ai.com#impressum" style="color:#2a2a32;text-decoration:none;">Impressum</a>
-                &nbsp;·&nbsp;
-                <a href="https://afa-ai.com#datenschutz" style="color:#2a2a32;text-decoration:none;">Datenschutz</a>
+              <!-- Links row -->
+              <p style="margin:0;font-family:'Courier New',Courier,monospace;font-size:11px;font-weight:400;letter-spacing:0.06em;color:#52525b;text-align:center;line-height:2;">
+                <a href="https://afa-ai.com" style="color:#52525b;text-decoration:none;">afa-ai.com</a>
+                &nbsp;&middot;&nbsp;
+                <a href="mailto:info@afa-ai.com" style="color:#52525b;text-decoration:none;">info@afa-ai.com</a>
+                &nbsp;&middot;&nbsp;
+                <a href="https://afa-ai.com#impressum" style="color:#71717a;text-decoration:none;">Impressum</a>
+                &nbsp;&middot;&nbsp;
+                <a href="https://afa-ai.com#datenschutz" style="color:#71717a;text-decoration:none;">Datenschutz</a>
               </p>
 
             </td>
           </tr>
 
-
           <!-- Bottom spacer -->
           <tr>
-            <td style="height:32px;background-color:#09090b;">&nbsp;</td>
+            <td style="height:40px;background-color:#09090b;">&nbsp;</td>
           </tr>
 
         </table>
-        <!-- /Email container -->
-
       </td>
     </tr>
   </table>
@@ -461,18 +457,16 @@
 
 <!--
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TEMPLATE VARIABLES (replace with your ESP values)
+  TEMPLATE VARIABLES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   {{vorname}}      — First name, e.g. "Max"
   {{datum}}        — Full date, e.g. "Dienstag, 10. Juni 2025"
   {{uhrzeit}}      — Time, e.g. "14:00"
   {{dauer}}        — Duration, e.g. "30 Minuten"
-  {{thema}}        — Topic, e.g. "KI-Strategie & Automatisierung"
-  {{meeting_link}} — Full video call URL
+  {{meeting_link}} — Google Meet URL
 
   Compatible with: SendGrid, Postmark, Mailchimp, Brevo (Sendinblue),
-  Google Workspace SMTP, and any ESP supporting {{mustache}} or
-  {{{handlebars}}} syntax. Adapt delimiters as needed.
+  Google Workspace SMTP, and any ESP supporting {{mustache}} syntax.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -->
