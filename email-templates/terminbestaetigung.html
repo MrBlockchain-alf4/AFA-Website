@@ -49,6 +49,26 @@
       body, .outer-bg { background-color: #09090b !important; }
     }
 
+    /* ── Google Meet CTA — hover / active (Gmail, Apple Mail, iOS Mail)
+         Inline styles on the element are the static fallback for Outlook. ── */
+    .cta-btn {
+      border-radius: 10px; /* matches the td wrapper radius */
+      transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18),
+                  0 0 16px 4px rgba(0,187,253,0.15);
+      filter: brightness(1.04);
+      text-decoration: none !important;
+    }
+    .cta-btn:active {
+      transform: translateY(0px) scale(0.98);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10),
+                  0 0 4px 1px rgba(0,187,253,0.06);
+      filter: brightness(1.0);
+    }
+
     /* ── Glow animation (Gmail/Apple Mail; graceful no-op elsewhere) ── */
     @keyframes afa-glow {
       0%, 100% { box-shadow: 0 0 0 0 rgba(0,187,253,0.00), 0 0 12px 0 rgba(0,187,253,0.00); }
