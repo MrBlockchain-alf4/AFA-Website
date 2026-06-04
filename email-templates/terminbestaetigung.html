@@ -86,7 +86,7 @@
 
   <!-- Preheader -->
   <div style="display:none;font-size:1px;color:#09090b;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-    Dein Termin mit AFA ist bestätigt – {{datum}} um {{uhrzeit}} Uhr. Wir freuen uns auf das Gespräch.&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+    Dein Termin mit AFA ist bestätigt – {{$json.datum}} um {{$json.uhrzeit}} Uhr. Wir freuen uns auf das Gespräch.&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
   </div>
 
   <!-- Outer wrapper -->
@@ -145,7 +145,7 @@
 
               <!-- Subtitle -->
               <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:400;color:#71717a;line-height:1.75;max-width:400px;">
-                Hallo {{vorname}}, wir haben deinen Termin erfolgreich eingetragen.<br>Alle Details findest du unten.
+                Hallo {{$json.vorname}}, wir haben deinen Termin erfolgreich eingetragen.<br>Alle Details findest du unten.
               </p>
 
             </td>
@@ -199,7 +199,7 @@
                                 Datum
                               </td>
                               <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">
-                                {{datum}}
+                                {{$json.datum}}
                               </td>
                             </tr>
                           </table>
@@ -216,7 +216,7 @@
                                 Uhrzeit
                               </td>
                               <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">
-                                {{uhrzeit}} Uhr
+                                {{$json.uhrzeit}} Uhr
                               </td>
                             </tr>
                           </table>
@@ -233,7 +233,7 @@
                                 Dauer
                               </td>
                               <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">
-                                {{dauer}}
+                                {{$json.dauer}}
                               </td>
                             </tr>
                           </table>
@@ -373,7 +373,7 @@
                 <tr>
                   <td align="center"
                     style="border-radius:10px;background-color:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.18),0 4px 16px rgba(0,0,0,0.12);">
-                    <a href="{{meeting_link}}" class="cta-btn"
+                    <a href="{{$json.meeting_link}}" class="cta-btn"
                       style="display:inline-block;padding:15px 32px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#111111;text-decoration:none;letter-spacing:-0.01em;white-space:nowrap;vertical-align:middle;">
                       <!--[if mso]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td style="vertical-align:middle;padding-right:10px;"><![endif]-->
                       <!-- Google Meet camera icon (inline SVG) -->
@@ -462,11 +462,11 @@
   TEMPLATE VARIABLES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  {{vorname}}      — First name, e.g. "Max"
-  {{datum}}        — Full date, e.g. "Dienstag, 10. Juni 2025"
-  {{uhrzeit}}      — Time, e.g. "14:00"
-  {{dauer}}        — Duration, e.g. "30 Minuten"
-  {{meeting_link}} — Google Meet URL
+  {{$json.vorname}}      — First name, e.g. "Max"
+  {{$json.datum}}        — Full date, e.g. "Dienstag, 10. Juni 2025"
+  {{$json.uhrzeit}}      — Time, e.g. "14:00"
+  {{$json.dauer}}        — Duration, e.g. "30 Minuten"
+  {{$json.meeting_link}} — Google Meet URL
 
   Compatible with: SendGrid, Postmark, Mailchimp, Brevo (Sendinblue),
   Google Workspace SMTP, and any ESP supporting {{mustache}} syntax.
