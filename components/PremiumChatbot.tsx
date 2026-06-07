@@ -198,13 +198,13 @@ const CHAT_CSS = `
   /* Launcher glow pulse */
   @keyframes afa-glow {
     0%,100% { box-shadow: 0 4px 24px rgba(0,187,253,0.32), 0 2px 8px rgba(0,0,0,0.5); }
-    50%      { box-shadow: 0 4px 42px rgba(0,187,253,0.62), 0 0 0 9px rgba(0,187,253,0.09), 0 2px 12px rgba(0,0,0,0.5); }
+    50%      { box-shadow: 0 4px 44px rgba(0,187,253,0.58), 0 2px 14px rgba(0,0,0,0.5); }
   }
   .afa-launcher { animation: afa-glow 2.8s ease-in-out infinite; }
   .afa-launcher:hover {
     animation: none;
     transform: scale(1.1) !important;
-    box-shadow: 0 4px 52px rgba(0,187,253,0.72), 0 0 0 12px rgba(0,187,253,0.11), 0 2px 16px rgba(0,0,0,0.55) !important;
+    box-shadow: 0 4px 56px rgba(0,187,253,0.70), 0 2px 18px rgba(0,0,0,0.55) !important;
   }
   .afa-launcher:active { transform: scale(0.96) !important; }
 
@@ -1013,9 +1013,6 @@ export default function PremiumChatbot() {
             {/* Arrow pointing down-right to the launcher */}
             <div style={{ position:'absolute', bottom:-5, right:26, width:10, height:10, background:'rgba(13,13,18,0.98)', border:'1px solid rgba(255,255,255,0.10)', borderTop:'none', borderLeft:'none', transform:'rotate(45deg)' }} />
           </div>
-        )}
-        {pulse && !open && (
-          <div style={{ position:'absolute', inset:-12, borderRadius:'50%', border:`2px solid ${T.acc}`, opacity:0.45, animation:'ring-pulse 2s ease-in-out infinite', pointerEvents:'none' }} />
         )}
         <button
           className="afa-launcher"
