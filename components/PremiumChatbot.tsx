@@ -268,22 +268,13 @@ export default function PremiumChatbot() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Scroll to bottom on new messages or typing changes only
+  // Scroll to bottom only on new text messages and typing indicator changes.
+  // Calendar panels are NOT included — they appear below the message and the
+  // user scrolls down manually if they want to see them.
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [msgs, typing]);
-
-  // When a calendar/confirm panel appears, scroll it gently into view so
-  // the preceding message stays visible above it (not hidden behind the panel)
-  useEffect(() => {
-    if (step === 'cal-date' || step === 'cal-time' || step === 'confirm') {
-      const t = setTimeout(() => {
-        calRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 60);
-      return () => clearTimeout(t);
-    }
-  }, [step]);
 
   useEffect(() => {
     const t = setTimeout(() => setPulse(false), 6000);
@@ -469,7 +460,7 @@ export default function PremiumChatbot() {
         setTimeout(() => {
           setTyping(false);
           setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Super! Wähle jetzt deinen **Wunschtermin** im Kalender. 📅' }]);
-          setTimeout(() => setStep('cal-date'), 80);
+          setTimeout(() => setStep('cal-date'), 1200);
         }, 600);
         return;
       }
@@ -486,7 +477,7 @@ export default function PremiumChatbot() {
         setTimeout(() => {
           setTyping(false);
           setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Vielen Dank! Wähle jetzt deinen **Wunschtermin** im Kalender, damit wir uns persönlich bei dir melden können. 📅' }]);
-          setTimeout(() => setStep('cal-date'), 80);
+          setTimeout(() => setStep('cal-date'), 1200);
         }, 700);
         return;
       }
