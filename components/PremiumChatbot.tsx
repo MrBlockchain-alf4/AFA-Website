@@ -26,7 +26,8 @@ interface Msg {
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────
-const WEBHOOK = process.env.NEXT_PUBLIC_AFA_CHATBOT_WEBHOOK_URL ?? '';
+const LEAD_WEBHOOK   = process.env.NEXT_PUBLIC_AFA_LEAD_WEBHOOK_URL   ?? '';
+const TERMIN_WEBHOOK = process.env.NEXT_PUBLIC_AFA_TERMIN_WEBHOOK_URL ?? '';
 
 const MAIN_MENU: string[] = [
   'Beratung buchen',     'Termin vereinbaren',
@@ -605,6 +606,8 @@ export default function PremiumChatbot() {
 
       case 'lead-custom': {
         setLead(l => ({ ...l, interesse: text }));
+        // Fire lead webhook with the custom request (non-blocking)
+        sendLeadWebhook({ ...lead, interesse: text }, text);
         if (editingLead) {
           setEditingLead(false);
           setStep('confirm');
@@ -642,53 +645,105 @@ export default function PremiumChatbot() {
   }
 
   // ── Webhooks ──────────────────────────────────────────────────────────────
+
+  // Shared lead webhook — fire-and-forget is OK for side-effect calls
+  async function sendLeadWebhook(finalLead: Partial<Lead>, customAnliegen = '') {
+    const payload = {
+      type: 'lead',
+      vorname:       finalLead.vorname      ?? '',
+      nachname:      finalLead.nachname     ?? '',
+      email:         finalLead.email        ?? '',
+      telefon:       finalLead.telefon      ?? '',
+      unternehmen:   finalLead.unternehmen  ?? '',
+      interesse:     finalLead.interesse    ?? '',
+      customAnliegen,
+      quelle:  'Website Chatbot',
+      status:  'Neu',
+    };
+    console.log('[AFA Lead webhook]', payload);
+    try {
+      if (LEAD_WEBHOOK) {
+        const res = await fetch(LEAD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        console.log('[AFA Lead response]', res.status);
+      }
+    } catch (err) {
+      console.error('[AFA Lead error]', err);
+    }
+  }
+
+  // Human handoff — fires lead webhook then shows result
   async function doHandoff(finalLead: Partial<Lead>) {
     try {
-      if (WEBHOOK) await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...finalLead, requestType:'human_handoff', source:'AFA Website Chatbot', status:'Neu' }) });
+      await sendLeadWebhook(finalLead);
       setTyping(false);
-      setMsgs(m => [...m, { id: nextId(), role:'bot', text:'✅ Deine Anfrage wurde weitergeleitet! Ein Experte meldet sich in Kürze bei dir. Du erreichst uns auch direkt unter **kontakt@afa-ai.com**.', quickReplies:['Neue Anfrage starten'] }]);
+      setMsgs(m => [...m, { id: nextId(), role:'bot', text:'Danke! Deine Anfrage wurde erfolgreich übermittelt. Wir melden uns in Kürze bei dir.', quickReplies:['Neue Anfrage starten'] }]);
       setStep('handoff-done');
     } catch {
       setTyping(false);
-      setMsgs(m => [...m, { id: nextId(), role:'bot', text:'Es gab ein technisches Problem. Bitte kontaktiere uns direkt unter **kontakt@afa-ai.com**.', quickReplies:['Erneut versuchen','Neue Anfrage starten'] }]);
+      setMsgs(m => [...m, { id: nextId(), role:'bot', text:'Es gab ein Problem bei der Übermittlung. Bitte versuche es erneut.', quickReplies:['Erneut versuchen','Neue Anfrage starten'] }]);
       setStep('error');
     }
   }
 
+  // Core booking submission — fires termin webhook with smsWanted resolved
+  async function doTermin(smsWanted: boolean) {
+    if (!selDate || !selTime) return;
+    const dateStr = `${selDate.year}-${pad2(selDate.month+1)}-${pad2(selDate.day)}`;
+    const payload = {
+      type: 'termin',
+      vorname:           lead.vorname     ?? '',
+      nachname:          lead.nachname    ?? '',
+      email:             lead.email       ?? '',
+      telefon:           lead.telefon     ?? '',
+      unternehmen:       lead.unternehmen ?? '',
+      interesse:         lead.interesse   ?? '',
+      appointmentDate:   dateStr,
+      appointmentTime:   selTime,
+      appointmentDateTime: `${dateStr}T${selTime}:00`,
+      smsWanted,
+      quelle:  'Website Chatbot',
+      status:  'Termin gebucht',
+    };
+    console.log('[AFA Termin webhook]', payload);
+    try {
+      if (TERMIN_WEBHOOK) {
+        const res = await fetch(TERMIN_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        console.log('[AFA Termin response]', res.status);
+      }
+      setTyping(false); setSubmitting(false);
+      const confirmText = smsWanted
+        ? `📱 SMS wird gesendet! Perfekt! Dein Termin wurde erfolgreich angefragt. Du erhältst in Kürze eine Bestätigung per E-Mail an **${lead.email}**.`
+        : `Perfekt! Dein Termin wurde erfolgreich angefragt. Du erhältst in Kürze eine Bestätigung per E-Mail an **${lead.email}**.`;
+      setMsgs(m => [...m, { id:nextId(), role:'bot', text:confirmText, quickReplies:['Neue Anfrage starten'] }]);
+      setStep('success');
+    } catch (err) {
+      console.error('[AFA Termin error]', err);
+      setTyping(false); setSubmitting(false);
+      setMsgs(m => [...m, { id:nextId(), role:'bot', text:'Es gab ein Problem bei der Übermittlung. Bitte versuche es erneut.', quickReplies:['Erneut versuchen','Neue Anfrage starten'] }]);
+      setStep('error');
+    }
+  }
+
+  // Called from "Termin bestätigen" button on confirm screen
   async function submitBooking() {
     if (!selDate || !selTime) return;
-    setSubmitting(true); setStep('submitting'); setTyping(true);
-    const dateStr = `${selDate.year}-${pad2(selDate.month+1)}-${pad2(selDate.day)}`;
-    try {
-      if (WEBHOOK) await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...lead, appointmentDate:dateStr, appointmentTime:selTime, appointmentDateTime:`${dateStr}T${selTime}:00`, source:'AFA Website Chatbot', status:'Neu' }) });
-      setTyping(false); setSubmitting(false);
-      if (lead.telefon) {
-        setMsgs(m => [...m, { id:nextId(), role:'bot', text:`Termin gebucht! ✅ Möchtest du eine **SMS-Bestätigung** an **${lead.telefon}** erhalten?`, quickReplies:['Ja, SMS senden','Nein, danke'] }]);
+    if (lead.telefon) {
+      // Collect SMS preference first — webhook fires in handleSmsConfirm
+      setTyping(true);
+      setTimeout(() => {
+        setTyping(false);
+        setMsgs(m => [...m, { id:nextId(), role:'bot', text:`Möchtest du eine **SMS-Bestätigung** an **${lead.telefon}** erhalten?`, quickReplies:['Ja, SMS senden','Nein, danke'] }]);
         setStep('sms-confirm');
-      } else {
-        setMsgs(m => [...m, { id:nextId(), role:'bot', text:`🎉 Dein Termin ist bestätigt! Eine Bestätigung wird an **${lead.email}** gesendet.`, quickReplies:['Neue Anfrage starten'] }]);
-        setStep('success');
-      }
-    } catch {
-      setTyping(false); setSubmitting(false);
-      setMsgs(m => [...m, { id:nextId(), role:'bot', text:'Es gab ein technisches Problem beim Buchen. Bitte versuche es erneut oder kontaktiere uns direkt.', quickReplies:['Erneut versuchen','Neue Anfrage starten'] }]);
-      setStep('error');
+      }, 420);
+    } else {
+      setSubmitting(true); setStep('submitting'); setTyping(true);
+      await doTermin(false);
     }
   }
 
   async function handleSmsConfirm(wantsSms: boolean) {
-    if (wantsSms) {
-      setTyping(true);
-      const dateStr = selDate ? `${selDate.year}-${pad2(selDate.month+1)}-${pad2(selDate.day)}` : '';
-      try {
-        if (WEBHOOK) await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...lead, appointmentDate:dateStr, appointmentTime:selTime, action:'send_sms_confirmation', source:'AFA Website Chatbot' }) });
-      } catch { /* non-critical */ }
-      setTyping(false);
-      setMsgs(m => [...m, { id:nextId(), role:'bot', text:`📱 SMS wird gesendet! Eine Bestätigung wird ebenfalls an **${lead.email}** gesendet.`, quickReplies:['Neue Anfrage starten'] }]);
-    } else {
-      setMsgs(m => [...m, { id:nextId(), role:'bot', text:`🎉 Alles klar! Eine Bestätigung wird an **${lead.email}** gesendet.`, quickReplies:['Neue Anfrage starten'] }]);
-    }
-    setStep('success');
+    setSubmitting(true); setStep('submitting'); setTyping(true);
+    await doTermin(wantsSms);
   }
 
   function reset() {
