@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Chivo_Mono } from "next/font/google";
 import "./globals.css";
+import PremiumChatbot from "@/components/PremiumChatbot";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -35,7 +36,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${jakarta.variable} ${chivo.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <PremiumChatbot />
+      </body>
     </html>
   );
 }
