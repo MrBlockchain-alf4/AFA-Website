@@ -21,19 +21,23 @@ interface Msg {
   role: 'bot' | 'user';
   text: string;
   quickReplies?: string[];
+  menuGrid?: boolean; // render quick replies as 2-col grid
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────
 const WEBHOOK = process.env.NEXT_PUBLIC_AFA_CHATBOT_WEBHOOK_URL ?? '';
 
-const WELCOME_REPLIES = [
-  'Beratung buchen', 'Termin vereinbaren', 'KI-Telefon',
-  'KI-Chatbot', 'Premium Website', 'Preise / Angebot', 'Expertenkontakt',
+const MAIN_MENU: string[] = [
+  'Beratung buchen',     'Termin vereinbaren',
+  'KI-Telefon',          'KI-Chatbot',
+  'Premium Website',     'Leadgenerierung',
+  'Automatisierung',     'Preise / Angebot',
+  'DSGVO / Datenschutz', 'Expertenkontakt',
 ];
 
 const INTEREST_REPLIES = [
   'KI-Telefon', 'KI-Chatbot', 'Premium Website',
-  'Lead-Generierung', 'Automatisierung', 'Allgemeine Beratung',
+  'Leadgenerierung', 'Automatisierung', 'Allgemeine Beratung',
 ];
 
 const TIME_SLOTS = [
@@ -44,21 +48,19 @@ const TIME_SLOTS = [
 
 const FAQ: Record<string, string> = {
   'ki-telefon':
-    'Unser **KI-Telefon-Mitarbeiter** nimmt Anrufe rund um die Uhr entgegen, qualifiziert Interessenten automatisch und bucht Termine direkt in deinen Kalender – ganz ohne manuellen Aufwand. Er klingt natürlich, spricht perfektes Deutsch und passt sich vollständig an dein Unternehmen an.',
+    'Mit dem **KI-Telefon-Mitarbeiter** verpasst du keine Anfrage mehr – auch wenn dein Team beschäftigt ist oder es nach Feierabend klingelt. Er nimmt Anrufe automatisch entgegen, qualifiziert Interessenten, beantwortet häufige Fragen und bucht Termine direkt in deinen Kalender. Klingt natürlich, arbeitet **24/7** und passt sich vollständig deinem Unternehmen an.',
   'ki-chat':
-    'Der **KI-Chat-Assistent** übernimmt Website-Anfragen 24/7, beantwortet häufige Fragen, qualifiziert Leads und bucht Termine – vollautomatisch und in deinem Unternehmens-Stil.',
+    'Der **KI-Chatbot** auf deiner Website übernimmt Kundenanfragen rund um die Uhr. Er erfasst Leads, qualifiziert Interessenten, beantwortet FAQ automatisch, bucht Termine und übergibt alles sauber an dein CRM oder n8n-Workflow – ohne manuellen Aufwand und in deinem Design.',
   'website':
-    'Wir entwickeln hochperformante, konversionsorientierte **Premium-Websites** mit eingebettetem KI-Chat und automatisierter Lead-Erfassung. Design, Technik und KI aus einer Hand.',
+    'Eine **Premium-Website** von AFA ist mehr als Design: Sie ist von Anfang an auf Konversion ausgelegt, mit integriertem KI-Chatbot, automatisiertem Buchungssystem und bereit für Workflow-Automatisierungen. Modern, schnell und direkt auf deine Zielgruppe abgestimmt.',
   'leads':
-    'Unser System erfasst Interessenten über mehrere Kanäle, qualifiziert sie per KI und übergibt kaufbereite **Leads direkt in dein CRM** – mit sofortiger Benachrichtigung an dein Team.',
+    'Unser **Lead-Generierungssystem** erfasst Websitebesucher automatisch, qualifiziert sie per KI-Chat oder Formular und übergibt kaufbereite Leads direkt an dein CRM, Google Sheets oder n8n-Workflow. Das Follow-up per E-Mail oder Telefon läuft ebenfalls vollautomatisch.',
   'preise':
-    'Unsere Lösungen sind individuell auf dein Unternehmen abgestimmt. Einstiegspakete beginnen ab **990 € einmalig**, monatliche Betreuungspakete ab **299 € / Monat**. Gerne erstellen wir ein persönliches Angebot.',
+    'Der Preis hängt vom Umfang deines Projekts, den gewünschten Integrationen und der Systemkomplexität ab. Wir geben keine Pauschalpreise ohne Kontext, da jede Lösung individuell ist. **Am schnellsten geht es über ein kostenloses Erstgespräch** – dort klären wir gemeinsam, was du brauchst und was es kostet.',
   'datenschutz':
-    'Alle Daten werden auf **deutschen Servern** verarbeitet und gespeichert. Wir sind vollständig DSGVO-konform und stellen auf Anfrage eine Auftragsverarbeitungsvereinbarung (**AVV**) bereit.',
+    'Datenschutz ist fester Bestandteil unserer Arbeit. Alle Daten, die über unsere Systeme fließen, können über **sichere Formulare**, verschlüsselte Webhook-Workflows und DSGVO-konforme Dienste verarbeitet werden. Wir leisten keine Rechtsberatung, unterstützen dich aber bei der **technischen Umsetzung** datenschutzkonformer Prozesse.',
   'automation':
-    'Wir automatisieren repetitive Geschäftsprozesse mit KI und **No-Code-Workflows** (n8n, Make, Zapier). Typische Anwendungsfälle: Lead-Routing, E-Mail-Automatisierung, CRM-Anbindung, Reporting.',
-  'termin':
-    'Du kannst jederzeit einen **kostenlosen 30-Minuten-Beratungstermin** buchen – kein Anruf nötig. Wähle einfach Datum und Uhrzeit im Kalender.',
+    'Wir automatisieren Geschäftsprozesse mit **n8n, Make und Zapier** – ohne teure Individualentwicklung. Typische Fälle: Lead-Routing ins CRM, automatische E-Mail-Sequenzen, Team-Benachrichtigungen, Kalender-Sync und Reporting. Du sparst Zeit, dein Team konzentriert sich auf das Wesentliche.',
 };
 
 const DE_MONTHS = ['Januar','Februar','März','April','Mai','Juni',
@@ -87,15 +89,15 @@ function fmtDate(y: number, m: number, d: number) {
 
 function detectIntent(text: string): string {
   const t = text.toLowerCase();
-  if (/termin|buchen|vereinbaren|beratung|gespräch|meeting|angebot anfordern|demo anfragen/.test(t)) return 'book';
-  if (/ki.?telefon|voicebot|telefonassistent|phone.?ai|sprachassistent/.test(t))                    return 'ki-telefon';
-  if (/ki.?chat|chatbot|chat.assistent/.test(t))                                                     return 'ki-chat';
-  if (/premium.?web|webseite|homepage|landing|website/.test(t))                                      return 'website';
-  if (/lead.?gen|leadgen|akquise|interessenten|neukundengewinnung/.test(t))                          return 'leads';
-  if (/preis|kosten|angebot|budget|€|euro|teuer|günstig/.test(t))                                   return 'pricing';
-  if (/experte|expertenkontakt|mensch|mitarbeiter|sprechen|ansprechpartner/.test(t))                 return 'human';
-  if (/datenschutz|dsgvo|privacy|sicher|konform/.test(t))                                            return 'datenschutz';
-  if (/automatisierung|workflow|n8n|zapier|make\.com|integration|prozess/.test(t))                  return 'automation';
+  if (/\b(termin|buchen|vereinbaren|beratung|gespräch|meeting|angebot anfordern|demo anfragen|erstgespräch)\b/.test(t)) return 'book';
+  if (/ki.?telefon|voicebot|telefonassistent|phone.?ai|sprachassistent/.test(t))  return 'ki-telefon';
+  if (/ki.?chat|chatbot|chat.assistent/.test(t))                                    return 'ki-chat';
+  if (/premium.?web|webseite|homepage|landing|website/.test(t))                     return 'website';
+  if (/lead.?gen|leadgen|akquise|interessenten|neukundengewinnung|leadgenerierung/.test(t)) return 'leads';
+  if (/automatisierung|workflow|n8n|zapier|make\.com|integration|prozess/.test(t)) return 'automation';
+  if (/preis|kosten|angebot|budget|€|euro|teuer|günstig/.test(t))                  return 'pricing';
+  if (/experte|expertenkontakt|mensch|mitarbeiter|sprechen|ansprechpartner/.test(t)) return 'human';
+  if (/datenschutz|dsgvo|privacy|sicher|konform/.test(t))                           return 'datenschutz';
   return 'unknown';
 }
 
@@ -123,17 +125,24 @@ export default function PremiumChatbot() {
   const [pulse,      setPulse]     = useState(true);
   const [btnHov,     setBtnHov]    = useState(false);
   const [micTip,     setMicTip]    = useState(false);
+  const [isMobile,   setIsMobile]  = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
   const idRef     = useRef(0);
   const nextId    = () => ++idRef.current;
 
-  // ID of the last bot message — drives which quick-reply row is visible
   const lastBotId = useMemo(
     () => [...msgs].reverse().find(m => m.role === 'bot')?.id ?? -1,
     [msgs],
   );
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -145,12 +154,12 @@ export default function PremiumChatbot() {
     return () => clearTimeout(t);
   }, []);
 
-  // ── Messaging helpers ────────────────────────────────────────────────────
-  function botReply(text: string, quickReplies?: string[], delay = 950) {
+  // ── Messaging ─────────────────────────────────────────────────────────────
+  function botReply(text: string, quickReplies?: string[], delay = 950, menuGrid?: boolean) {
     setTyping(true);
     setTimeout(() => {
       setTyping(false);
-      setMsgs(m => [...m, { id: nextId(), role: 'bot', text, quickReplies }]);
+      setMsgs(m => [...m, { id: nextId(), role: 'bot', text, quickReplies, menuGrid }]);
     }, delay);
   }
 
@@ -158,7 +167,14 @@ export default function PremiumChatbot() {
     setMsgs(m => [...m, { id: nextId(), role: 'user', text }]);
   }
 
-  // ── Navigation helpers ───────────────────────────────────────────────────
+  function showMenu(intro?: string) {
+    botReply(
+      intro ?? 'Ich helfe dir gerne weiter. Wähle einfach einen Bereich aus oder beschreibe kurz dein Anliegen.',
+      MAIN_MENU, 700, true,
+    );
+  }
+
+  // ── Navigation ────────────────────────────────────────────────────────────
   function handleOpen() {
     setOpen(true);
     if (msgs.length === 0) {
@@ -167,8 +183,9 @@ export default function PremiumChatbot() {
         setTyping(false);
         setMsgs([{
           id: nextId(), role: 'bot',
-          text: 'Willkommen bei **AFA**! Ich bin dein KI-Assistent. Wie kann ich dir heute helfen? 👋',
-          quickReplies: WELCOME_REPLIES,
+          text: 'Willkommen bei **AFA**! Ich bin dein KI-Assistent für autonome Unternehmenslösungen. Wie kann ich dir heute helfen? 👋',
+          quickReplies: MAIN_MENU,
+          menuGrid: true,
         }]);
       }, 700);
     }
@@ -185,7 +202,7 @@ export default function PremiumChatbot() {
   function handleIntent(intent: string) {
     switch (intent) {
       case 'book':
-        startLead('book', 'Sehr gerne! Um einen Termin zu buchen, starte ich kurz die Datenerfassung. Wie ist dein **Vorname**?');
+        startLead('book', 'Sehr gerne buche ich einen Termin für dich! Kurz deine Daten – wie ist dein **Vorname**?');
         return;
       case 'ki-telefon':
         botReply(FAQ['ki-telefon'], ['Termin buchen', 'Preise anfragen', 'Expertenkontakt']);
@@ -197,26 +214,26 @@ export default function PremiumChatbot() {
         botReply(FAQ['website'], ['Demo anfragen', 'Preise anfragen', 'Expertenkontakt']);
         return;
       case 'leads':
-        botReply(FAQ['leads'], ['Termin buchen', 'Expertenkontakt']);
-        return;
-      case 'pricing':
-        botReply(FAQ['preise'], ['Angebot anfordern', 'Termin buchen', 'Expertenkontakt']);
-        return;
-      case 'datenschutz':
-        botReply(FAQ['datenschutz'], ['Weitere Fragen', 'Termin buchen']);
+        botReply(FAQ['leads'], ['Termin buchen', 'Mehr erfahren', 'Expertenkontakt']);
         return;
       case 'automation':
-        botReply(FAQ['automation'], ['Demo anfragen', 'Termin buchen']);
+        botReply(FAQ['automation'], ['Demo anfragen', 'Termin buchen', 'Expertenkontakt']);
+        return;
+      case 'pricing':
+        botReply(FAQ['preise'], ['Beratung buchen', 'Details anfragen', 'Expertenkontakt']);
+        return;
+      case 'datenschutz':
+        botReply(FAQ['datenschutz'], ['Expertenkontakt', 'Beratung buchen']);
         return;
       case 'human':
         startLead('handoff', 'Kein Problem! Ich verbinde dich mit einem Experten. Wie ist dein **Vorname**?');
         return;
       default:
-        botReply('Ich habe das nicht ganz verstanden. Womit kann ich dir helfen?', WELCOME_REPLIES);
+        showMenu();
     }
   }
 
-  // ── Main input dispatcher ────────────────────────────────────────────────
+  // ── Input dispatcher ──────────────────────────────────────────────────────
   function handleUserInput(rawText: string) {
     const text = rawText.trim();
     if (!text || submitting || typing) return;
@@ -224,15 +241,19 @@ export default function PremiumChatbot() {
     addUserMsg(text);
     setInput('');
 
-    // Global commands reachable from any step
     if (text === 'Neue Anfrage starten') { reset(); return; }
-    if (text === 'Weitere Fragen')        { botReply('Womit kann ich dir helfen?', WELCOME_REPLIES); return; }
+    if (text === 'Weitere Fragen' || text === 'Mehr erfahren') { showMenu(); return; }
+    if (text === 'Details anfragen' || text === 'Demo anfragen') {
+      startLead('book', 'Super! Für dein individuelles Angebot brauche ich kurz deine Daten. Wie ist dein **Vorname**?');
+      return;
+    }
 
     switch (step) {
-      // ── Lead capture: one field at a time ────────────────────────────────
       case 'welcome':
+        handleIntent(detectIntent(text));
+        return;
+
       case 'lead-vorname':
-        if (step === 'welcome') { handleIntent(detectIntent(text)); return; }
         setLead(l => ({ ...l, vorname: text }));
         setStep('lead-nachname');
         botReply(`Schön, **${text}**! Wie lautet dein **Nachname**?`);
@@ -251,14 +272,14 @@ export default function PremiumChatbot() {
         }
         setLead(l => ({ ...l, email: text }));
         setStep('lead-telefon');
-        botReply('Super! Hast du eine **Telefonnummer**, unter der wir dich erreichen können?', ['Überspringen']);
+        botReply('Danke! Hast du eine **Telefonnummer**, unter der wir dich erreichen können?', ['Überspringen']);
         return;
 
       case 'lead-telefon': {
         const val = text.toLowerCase() === 'überspringen' ? '' : text;
         setLead(l => ({ ...l, telefon: val }));
         setStep('lead-unternehmen');
-        botReply('Und der Name deines **Unternehmens**?', ['Überspringen']);
+        botReply('Und wie heißt dein **Unternehmen**?', ['Überspringen']);
         return;
       }
 
@@ -283,26 +304,23 @@ export default function PremiumChatbot() {
         botReply('Super! Wähle jetzt deinen **Wunschtermin** im Kalender. 📅', undefined, 600);
         return;
 
-      // ── Calendar / confirm: guard free text ──────────────────────────────
       case 'cal-date':
       case 'cal-time':
       case 'confirm':
       case 'submitting':
-        botReply('Bitte nutze die Auswahl oben. 👆', undefined, 400);
+        botReply('Bitte nutze die Auswahl unten im Chat. 👇', undefined, 400);
         return;
 
-      // ── Terminal states ──────────────────────────────────────────────────
       case 'success':
       case 'handoff-done':
-        botReply('Der Chat ist abgeschlossen. Möchtest du etwas anderes wissen?', ['Neue Anfrage starten'], 400);
+        showMenu('Der Chat wurde abgeschlossen. Ich bin weiterhin für dich da:');
         return;
 
       case 'error':
         if (text === 'Erneut versuchen' && selDate && selTime) { submitBooking(); return; }
-        botReply('Möchtest du es nochmal versuchen?', ['Erneut versuchen', 'Neue Anfrage starten'], 400);
+        botReply('Möchtest du es erneut versuchen?', ['Erneut versuchen', 'Neue Anfrage starten'], 400);
         return;
 
-      // ── Free chat (idle after FAQ, etc.) ─────────────────────────────────
       default:
         handleIntent(detectIntent(text));
     }
@@ -321,7 +339,7 @@ export default function PremiumChatbot() {
       setTyping(false);
       setMsgs(m => [...m, {
         id: nextId(), role: 'bot',
-        text: '✅ Deine Anfrage wurde weitergeleitet! Ein Experte meldet sich in Kürze bei dir. Du erreichst uns auch direkt unter **kontakt@afa-ai.com**.',
+        text: '✅ Deine Anfrage wurde erfolgreich weitergeleitet! Ein Experte meldet sich in Kürze bei dir. Du erreichst uns auch direkt unter **kontakt@afa-ai.com**.',
         quickReplies: ['Neue Anfrage starten'],
       }]);
       setStep('handoff-done');
@@ -329,7 +347,7 @@ export default function PremiumChatbot() {
       setTyping(false);
       setMsgs(m => [...m, {
         id: nextId(), role: 'bot',
-        text: 'Es gab ein technisches Problem. Bitte kontaktiere uns direkt unter **kontakt@afa-ai.com** oder versuche es erneut.',
+        text: 'Es gab ein technisches Problem beim Senden. Bitte kontaktiere uns direkt unter **kontakt@afa-ai.com**.',
         quickReplies: ['Erneut versuchen', 'Neue Anfrage starten'],
       }]);
       setStep('error');
@@ -390,18 +408,14 @@ export default function PremiumChatbot() {
       setTyping(false);
       setMsgs([{
         id: nextId(), role: 'bot',
-        text: 'Wie kann ich dir helfen? 👋',
-        quickReplies: WELCOME_REPLIES,
+        text: 'Wie kann ich dir weiterhelfen? 👋',
+        quickReplies: MAIN_MENU,
+        menuGrid: true,
       }]);
     }, 500);
   }
 
-  // ── Shared button styles ──────────────────────────────────────────────────
-  const qBtn: React.CSSProperties = {
-    background: 'transparent', border: `1px solid ${T.accBd}`, color: T.acc,
-    fontSize: 12, padding: '5px 10px', borderRadius: 20, cursor: 'pointer',
-    fontFamily: 'inherit', lineHeight: 1.4, whiteSpace: 'nowrap' as const,
-  };
+  // ── Styles ────────────────────────────────────────────────────────────────
   const primBtn: React.CSSProperties = {
     background: T.acc, color: '#000', border: 'none', borderRadius: 8,
     padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
@@ -412,35 +426,68 @@ export default function PremiumChatbot() {
   };
   const navBtnSt: React.CSSProperties = {
     background: 'transparent', border: `1px solid ${T.bd}`, color: T.txt,
-    width: 28, height: 28, borderRadius: 6, fontSize: 18, cursor: 'pointer',
+    width: 30, height: 30, borderRadius: 7, fontSize: 18, cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   };
+  // Pill-style for ≤4 quick replies (FAQ follow-ups)
+  const pillBtn: React.CSSProperties = {
+    background: 'transparent', border: `1px solid ${T.accBd}`, color: T.acc,
+    fontSize: 12, padding: '5px 11px', borderRadius: 20, cursor: 'pointer',
+    fontFamily: 'inherit', lineHeight: 1.4, whiteSpace: 'nowrap' as const,
+  };
+  // Grid-style for main menu (10 items)
+  const menuItemBtn: React.CSSProperties = {
+    background: T.s3, border: `1px solid ${T.bd}`, color: T.txt,
+    fontSize: 12.5, padding: '9px 12px', borderRadius: 9, cursor: 'pointer',
+    fontFamily: 'inherit', textAlign: 'left' as const, lineHeight: 1.4,
+  };
 
-  // ── Render helpers ────────────────────────────────────────────────────────
+  // ── Avatar ────────────────────────────────────────────────────────────────
+  function Avatar() {
+    return (
+      <div style={{
+        width: 28, height: 28, borderRadius: '50%',
+        background: 'linear-gradient(135deg,#00bbfd,#0066aa)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 11, fontWeight: 800, color: '#08090a',
+        flexShrink: 0, marginRight: 8, marginTop: 2,
+      }}>A</div>
+    );
+  }
 
+  // ── Render: message ───────────────────────────────────────────────────────
   function renderMsg(m: Msg) {
     const isBot  = m.role === 'bot';
     const html   = m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     const showQR = !!m.quickReplies && m.id === lastBotId && !typing;
     return (
-      <div key={m.id} style={{ marginBottom: 10, animation: 'msg-in 0.22s ease' }}>
+      <div key={m.id} style={{ marginBottom: 12, animation: 'msg-in 0.22s ease' }}>
         <div style={{ display: 'flex', justifyContent: isBot ? 'flex-start' : 'flex-end' }}>
           {isBot && <Avatar />}
           <div
             style={{
-              maxWidth: '78%', padding: '9px 13px',
-              borderRadius: isBot ? '14px 14px 14px 4px' : '14px 14px 4px 14px',
+              maxWidth: '82%', padding: '10px 14px',
+              borderRadius: isBot ? '16px 16px 16px 4px' : '16px 16px 4px 16px',
               background: isBot ? T.s2 : T.accBg,
               border: `1px solid ${isBot ? T.bd : T.accBd}`,
-              color: isBot ? T.txt : '#c8f3ff', fontSize: 13, lineHeight: 1.6,
+              color: isBot ? T.txt : '#c8f3ff', fontSize: 13.5, lineHeight: 1.65,
             }}
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </div>
-        {showQR && (
-          <div style={{ marginLeft: 34, marginTop: 7, display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+
+        {showQR && m.menuGrid && (
+          <div style={{ marginLeft: 36, marginTop: 10, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
             {m.quickReplies!.map(r => (
-              <button key={r} onClick={() => handleUserInput(r)} style={qBtn}>{r}</button>
+              <button key={r} onClick={() => handleUserInput(r)} style={menuItemBtn}>{r}</button>
+            ))}
+          </div>
+        )}
+
+        {showQR && !m.menuGrid && (
+          <div style={{ marginLeft: 36, marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {m.quickReplies!.map(r => (
+              <button key={r} onClick={() => handleUserInput(r)} style={pillBtn}>{r}</button>
             ))}
           </div>
         )}
@@ -448,16 +495,17 @@ export default function PremiumChatbot() {
     );
   }
 
+  // ── Render: typing dots ───────────────────────────────────────────────────
   function renderTypingDots() {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
         <Avatar />
         <div style={{
-          padding: '9px 14px', borderRadius: '14px 14px 14px 4px',
+          padding: '10px 14px', borderRadius: '16px 16px 16px 4px',
           background: T.s2, border: `1px solid ${T.bd}`,
           display: 'flex', alignItems: 'center', gap: 5,
         }}>
-          <span style={{ fontSize: 11, color: T.muted, marginRight: 2 }}>AFA Assistant schreibt</span>
+          <span style={{ fontSize: 11, color: T.muted, marginRight: 3 }}>AFA Assistant schreibt</span>
           {[0, 1, 2].map(i => (
             <div key={i} style={{
               width: 5, height: 5, borderRadius: '50%', background: T.muted,
@@ -469,15 +517,16 @@ export default function PremiumChatbot() {
     );
   }
 
+  // ── Render: calendar date ─────────────────────────────────────────────────
   function renderCalDate() {
     const today = new Date();
     const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
-    const cells = buildMonthGrid(calYear, calMonth);
+    const cells   = buildMonthGrid(calYear, calMonth);
     const canPrev = calYear > tY || (calYear === tY && calMonth > tM);
 
     function navMonth(dir: 1 | -1) {
       const nm = calMonth + dir;
-      if (nm < 0)   { setCalMonth(11); setCalYear(y => y - 1); }
+      if (nm < 0)    { setCalMonth(11); setCalYear(y => y - 1); }
       else if (nm > 11) { setCalMonth(0);  setCalYear(y => y + 1); }
       else setCalMonth(nm);
       setSelDate(null);
@@ -486,21 +535,22 @@ export default function PremiumChatbot() {
     function isOff(day: number) {
       if (calYear < tY || (calYear === tY && calMonth < tM)) return true;
       if (calYear === tY && calMonth === tM && day < tD)     return true;
-      const dow = new Date(calYear, calMonth, day).getDay();
-      return dow === 0 || dow === 6;
+      return [0, 6].includes(new Date(calYear, calMonth, day).getDay());
     }
 
     return (
-      <div style={{ background: T.s2, border: `1px solid ${T.bd}`, borderRadius: 12, padding: 14, marginBottom: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+      <div style={{ background: T.s2, border: `1px solid ${T.bd}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <button onClick={() => navMonth(-1)} disabled={!canPrev} style={{ ...navBtnSt, opacity: canPrev ? 1 : 0.3 }}>‹</button>
-          <span style={{ color: T.txt, fontSize: 13, fontWeight: 700 }}>{DE_MONTHS[calMonth]} {calYear}</span>
+          <span style={{ color: T.txt, fontSize: 14, fontWeight: 700 }}>{DE_MONTHS[calMonth]} {calYear}</span>
           <button onClick={() => navMonth(1)} style={navBtnSt}>›</button>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 2, marginBottom: 4 }}>
-          {DE_DAYS.map(d => <div key={d} style={{ textAlign: 'center', fontSize: 10, color: T.muted }}>{d}</div>)}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 2, marginBottom: 6 }}>
+          {DE_DAYS.map(d => (
+            <div key={d} style={{ textAlign: 'center', fontSize: 10, color: T.muted, padding: '2px 0' }}>{d}</div>
+          ))}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 2 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 3 }}>
           {cells.map((day, i) => {
             if (!day) return <div key={i} />;
             const off = isOff(day);
@@ -511,7 +561,7 @@ export default function PremiumChatbot() {
                   background:   sel ? T.acc : 'transparent',
                   color:        off ? '#3f3f46' : sel ? '#000' : T.txt,
                   border:       `1px solid ${sel ? T.acc : 'transparent'}`,
-                  borderRadius: 6, padding: '5px 0', fontSize: 12,
+                  borderRadius: 7, padding: '6px 0', fontSize: 12.5,
                   cursor: off ? 'default' : 'pointer', fontFamily: 'inherit',
                 }}
               >{day}</button>
@@ -526,23 +576,24 @@ export default function PremiumChatbot() {
             setStep('cal-time');
             botReply('Welche **Uhrzeit** passt dir am besten?', undefined, 500);
           }}
-          style={{ ...primBtn, width: '100%', marginTop: 12, opacity: selDate ? 1 : 0.35 }}
+          style={{ ...primBtn, width: '100%', marginTop: 14, opacity: selDate ? 1 : 0.35 }}
         >Weiter →</button>
       </div>
     );
   }
 
+  // ── Render: time picker ───────────────────────────────────────────────────
   function renderCalTime() {
     return (
-      <div style={{ background: T.s2, border: `1px solid ${T.bd}`, borderRadius: 12, padding: 14, marginBottom: 10 }}>
-        <div style={{ fontSize: 10, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Verfügbare Zeiten</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6, marginBottom: 12 }}>
+      <div style={{ background: T.s2, border: `1px solid ${T.bd}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+        <div style={{ fontSize: 10, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Verfügbare Zeiten</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 7, marginBottom: 14 }}>
           {TIME_SLOTS.map(t => (
             <button key={t} onClick={() => setSelTime(t)} style={{
               background:   selTime === t ? T.acc : 'transparent',
               color:        selTime === t ? '#000' : T.txt,
               border:       `1px solid ${selTime === t ? T.acc : T.bd}`,
-              borderRadius: 7, padding: '7px 0', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit',
+              borderRadius: 8, padding: '8px 0', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit',
             }}>{t}</button>
           ))}
         </div>
@@ -554,7 +605,7 @@ export default function PremiumChatbot() {
               if (!selTime || !selDate) return;
               addUserMsg(`${selTime} Uhr`);
               setStep('confirm');
-              botReply('Fast geschafft! Prüfe bitte deine **Terminübersicht** und bestätige.', undefined, 500);
+              botReply('Fast geschafft! Prüfe deine **Terminübersicht** und bestätige.', undefined, 500);
             }}
             style={{ ...primBtn, flex: 1, opacity: selTime ? 1 : 0.35 }}
           >Weiter →</button>
@@ -563,6 +614,7 @@ export default function PremiumChatbot() {
     );
   }
 
+  // ── Render: confirm ───────────────────────────────────────────────────────
   function renderConfirm() {
     const dateStr = selDate ? fmtDate(selDate.year, selDate.month, selDate.day) : '';
     const rows: [string, string][] = [
@@ -575,13 +627,13 @@ export default function PremiumChatbot() {
       ...(lead.interesse   ? [['Interesse',   lead.interesse]   as [string, string]] : []),
     ];
     return (
-      <div style={{ background: T.s2, border: `1px solid ${T.bd}`, borderRadius: 12, padding: 14, marginBottom: 10 }}>
-        <div style={{ fontSize: 10, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Terminübersicht</div>
-        <div style={{ display: 'grid', gap: 7, marginBottom: 14 }}>
+      <div style={{ background: T.s2, border: `1px solid ${T.bd}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+        <div style={{ fontSize: 10, color: T.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Terminübersicht</div>
+        <div style={{ display: 'grid', gap: 8, marginBottom: 16 }}>
           {rows.map(([k, v]) => (
-            <div key={k} style={{ display: 'flex', gap: 8 }}>
-              <span style={{ fontSize: 11, color: T.muted, minWidth: 84, flexShrink: 0 }}>{k}</span>
-              <span style={{ fontSize: 12, color: T.txt }}>{v}</span>
+            <div key={k} style={{ display: 'flex', gap: 10 }}>
+              <span style={{ fontSize: 11, color: T.muted, minWidth: 88, flexShrink: 0 }}>{k}</span>
+              <span style={{ fontSize: 13, color: T.txt }}>{v}</span>
             </div>
           ))}
         </div>
@@ -595,23 +647,17 @@ export default function PremiumChatbot() {
     );
   }
 
-  // ── Avatar sub-component ─────────────────────────────────────────────────
-  function Avatar() {
-    return (
-      <div style={{
-        width: 26, height: 26, borderRadius: '50%',
-        background: 'linear-gradient(135deg,#00bbfd,#0066aa)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 10, fontWeight: 800, color: '#08090a',
-        flexShrink: 0, marginRight: 8, marginTop: 2,
-      }}>A</div>
-    );
-  }
+  // ── Window dimensions (responsive) ────────────────────────────────────────
+  const winW      = isMobile ? '94vw'  : '460px';
+  const winH      = isMobile ? '85vh'  : '75vh';
+  const winRight  = isMobile ? '3vw'   : '24px';
+  const winBottom = isMobile ? '76px'  : '88px';
+  const winRadius = isMobile ? 16      : 22;
 
   // ── Main render ───────────────────────────────────────────────────────────
   return (
     <>
-      {/* Floating chat button */}
+      {/* Launcher button */}
       <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9998 }}>
         {pulse && !open && (
           <div style={{
@@ -626,18 +672,18 @@ export default function PremiumChatbot() {
           onMouseLeave={() => setBtnHov(false)}
           title="AFA Chat öffnen"
           style={{
-            width: 56, height: 56, borderRadius: '50%',
+            width: 60, height: 60, borderRadius: '50%',
             background: `linear-gradient(135deg,${T.acc},#0077b6)`,
             border: 'none', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 4px 24px rgba(0,187,253,0.35),0 2px 8px rgba(0,0,0,0.5)',
-            transform: btnHov ? 'scale(1.08)' : 'scale(1)',
+            boxShadow: '0 4px 28px rgba(0,187,253,0.38),0 2px 10px rgba(0,0,0,0.55)',
+            transform: btnHov ? 'scale(1.09)' : 'scale(1)',
             transition: 'transform 0.18s cubic-bezier(0.34,1.56,0.64,1)',
           }}
         >
           {open
-            ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            ? <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            : <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           }
         </button>
       </div>
@@ -645,45 +691,84 @@ export default function PremiumChatbot() {
       {/* Chat window */}
       {open && (
         <div style={{
-          position: 'fixed', bottom: 92, right: 24, zIndex: 9997,
-          width: 'min(420px,calc(100vw - 32px))',
-          maxHeight: 'min(640px,calc(100vh - 110px))',
-          background: T.s1, border: `1px solid ${T.bd}`, borderRadius: 20,
-          overflow: 'hidden', display: 'flex', flexDirection: 'column',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.75),0 8px 24px rgba(0,0,0,0.45)',
-          animation: 'chatbot-appear 0.28s cubic-bezier(0.34,1.56,0.64,1)',
+          position:  'fixed',
+          bottom:    winBottom,
+          right:     winRight,
+          zIndex:    9997,
+          width:     winW,
+          height:    winH,
+          background: T.s1,
+          border:    `1px solid ${T.bd}`,
+          borderRadius: winRadius,
+          overflow:  'hidden',
+          display:   'flex',
+          flexDirection: 'column',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.8),0 8px 32px rgba(0,0,0,0.5),0 0 0 1px rgba(0,187,253,0.06)',
+          animation: 'chatbot-appear 0.3s cubic-bezier(0.34,1.56,0.64,1)',
         }}>
 
           {/* Header */}
           <div style={{
-            background: T.s2, borderBottom: `1px solid ${T.bd}`,
-            padding: '13px 16px', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0,
+            background:   T.s2,
+            borderBottom: `1px solid ${T.bd}`,
+            padding:      '16px 20px',
+            display:      'flex',
+            alignItems:   'center',
+            gap:          12,
+            flexShrink:   0,
           }}>
-            <div style={{
-              width: 34, height: 34, borderRadius: '50%',
-              background: 'linear-gradient(135deg,#00bbfd,#0066aa)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 13, fontWeight: 800, color: '#08090a', flexShrink: 0,
-            }}>A</div>
+            {/* Avatar with glow ring */}
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: '50%',
+                background: 'linear-gradient(135deg,#00bbfd,#0066aa)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 15, fontWeight: 800, color: '#08090a',
+                boxShadow: '0 0 0 3px rgba(0,187,253,0.18)',
+              }}>A</div>
+              <div style={{
+                position: 'absolute', bottom: 1, right: 1,
+                width: 10, height: 10, borderRadius: '50%',
+                background: '#22c55e', border: `2px solid ${T.s2}`,
+              }} />
+            </div>
+
             <div style={{ flex: 1 }}>
-              <div style={{ color: '#fff', fontSize: 14, fontWeight: 700, fontFamily: 'var(--font-jakarta,"Plus Jakarta Sans",sans-serif)' }}>AFA Assistant</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: '#22c55e' }}>
-                <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
-                Online · KI-Assistent
+              <div style={{
+                color: '#fff', fontSize: 15, fontWeight: 700, lineHeight: 1.2,
+                fontFamily: 'var(--font-jakarta,"Plus Jakarta Sans",sans-serif)',
+              }}>AFA Assistant</div>
+              <div style={{ fontSize: 11, color: T.muted, marginTop: 2 }}>
+                KI-Assistent · Antwortet sofort
               </div>
             </div>
-            <button onClick={() => setOpen(false)} style={{ background: 'transparent', border: 'none', color: T.muted, cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+
+            <button
+              onClick={() => setOpen(false)}
+              style={{
+                background: 'transparent', border: `1px solid ${T.bd}`,
+                borderRadius: 8, width: 32, height: 32,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: T.muted, cursor: 'pointer',
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
             </button>
           </div>
 
-          {/* Messages + inline panels */}
+          {/* Messages */}
           <div
             ref={scrollRef}
             style={{
-              flex: 1, overflowY: 'auto', padding: '14px 14px 4px',
-              display: 'flex', flexDirection: 'column',
-              scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.08) transparent',
+              flex:      1,
+              overflowY: 'auto',
+              padding:   '18px 18px 6px',
+              display:   'flex',
+              flexDirection: 'column',
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'rgba(255,255,255,0.08) transparent',
             }}
           >
             {msgs.map(renderMsg)}
@@ -691,27 +776,32 @@ export default function PremiumChatbot() {
             {step === 'cal-date' && !typing && renderCalDate()}
             {step === 'cal-time' && !typing && renderCalTime()}
             {step === 'confirm'  && !typing && renderConfirm()}
-            <div style={{ height: 4 }} />
+            <div style={{ height: 6 }} />
           </div>
 
           {/* Input bar */}
           <div style={{
-            background: T.s2, borderTop: `1px solid ${T.bd}`,
-            padding: '10px 14px', display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0,
+            background:   T.s2,
+            borderTop:    `1px solid ${T.bd}`,
+            padding:      '12px 16px',
+            display:      'flex',
+            gap:          8,
+            alignItems:   'center',
+            flexShrink:   0,
           }}>
-            {/* Mic button */}
+            {/* Mic */}
             <div style={{ position: 'relative', flexShrink: 0 }}>
               <button
                 onClick={() => { setMicTip(v => !v); setTimeout(() => setMicTip(false), 2800); }}
                 style={{
                   background: 'transparent', border: `1px solid ${T.bd}`,
-                  borderRadius: 8, width: 36, height: 36,
+                  borderRadius: 9, width: 38, height: 38,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   cursor: 'pointer', color: T.muted,
                 }}
                 title="Sprachfunktion"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                   <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                   <line x1="12" y1="19" x2="12" y2="23"/>
@@ -730,7 +820,7 @@ export default function PremiumChatbot() {
               )}
             </div>
 
-            {/* Text input */}
+            {/* Input */}
             <input
               ref={inputRef}
               value={input}
@@ -740,25 +830,26 @@ export default function PremiumChatbot() {
               disabled={submitting}
               style={{
                 flex: 1, background: T.s3, border: `1px solid ${T.bd}`,
-                borderRadius: 10, padding: '9px 12px', color: T.txt,
-                fontSize: 13, outline: 'none', fontFamily: 'inherit',
+                borderRadius: 10, padding: '10px 14px', color: T.txt,
+                fontSize: 13.5, outline: 'none', fontFamily: 'inherit',
               }}
             />
 
-            {/* Send button */}
+            {/* Send */}
             <button
               onClick={() => handleUserInput(input)}
               disabled={!input.trim() || submitting}
               style={{
                 background:  input.trim() ? T.acc : T.s3,
                 border:      `1px solid ${input.trim() ? T.acc : T.bd}`,
-                borderRadius: 8, width: 36, height: 36,
+                borderRadius: 9, width: 38, height: 38,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: input.trim() ? 'pointer' : 'default', flexShrink: 0,
                 transition: 'background 0.15s,border-color 0.15s',
               }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={input.trim() ? '#000' : T.muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                stroke={input.trim() ? '#000' : T.muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"/>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"/>
               </svg>
