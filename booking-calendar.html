@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Termin buchen – AFA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Chivo+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:    #09090b;
+      --s1:    #0f0f11;
+      --s2:    #141418;
+      --s3:    #1a1a20;
+      --bd:    rgba(255,255,255,0.07);
+      --bd2:   rgba(255,255,255,0.12);
+      --text:  #f4f4f5;
+      --muted: #71717a;
+      --soft:  #a1a1aa;
+      --acc:   #00bbfd;
+      --aLow:  rgba(0,187,253,0.07);
+      --aMid:  rgba(0,187,253,0.18);
+      --aHigh: rgba(0,187,253,0.32);
+      --warn:  rgba(255,160,60,0.10);
+      --warnB: rgba(255,160,60,0.26);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px 14px 52px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { width: 100%; max-width: 448px; }
+
+    /* ── Header ─────────────────────────────────────── */
+    .hd { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .hd-back {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--s2); border: 1px solid var(--bd);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--soft); flex-shrink: 0;
+      transition: background .16s, border-color .16s, color .16s;
+    }
+    .hd-back:hover { background: var(--s3); border-color: var(--bd2); color: var(--text); }
+    .hd-eyebrow {
+      font-family: 'Chivo Mono', monospace;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .16em; text-transform: uppercase;
+      color: var(--acc); margin-bottom: 3px;
+    }
+    .hd-title { font-size: 19px; font-weight: 800; letter-spacing: -.03em; }
+
+    /* ── Step dots ──────────────────────────────────── */
+    .steps { display: flex; align-items: center; gap: 5px; margin-bottom: 16px; }
+    .sd { height: 3px; border-radius: 2px; background: var(--s3); transition: width .28s, background .28s; }
+    .sd.active  { width: 26px; background: var(--acc); }
+    .sd.done    { width: 13px; background: rgba(0,187,253,.35); }
+    .sd.pending { width: 13px; }
+
+    /* ── Card ───────────────────────────────────────── */
+    .card { background: var(--s2); border: 1px solid var(--bd); border-radius: 18px; overflow: hidden; }
+    .card-top { height: 2px; background: linear-gradient(90deg,transparent,rgba(0,187,253,.5),transparent); }
+
+    /* ── Month nav ──────────────────────────────────── */
+    .mnav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px 12px;
+    }
+    .mlabel { font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
+    .nbtn {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: var(--s3); border: 1px solid var(--bd);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--soft);
+      transition: background .14s, color .14s;
+    }
+    .nbtn:hover:not([disabled]) { background: rgba(255,255,255,.08); color: var(--text); }
+    .nbtn[disabled] { opacity: .22; cursor: not-allowed; }
+
+    /* ── Calendar grid ──────────────────────────────── */
+    .wdays {
+      display: grid; grid-template-columns: repeat(7,1fr);
+      padding: 0 12px 4px; gap: 2px;
+    }
+    .wday {
+      text-align: center;
+      font-family: 'Chivo Mono', monospace; font-size: 9px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+    }
+    .dgrid { display: grid; grid-template-columns: repeat(7,1fr); padding: 0 12px 12px; gap: 2px; }
+    .dc {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      border-radius: 9px; font-size: 13px; font-weight: 600;
+      border: 1px solid transparent; cursor: default; position: relative;
+      transition: background .12s, border-color .12s, transform .11s;
+      user-select: none;
+    }
+    .dc.available { color: var(--text); cursor: pointer; }
+    .dc.available:hover { background: var(--aLow); border-color: rgba(0,187,253,.2); transform: scale(1.09); }
+    .dc.available:active { transform: scale(.93); }
+    .dc.today { border-color: rgba(0,187,253,.32); color: var(--acc); }
+    .dc.selected {
+      background: var(--acc) !important; border-color: transparent !important;
+      color: #08090a !important; font-weight: 800; transform: scale(1.07);
+      box-shadow: 0 0 16px rgba(0,187,253,.32);
+    }
+    .dc.booked, .dc.past { color: rgba(255,255,255,.13); }
+    .dc.booked::after {
+      content: ''; position: absolute; bottom: 4px; left: 50%;
+      transform: translateX(-50%); width: 3px; height: 3px;
+      border-radius: 50%; background: rgba(255,255,255,.15);
+    }
+    .legend { display: flex; gap: 16px; padding: 2px 20px 14px; }
+    .li { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+    .lp { width: 8px; height: 8px; border-radius: 3px; }
+
+    /* ── Date strip ─────────────────────────────────── */
+    .dstrip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 12px 20px;
+      background: rgba(0,187,253,.05);
+      border-bottom: 1px solid rgba(0,187,253,.1);
+    }
+    .dstrip-txt { font-size: 13px; font-weight: 600; }
+    .dstrip-slot { margin-left: auto; font-family: 'Chivo Mono', monospace; font-size: 12px; font-weight: 700; color: var(--acc); }
+
+    /* ── Time slots ─────────────────────────────────── */
+    .swrap { padding: 18px 20px 20px; }
+    .ey {
+      font-family: 'Chivo Mono', monospace; font-size: 10px; font-weight: 700;
+      letter-spacing: .13em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+    }
+    .sgrid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
+    .slot {
+      padding: 10px 6px; border-radius: 10px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--bd);
+      color: var(--soft); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;
+      transition: background .12s, border-color .12s, color .12s, transform .11s;
+    }
+    .slot:hover { background: var(--aLow); border-color: rgba(0,187,253,.22); color: var(--text); }
+    .slot.sel { background: var(--aLow); border-color: var(--aHigh); color: var(--acc); font-weight: 700; box-shadow: 0 0 10px rgba(0,187,253,.1); }
+    .slot:active { transform: scale(.94); }
+
+    /* ── Confirmation ───────────────────────────────── */
+    .conf-appt {
+      margin: 18px 20px 0;
+      background: var(--aLow); border: 1px solid rgba(0,187,253,.14);
+      border-radius: 13px; padding: 16px 17px;
+    }
+    .appt-label {
+      font-family: 'Chivo Mono', monospace; font-size: 10px; font-weight: 700;
+      letter-spacing: .13em; text-transform: uppercase; color: var(--acc); margin-bottom: 8px;
+    }
+    .appt-date { font-size: 15px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 3px; }
+    .appt-sub { font-size: 12px; color: var(--muted); }
+
+    .divider { height: 1px; background: var(--bd); margin: 16px 20px; }
+
+    .conf-lead { margin: 0 20px; }
+    .lead-label {
+      font-family: 'Chivo Mono', monospace; font-size: 10px; font-weight: 700;
+      letter-spacing: .13em; text-transform: uppercase; color: var(--muted); margin-bottom: 11px;
+    }
+    .lrow { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .lrow:last-child { margin-bottom: 0; }
+    .licon {
+      width: 28px; height: 28px; flex-shrink: 0; border-radius: 7px;
+      background: rgba(255,255,255,.04); border: 1px solid var(--bd);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lmain { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .lsub { font-size: 11px; color: var(--muted); font-family: 'Chivo Mono', monospace; letter-spacing: .03em; }
+
+    /* ── Missing data notice ────────────────────────── */
+    .notice {
+      margin: 14px 20px 0;
+      background: var(--warn); border: 1px solid var(--warnB);
+      border-radius: 11px; padding: 11px 14px;
+      display: flex; align-items: flex-start; gap: 9px;
+    }
+    .notice-txt { font-size: 12px; color: rgba(255,190,100,.9); line-height: 1.6; }
+
+    /* ── Buttons ────────────────────────────────────── */
+    .actions { padding: 18px 20px 20px; }
+    .btn-primary {
+      width: 100%; padding: 14px 20px;
+      background: var(--acc); border: none; border-radius: 11px;
+      color: #08090a; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px; font-weight: 800; letter-spacing: -.012em;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: transform .16s, filter .16s, box-shadow .16s;
+      box-shadow: 0 4px 20px rgba(0,187,253,.24);
+      margin-bottom: 10px;
+    }
+    .btn-primary:hover:not([disabled]) { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 8px 28px rgba(0,187,253,.32); }
+    .btn-primary:active { transform: scale(.97); }
+    .btn-primary[disabled] { opacity: .28; cursor: not-allowed; transform: none !important; filter: none !important; box-shadow: none !important; }
+    .btn-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .btn-ghost {
+      flex: 1; padding: 11px 10px;
+      background: rgba(255,255,255,.04); border: 1px solid var(--bd); border-radius: 10px;
+      color: var(--soft); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: background .13s, border-color .13s, color .13s, transform .11s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,.07); border-color: var(--bd2); color: var(--text); }
+    .btn-ghost:active { transform: scale(.96); }
+    .btn-ghost.full { flex: none; width: 100%; }
+
+    /* ── Edit form ──────────────────────────────────── */
+    .edit-wrap { padding: 18px 20px 20px; }
+    .fg { margin-bottom: 12px; }
+    .fl {
+      display: block; font-family: 'Chivo Mono', monospace;
+      font-size: 10px; font-weight: 700; letter-spacing: .13em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .fi {
+      width: 100%; background: rgba(255,255,255,.03); border: 1px solid var(--bd);
+      border-radius: 10px; padding: 11px 13px;
+      color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px; font-weight: 500; outline: none;
+      transition: border-color .16s, background .16s;
+    }
+    .fi:focus { border-color: rgba(0,187,253,.36); background: rgba(0,187,253,.04); }
+    .fi::placeholder { color: rgba(255,255,255,.17); font-weight: 400; }
+
+    /* ── Success ─────────────────────────────────────── */
+    .success-wrap { padding: 44px 24px 40px; text-align: center; }
+    .sbadge {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: rgba(0,187,253,.07); border: 1px solid rgba(0,187,253,.3);
+      box-shadow: 0 0 0 7px rgba(0,187,253,.04), 0 0 30px rgba(0,187,253,.14);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+    }
+    .stitle { font-size: 22px; font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; }
+    .ssub { font-size: 13px; color: var(--muted); line-height: 1.75; max-width: 280px; margin: 0 auto 20px; }
+    .scard { background: var(--aLow); border: 1px solid rgba(0,187,253,.13); border-radius: 13px; padding: 16px 18px; text-align: left; }
+    .snote { margin-top: 14px; font-family: 'Chivo Mono', monospace; font-size: 10px; color: rgba(255,255,255,.17); letter-spacing: .05em; }
+
+    /* ── Animations ─────────────────────────────────── */
+    @keyframes fu { from { opacity:0; transform:translateY(14px); filter:blur(5px); } to { opacity:1; transform:none; filter:none; } }
+    .fu { animation: fu .33s cubic-bezier(.22,1,.36,1) both; }
+
+    @media (max-width:370px) { .sgrid { grid-template-columns: repeat(2,1fr); } }
+  </style>
+</head>
+<body>
+<div class="container" id="app"></div>
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CONFIG
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const WEBHOOK = 'https://your-n8n-instance.com/webhook/afa-booking';
+
+// ── Mock availability ─────────────────────────────────────────
+const BOOKED_DATES = [
+  '2026-06-09','2026-06-15','2026-06-16','2026-06-22','2026-06-29',
+  '2026-07-06','2026-07-13','2026-07-20','2026-07-21',
+];
+const CLOSED_DAYS = [0, 6]; // Sun=0, Sat=6
+const ALL_SLOTS = ['09:00','09:30','10:00','10:30','11:00','11:30',
+                   '14:00','14:30','15:00','15:30','16:00','16:30'];
+const REDUCED   = { '2026-06-10':6, '2026-06-17':6, '2026-06-24':4 };
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// DEMO MODE — set to false before going live
+// When false, demo lead data is never used and missing fields
+// will be requested from the user via the edit form.
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const DEMO_MODE = true;
+
+const DEMO_LEAD = {
+  vorname:     'DD',
+  nachname:    'BB',
+  email:       'info@afa-ai.com',
+  telefon:     '2828282',
+  unternehmen: 'gg',
+  interesse:   'Premium Website',
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LEAD RESOLUTION — priority order:
+//
+// 1. URL params  — Voiceflow injects on open:
+//      ?vorname={vorname}&nachname={nachname}&email={email}
+//      &telefon={telefon}&unternehmen={unternehmen}&interesse={interesse}
+//
+// 2. postMessage — parent sends at runtime:
+//      window.frames[0].postMessage({ type:'AFA_LEAD', vorname:'...', email:'...' }, '*')
+//
+// 3. DEMO_LEAD   — local testing only, never active in production
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function parseLead() {
+  const p    = new URLSearchParams(window.location.search);
+  const get  = k => (p.get(k) || '').trim();
+  const demo = DEMO_MODE ? DEMO_LEAD : {};
+  return {
+    vorname:     get('vorname')     || demo.vorname     || '',
+    nachname:    get('nachname')    || demo.nachname    || '',
+    email:       get('email')       || demo.email       || '',
+    telefon:     get('telefon')     || demo.telefon     || '',
+    unternehmen: get('unternehmen') || demo.unternehmen || '',
+    interesse:   get('interesse')   || demo.interesse   || '',
+  };
+}
+
+const REQUIRED = ['vorname', 'email'];
+
+// ── State ─────────────────────────────────────────────────────
+const S = {
+  step:     'date', // date | time | confirm | edit | success
+  yr:       new Date().getFullYear(),
+  mo:       new Date().getMonth(),
+  date:     null,
+  slot:     null,
+  lead:     parseLead(),
+  editMode: 'all', // 'required' | 'all'
+  loading:  false,
+};
+
+// Accept lead pushed from parent frame (Voiceflow widget)
+window.addEventListener('message', e => {
+  if (!e.data || e.data.type !== 'AFA_LEAD') return;
+  const { type: _, ...fields } = e.data;
+  Object.assign(S.lead, fields);
+  if (S.step === 'date') render();
+});
+
+// ── Locale ────────────────────────────────────────────────────
+const MONTHS = ['Januar','Februar','März','April','Mai','Juni',
+                'Juli','August','September','Oktober','November','Dezember'];
+const WD_S   = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+const WD_L   = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+
+const pad    = n => String(n).padStart(2,'0');
+const dk     = (y,m,d) => `${y}-${pad(m+1)}-${pad(d)}`;
+const isPast = (y,m,d) => { const t=new Date(); t.setHours(0,0,0,0); return new Date(y,m,d)<t; };
+const isToday= (y,m,d) => { const t=new Date(); return t.getFullYear()===y && t.getMonth()===m && t.getDate()===d; };
+const isBooked=(y,m,d) => BOOKED_DATES.includes(dk(y,m,d));
+const isClosed=(y,m,d) => CLOSED_DAYS.includes(new Date(y,m,d).getDay());
+
+function fmtLong(ds) {
+  const [y,mo,d] = ds.split('-').map(Number);
+  const jsDay = new Date(y,mo-1,d).getDay();
+  const idx   = jsDay===0 ? 6 : jsDay-1;
+  return `${WD_L[idx]}, den ${d}. ${MONTHS[mo-1]} ${y}`;
+}
+function slotsFor(ds) {
+  const n = REDUCED[ds];
+  return n !== undefined ? ALL_SLOTS.slice(0,n) : ALL_SLOTS;
+}
+function buildIso(ds, slot) {
+  const [y,mo,d] = ds.split('-').map(Number);
+  const [h,mi]   = slot.split(':').map(Number);
+  const jsDate   = new Date(y,mo-1,d,h,mi,0);
+  const off      = -jsDate.getTimezoneOffset(); // minutes, positive=east
+  const sign     = off>=0 ? '+' : '-';
+  return `${ds}T${slot}:00.000${sign}${pad(Math.floor(Math.abs(off)/60))}:${pad(Math.abs(off)%60)}`;
+}
+function missingRequired() { return REQUIRED.filter(k => !S.lead[k]); }
+function hasAllRequired()  { return missingRequired().length === 0; }
+
+// ── Icons ─────────────────────────────────────────────────────
+const IC = {
+  cal:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#00bbfd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  clk:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#00bbfd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  usr:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  mail: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>`,
+  tel:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 4.85 18.5 19.79 19.79 0 0 1 1.18 4.18 2 2 0 0 1 3.17 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+  biz:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg>`,
+  idea: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>`,
+  chk:  `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00bbfd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  aL:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
+  aR:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+  pen:  `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  warn: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,160,60,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+};
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Shared fragments ──────────────────────────────────────────
+function stepDots(cur) {
+  return `<div class="steps">${[1,2,3].map(n =>
+    `<div class="sd ${n===cur?'active':n<cur?'done':'pending'}"></div>`
+  ).join('')}</div>`;
+}
+
+function header(title) {
+  const showBack = S.step !== 'date';
+  return `<div class="hd">
+    ${showBack ? `<button class="hd-back" onclick="goBack()">${IC.aL}</button>` : ''}
+    <div>
+      <div class="hd-eyebrow">Termin buchen · AFA</div>
+      <div class="hd-title">${title}</div>
+    </div>
+  </div>`;
+}
+
+function dateStrip() {
+  if (!S.date) return '';
+  return `<div class="dstrip">
+    ${IC.cal}
+    <span class="dstrip-txt">${fmtLong(S.date)}</span>
+    ${S.slot ? `<span class="dstrip-slot">${S.slot} Uhr</span>` : ''}
+  </div>`;
+}
+
+function lrow(icon, value, sublabel) {
+  if (!value) return '';
+  return `<div class="lrow">
+    <div class="licon">${icon}</div>
+    <div><div class="lmain">${esc(value)}</div><div class="lsub">${sublabel}</div></div>
+  </div>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STEP 1: DATE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderDate() {
+  const {yr:y, mo:m} = S;
+  const now        = new Date();
+  const firstJsDay = new Date(y,m,1).getDay();
+  const offset     = firstJsDay===0 ? 6 : firstJsDay-1;
+  const total      = new Date(y,m+1,0).getDate();
+  const atMin      = y===now.getFullYear() && m===now.getMonth();
+
+  let cells = '';
+  for (let i=0; i<offset; i++) cells += `<div class="dc"></div>`;
+  for (let d=1; d<=total; d++) {
+    const key  = dk(y,m,d);
+    const sel  = S.date === key;
+    const avail= !isPast(y,m,d) && !isBooked(y,m,d) && !isClosed(y,m,d);
+    const tod  = isToday(y,m,d);
+    let cls    = sel ? 'selected' : avail ? `available${tod?' today':''}` : isBooked(y,m,d) ? 'booked' : 'past';
+    cells += `<div class="dc ${cls}" ${avail && !sel ? `onclick="pickDate('${key}')"` : ''}>${d}</div>`;
+  }
+
+  return `
+    ${header('Datum wählen')}
+    ${stepDots(1)}
+    <div class="card fu">
+      <div class="card-top"></div>
+      <div class="mnav">
+        <button class="nbtn" onclick="prevMo()" ${atMin?'disabled':''}>${IC.aL}</button>
+        <div class="mlabel">${MONTHS[m]} ${y}</div>
+        <button class="nbtn" onclick="nextMo()">${IC.aR}</button>
+      </div>
+      <div class="wdays">${WD_S.map(w=>`<div class="wday">${w}</div>`).join('')}</div>
+      <div class="dgrid">${cells}</div>
+      <div class="legend">
+        <div class="li"><div class="lp" style="background:rgba(0,187,253,.28);border:1px solid rgba(0,187,253,.38);"></div>Verfügbar</div>
+        <div class="li"><div class="lp" style="background:rgba(255,255,255,.07);"></div>Ausgebucht</div>
+      </div>
+    </div>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STEP 2: TIME
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderTime() {
+  const slots = slotsFor(S.date);
+  return `
+    ${header('Uhrzeit wählen')}
+    ${stepDots(2)}
+    <div class="card fu">
+      <div class="card-top"></div>
+      ${dateStrip()}
+      <div class="swrap">
+        <div class="ey">Verfügbare Zeiten</div>
+        <div class="sgrid">
+          ${slots.map(s=>`<button class="slot${S.slot===s?' sel':''}" onclick="pickSlot('${s}')">${s}</button>`).join('')}
+        </div>
+        <div style="margin-top:18px;">
+          <button class="btn-primary" onclick="afterTime()" ${!S.slot?'disabled':''}>
+            Weiter ${IC.aR}
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STEP 3: CONFIRMATION SUMMARY
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderConfirm() {
+  const L = S.lead;
+  const missing  = missingRequired();
+  const fullName = [L.vorname, L.nachname].filter(Boolean).join(' ');
+
+  return `
+    ${header('Zusammenfassung')}
+    ${stepDots(3)}
+    <div class="card fu">
+      <div class="card-top"></div>
+
+      <div class="conf-appt">
+        <div class="appt-label">Dein Termin</div>
+        <div class="appt-date">${fmtLong(S.date)}</div>
+        <div class="appt-sub">${S.slot} Uhr &nbsp;·&nbsp; 15–30 Min. &nbsp;·&nbsp; Google Meet</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="conf-lead">
+        <div class="lead-label">Deine Angaben</div>
+        ${lrow(IC.usr,  fullName || L.vorname, 'Name')}
+        ${lrow(IC.mail, L.email,               'E-Mail')}
+        ${lrow(IC.tel,  L.telefon,             'Telefon')}
+        ${lrow(IC.biz,  L.unternehmen,         'Unternehmen')}
+        ${lrow(IC.idea, L.interesse,           'Interesse')}
+      </div>
+
+      ${missing.length ? `
+        <div class="notice">
+          ${IC.warn}
+          <div class="notice-txt">
+            Bitte ergänze noch:
+            <strong>${missing.map(k => k==='vorname'?'Vorname':'E-Mail').join(', ')}</strong>
+            um den Termin zu bestätigen.
+          </div>
+        </div>` : ''}
+
+      <div class="actions">
+        <button class="btn-primary" onclick="confirmBook()" ${(missing.length||S.loading)?'disabled':''}>
+          ${S.loading ? '<span>Wird gebucht…</span>' : `Termin bestätigen ${IC.aR}`}
+        </button>
+        <div class="btn-row">
+          <button class="btn-ghost" onclick="changeDate()">${IC.cal} Datum ändern</button>
+          <button class="btn-ghost" onclick="changeTime()">${IC.clk} Uhrzeit ändern</button>
+        </div>
+        <button class="btn-ghost full" onclick="editContact()">${IC.pen} Kontaktdaten ändern</button>
+      </div>
+    </div>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// EDIT CONTACT (conditional — only missing fields or all)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const FIELD_META = {
+  vorname:     { label:'Vorname',          type:'text',  ph:'Max',                    req:true  },
+  nachname:    { label:'Nachname',         type:'text',  ph:'Mustermann',             req:false },
+  email:       { label:'E-Mail-Adresse',   type:'email', ph:'max@firma.de',           req:true  },
+  telefon:     { label:'Telefon',          type:'tel',   ph:'+49 123 456789',         req:false },
+  unternehmen: { label:'Unternehmen',      type:'text',  ph:'Muster GmbH',           req:false },
+  interesse:   { label:'Interesse / Thema',type:'text',  ph:'z.B. KI-Automatisierung',req:false },
+};
+
+function renderEdit() {
+  const missing   = missingRequired();
+  const fields    = S.editMode === 'required' ? missing : Object.keys(FIELD_META);
+  const title     = S.editMode === 'required' ? 'Angaben ergänzen' : 'Kontaktdaten';
+  const canSave   = hasAllRequired();
+
+  return `
+    ${header(title)}
+    ${stepDots(3)}
+    <div class="card fu">
+      <div class="card-top"></div>
+      <div class="edit-wrap">
+        ${fields.map(k => {
+          const m = FIELD_META[k];
+          return `<div class="fg">
+            <label class="fl">${m.label}${m.req?' *':''}</label>
+            <input class="fi" type="${m.type}" placeholder="${m.ph}"
+              value="${esc(S.lead[k])}"
+              oninput="S.lead['${k}']=this.value;syncSaveBtn()">
+          </div>`;
+        }).join('')}
+        <button class="btn-primary" id="edit-save" onclick="saveEdit()" ${canSave?'':'disabled'}>
+          Speichern ${IC.aR}
+        </button>
+        <div style="height:8px;"></div>
+        <button class="btn-ghost full" onclick="S.step='confirm';render()">Abbrechen</button>
+      </div>
+    </div>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SUCCESS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderSuccess() {
+  const L = S.lead;
+  const fullName = [L.vorname, L.nachname].filter(Boolean).join(' ');
+  return `
+    <div class="card fu">
+      <div class="card-top"></div>
+      <div class="success-wrap">
+        <div class="sbadge">${IC.chk}</div>
+        <h2 class="stitle">Termin bestätigt</h2>
+        <p class="ssub">Super${L.vorname?', '+esc(L.vorname):''}&nbsp;👋 Wir freuen uns auf das Gespräch. Du erhältst eine Bestätigung per E-Mail.</p>
+        <div class="scard">
+          ${lrow(IC.cal,  fmtLong(S.date) + ' · ' + S.slot + ' Uhr', 'Termin')}
+          <div style="height:10px;"></div>
+          ${lrow(IC.usr,  fullName,       'Name')}
+          ${L.email       ? `<div style="height:6px;"></div>${lrow(IC.mail, L.email,       'E-Mail')}`       : ''}
+          ${L.unternehmen ? `<div style="height:6px;"></div>${lrow(IC.biz,  L.unternehmen, 'Unternehmen')}` : ''}
+        </div>
+        ${L.email ? `<p class="snote">Bestätigung an ${esc(L.email)}</p>` : ''}
+      </div>
+    </div>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ACTIONS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function prevMo() {
+  const now = new Date();
+  if (S.yr===now.getFullYear() && S.mo===now.getMonth()) return;
+  S.mo--; if (S.mo<0) { S.mo=11; S.yr--; }
+  render();
+}
+function nextMo() {
+  S.mo++; if (S.mo>11) { S.mo=0; S.yr++; }
+  render();
+}
+function pickDate(d) { S.date=d; S.slot=null; S.step='time'; render(); }
+function pickSlot(s) { S.slot=s; render(); }
+
+function afterTime() {
+  if (!S.slot) return;
+  if (!hasAllRequired()) { S.editMode='required'; S.step='edit'; }
+  else                   { S.step='confirm'; }
+  render();
+}
+function goBack() {
+  const map = { time:'date', confirm:'time', edit:'confirm' };
+  if (S.step==='time') S.slot = null;
+  S.step = map[S.step] || 'date';
+  render();
+}
+function changeDate()  { S.step='date'; S.slot=null; render(); }
+function changeTime()  { S.step='time'; render(); }
+function editContact() { S.editMode='all'; S.step='edit'; render(); }
+
+function syncSaveBtn() {
+  const btn = document.getElementById('edit-save');
+  if (btn) btn.disabled = !hasAllRequired();
+}
+function saveEdit() {
+  if (!hasAllRequired()) return;
+  S.step = 'confirm'; render();
+}
+
+async function confirmBook() {
+  if (!hasAllRequired() || S.loading) return;
+  S.loading = true; render();
+
+  const iso = buildIso(S.date, S.slot);
+  const tz  = (Intl && Intl.DateTimeFormat().resolvedOptions().timeZone) || 'Europe/Berlin';
+  const L   = S.lead;
+
+  const payload = {
+    vorname:         L.vorname,
+    nachname:        L.nachname,
+    email:           L.email,
+    telefon:         L.telefon,
+    unternehmen:     L.unternehmen,
+    interesse:       L.interesse,
+    selectedDate:    S.date,
+    selectedTime:    S.slot,
+    terminDatumZeit: iso,
+    timezone:        tz,
+    source:          'Website Chatbot',
+  };
+
+  try {
+    await fetch(WEBHOOK, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+  } catch (e) {
+    console.warn('[AFA Booking] Webhook not reached (mock mode):', e.message);
+  }
+
+  // Notify parent frame — Voiceflow listens for this to continue the flow
+  try {
+    window.parent.postMessage({ type: 'AFA_BOOKING_CONFIRMED', ...payload }, '*');
+  } catch(_) {}
+
+  S.loading = false;
+  S.step = 'success';
+  render();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RENDER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function render() {
+  document.getElementById('app').innerHTML = {
+    date:    renderDate,
+    time:    renderTime,
+    confirm: renderConfirm,
+    edit:    renderEdit,
+    success: renderSuccess,
+  }[S.step]();
+}
+
+render();
+</script>
+</body>
+</html>
