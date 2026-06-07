@@ -228,6 +228,73 @@ const CHAT_CSS = `
     to   { opacity: 1; transform: none;              filter: none; }
   }
   .afa-cal-wrap { animation: cal-reveal 0.38s cubic-bezier(0.22,1,0.36,1); }
+
+  /* Anti-aliased sharp text */
+  .afa-chat-root * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Avatar breathing glow */
+  @keyframes afa-breathe {
+    0%, 100% { box-shadow: 0 0 10px rgba(0,187,253,0.12); }
+    50%       { box-shadow: 0 0 26px rgba(0,187,253,0.38), 0 0 0 3px rgba(0,187,253,0.07); }
+  }
+  .afa-avatar-hdr { animation: afa-breathe 3.2s ease-in-out infinite; }
+
+  /* Radar ring spin */
+  @keyframes afa-spin {
+    to { transform: rotate(360deg); }
+  }
+  .afa-spin-ring {
+    border: 1.5px solid transparent;
+    border-top-color: rgba(0,187,253,0.6);
+    border-right-color: rgba(0,187,253,0.18);
+    animation: afa-spin 2.2s linear infinite;
+  }
+
+  /* Online dot pulse */
+  @keyframes afa-pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.55); }
+    50%       { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+  }
+  .afa-online-dot { animation: afa-pulse-dot 2.4s ease-in-out infinite; }
+
+  /* Typing dots — cyan wave */
+  @keyframes afa-tdot {
+    0%, 70%, 100% { transform: translateY(0); opacity: 0.35; }
+    35%           { transform: translateY(-5px); opacity: 1; }
+  }
+  .afa-td {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #00bbfd; animation: afa-tdot 1.1s ease-in-out infinite;
+  }
+
+  /* Crafted by AFA credit */
+  .afa-credit {
+    text-align: center; font-size: 9.5px; letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.14); padding: 4px 0 5px;
+    cursor: default; transition: color 0.25s; user-select: none;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    font-family: var(--font-chivo,"Chivo Mono",monospace);
+    background: rgba(12,12,15,0.6);
+  }
+  .afa-credit:hover { color: rgba(0,187,253,0.52); text-shadow: 0 0 10px rgba(0,187,253,0.18); }
+
+  /* Refined pill hover */
+  .afa-pill:hover {
+    background: rgba(0,187,253,0.14) !important;
+    border-color: rgba(0,187,253,0.38) !important;
+    box-shadow: 0 0 8px rgba(0,187,253,0.12) !important;
+  }
+
+  /* Refined menu item hover */
+  .afa-menu-item:hover {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.16) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 10px rgba(0,0,0,0.3) !important;
+  }
 `;
 
 // ── Component ─────────────────────────────────────────────────────────────
@@ -572,7 +639,7 @@ export default function PremiumChatbot() {
   function Card({ children }: { children: React.ReactNode }) {
     return (
       <div style={{ background: '#141418', border:`1px solid ${T.bd}`, borderRadius:18, overflow:'hidden', marginBottom:10 }}>
-        <div style={{ height:2, background:'linear-gradient(90deg,transparent,rgba(0,187,253,0.5),transparent)' }} />
+        <div style={{ height:2, background:'linear-gradient(90deg,transparent 0%,rgba(0,187,253,0.7) 40%,rgba(0,187,253,0.45) 70%,transparent 100%)' }} />
         {children}
       </div>
     );
@@ -617,9 +684,9 @@ export default function PremiumChatbot() {
     return (
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
         <Avatar />
-        <div style={{ padding:'10px 14px', borderRadius:'16px 16px 16px 4px', background:'#18181b', border:`1px solid ${T.bd}`, display:'flex', alignItems:'center', gap:5 }}>
-          <span style={{ fontSize:11, color:T.muted, marginRight:3 }}>AFA Assistant schreibt</span>
-          {[0,1,2].map(i => <div key={i} style={{ width:5, height:5, borderRadius:'50%', background:T.muted, animation:`typing-bounce 1.1s ease-in-out ${i*0.18}s infinite` }} />)}
+        <div style={{ padding:'10px 14px', borderRadius:'16px 16px 16px 4px', background:'linear-gradient(135deg,rgba(26,26,32,1),rgba(20,20,26,1))', border:'1px solid rgba(255,255,255,0.08)', display:'flex', alignItems:'center', gap:6, boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04)' }}>
+          <span style={{ fontSize:11, color:'rgba(161,161,170,0.85)', marginRight:2, letterSpacing:'0.01em' }}>AFA Assistant arbeitet</span>
+          {[0,1,2].map(i => <div key={i} className="afa-td" style={{ animationDelay:`${i*0.18}s` }} />)}
         </div>
       </div>
     );
@@ -843,18 +910,22 @@ export default function PremiumChatbot() {
       {/* Chat window */}
       {open && (
         <div
-          className={closing ? 'afa-win-close' : 'afa-win-open'}
-          style={{ position:'fixed', bottom:winB, right:winR, zIndex:9997, width:winW, height:winH, background:'#111113', border:`1px solid ${T.bd}`, borderRadius:winRd, overflow:'hidden', display:'flex', flexDirection:'column', boxShadow:'0 32px 80px rgba(0,0,0,0.8),0 8px 32px rgba(0,0,0,0.5),0 0 0 1px rgba(0,187,253,0.06)' }}
+          className={`afa-chat-root ${closing ? 'afa-win-close' : 'afa-win-open'}`}
+          style={{ position:'fixed', bottom:winB, right:winR, zIndex:9997, width:winW, height:winH, background:'rgba(13,13,16,0.97)', backdropFilter:'blur(28px) saturate(1.6)', WebkitBackdropFilter:'blur(28px) saturate(1.6)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:winRd, overflow:'hidden', display:'flex', flexDirection:'column', boxShadow:'0 44px 110px rgba(0,0,0,0.88), 0 14px 44px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,187,253,0.10), inset 0 1px 0 rgba(255,255,255,0.06)' }}
         >
           {/* Header */}
-          <div style={{ background:'#18181b', borderBottom:`1px solid ${T.bd}`, padding:'15px 18px', display:'flex', alignItems:'center', gap:12, flexShrink:0 }}>
-            <div style={{ position:'relative', flexShrink:0 }}>
-              <div style={{ width:40, height:40, borderRadius:'50%', background:'linear-gradient(135deg,#00bbfd,#0066aa)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15, fontWeight:800, color:'#08090a', boxShadow:'0 0 0 3px rgba(0,187,253,0.18)' }}>A</div>
-              <div style={{ position:'absolute', bottom:1, right:1, width:10, height:10, borderRadius:'50%', background:'#22c55e', border:'2px solid #18181b' }} />
+          <div style={{ background:'linear-gradient(180deg,rgba(21,21,26,1) 0%,rgba(17,17,21,1) 100%)', borderBottom:'1px solid rgba(255,255,255,0.08)', padding:'14px 18px', display:'flex', alignItems:'center', gap:12, flexShrink:0, boxShadow:'0 1px 0 rgba(0,0,0,0.4)' }}>
+            <div style={{ position:'relative', flexShrink:0, width:40, height:40 }}>
+              {/* Radar ring */}
+              <div className="afa-spin-ring" style={{ position:'absolute', inset:-6, borderRadius:'50%', pointerEvents:'none' }} />
+              {/* Avatar */}
+              <div className="afa-avatar-hdr" style={{ width:40, height:40, borderRadius:'50%', background:'linear-gradient(135deg,#00bbfd 0%,#0077b8 55%,#004f8a 100%)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15, fontWeight:800, color:'#08090a' }}>A</div>
+              {/* Online dot */}
+              <div className="afa-online-dot" style={{ position:'absolute', bottom:0, right:0, width:10, height:10, borderRadius:'50%', background:'#22c55e', border:'2px solid rgba(17,17,21,1)' }} />
             </div>
             <div style={{ flex:1 }}>
-              <div style={{ color:'#fff', fontSize:15, fontWeight:700, lineHeight:1.2, fontFamily:'var(--font-jakarta,"Plus Jakarta Sans",sans-serif)' }}>AFA Assistant</div>
-              <div style={{ fontSize:11, color:T.muted, marginTop:2 }}>KI-Assistent · Antwortet sofort</div>
+              <div style={{ color:'#f4f4f5', fontSize:15, fontWeight:700, lineHeight:1.2, letterSpacing:'-0.01em', fontFamily:'var(--font-jakarta,"Plus Jakarta Sans",sans-serif)' }}>AFA Assistant</div>
+              <div style={{ fontSize:11, color:T.muted, marginTop:2, letterSpacing:'0.01em' }}>KI-Assistent · Antwortet sofort</div>
             </div>
             <button className="afa-btn-ghost" onClick={closeChat} style={{ background:'transparent', border:`1px solid ${T.bd}`, borderRadius:8, width:32, height:32, display:'flex', alignItems:'center', justifyContent:'center', color:T.muted, cursor:'pointer' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -872,7 +943,7 @@ export default function PremiumChatbot() {
           </div>
 
           {/* Input bar */}
-          <div style={{ background:'#18181b', borderTop:`1px solid ${T.bd}`, padding:'11px 16px', display:'flex', gap:8, alignItems:'center', flexShrink:0 }}>
+          <div style={{ background:'linear-gradient(0deg,rgba(16,16,20,1) 0%,rgba(20,20,25,0.98) 100%)', borderTop:'1px solid rgba(255,255,255,0.07)', padding:'11px 16px', display:'flex', gap:8, alignItems:'center', flexShrink:0 }}>
             {/* Mic */}
             <div style={{ position:'relative', flexShrink:0 }}>
               <button className="afa-btn-ghost" onClick={() => { setMicTip(v=>!v); setTimeout(()=>setMicTip(false),2800); }} style={{ background:'transparent', border:`1px solid ${T.bd}`, borderRadius:9, width:38, height:38, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:T.muted }} title="Sprachfunktion">
@@ -881,12 +952,14 @@ export default function PremiumChatbot() {
               {micTip && <div style={{ position:'absolute', bottom:'110%', left:'50%', transform:'translateX(-50%)', background:T.s3, border:`1px solid ${T.bd}`, borderRadius:8, padding:'6px 10px', fontSize:11, color:T.muted, whiteSpace:'nowrap', pointerEvents:'none', zIndex:10 }}>Sprachfunktion bald verfügbar</div>}
             </div>
             {/* Input */}
-            <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleUserInput(input);}}} placeholder={typing?'AFA Assistant schreibt…':'Nachricht eingeben…'} disabled={submitting} style={{ flex:1, background:T.s3, border:`1px solid ${T.bd}`, borderRadius:10, padding:'10px 14px', color:T.txt, fontSize:13.5, outline:'none', fontFamily:'inherit' }} />
+            <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleUserInput(input);}}} placeholder={typing?'AFA Assistant arbeitet…':'Nachricht eingeben…'} disabled={submitting} style={{ flex:1, background:'rgba(26,26,32,0.9)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, padding:'10px 14px', color:T.txt, fontSize:13.5, outline:'none', fontFamily:'inherit', boxShadow:'inset 0 1px 3px rgba(0,0,0,0.3)' }} />
             {/* Send */}
             <button onClick={()=>handleUserInput(input)} disabled={!input.trim()||submitting} style={{ background:input.trim()?T.acc:T.s3, border:`1px solid ${input.trim()?T.acc:T.bd}`, borderRadius:9, width:38, height:38, display:'flex', alignItems:'center', justifyContent:'center', cursor:input.trim()?'pointer':'default', flexShrink:0, transition:'background .15s,border-color .15s' }}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={input.trim()?'#000':T.muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
           </div>
+          {/* Signature */}
+          <div className="afa-credit">✦ Crafted by AFA</div>
         </div>
       )}
     </>
