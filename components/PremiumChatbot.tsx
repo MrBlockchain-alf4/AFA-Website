@@ -94,10 +94,13 @@ function detectIntent(text: string): string {
   if (/ki.?chat|chatbot|chat.assistent/.test(t))                                    return 'ki-chat';
   if (/premium.?web|webseite|homepage|landing|website/.test(t))                     return 'website';
   if (/lead.?gen|leadgen|akquise|interessenten|neukundengewinnung|leadgenerierung/.test(t)) return 'leads';
-  if (/automatisierung|workflow|n8n|zapier|make\.com|integration|prozess/.test(t)) return 'automation';
+  if (/automatisier|workflow|n8n|zapier|make\.com|integration|prozess/.test(t))     return 'automation';
   if (/preis|kosten|angebot|budget|€|euro|teuer|günstig/.test(t))                  return 'pricing';
   if (/experte|expertenkontakt|mensch|mitarbeiter|sprechen|ansprechpartner/.test(t)) return 'human';
   if (/datenschutz|dsgvo|privacy|sicher|konform/.test(t))                           return 'datenschutz';
+  if (/wie viel uhr|welche uhrzeit|wie spät/.test(t))                               return 'time';
+  if (/welcher tag|welches datum|was ist heute/.test(t))                             return 'date';
+  if (/was macht afa|wer ist afa|was ist afa|was bietet|was kann afa|was könnt ihr/.test(t)) return 'about-afa';
   return 'unknown';
 }
 
@@ -218,6 +221,13 @@ const CHAT_CSS = `
     transition: color .14s;
   }
   .afa-back-link:hover { color: #a1a1aa; }
+
+  /* Calendar / confirm panel reveal */
+  @keyframes cal-reveal {
+    from { opacity: 0; transform: translateY(12px); filter: blur(2px); }
+    to   { opacity: 1; transform: none;              filter: none; }
+  }
+  .afa-cal-wrap { animation: cal-reveal 0.38s cubic-bezier(0.22,1,0.36,1); }
 `;
 
 // ── Component ─────────────────────────────────────────────────────────────
@@ -238,6 +248,7 @@ export default function PremiumChatbot() {
   const [pulse,      setPulse]     = useState(true);
   const [micTip,     setMicTip]    = useState(false);
   const [isMobile,   setIsMobile]  = useState(false);
+  const [editingLead, setEditingLead] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
@@ -311,6 +322,7 @@ export default function PremiumChatbot() {
   function startLead(goal: LeadGoal, intro?: string) {
     setLeadGoal(goal);
     setLead({});
+    setEditingLead(false);
     setStep('lead-vorname');
     botReply(intro ?? 'Gerne! Wie ist dein **Vorname**?', ['Zurück zum Start']);
   }
@@ -344,6 +356,19 @@ export default function PremiumChatbot() {
         return;
       case 'human':
         startLead('handoff', 'Kein Problem! Ich verbinde dich mit einem Experten. Wie ist dein **Vorname**?');
+        return;
+      case 'time': {
+        const timeStr = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        botReply(`Es ist gerade **${timeStr} Uhr** (lokale Browserzeit). Kann ich dir noch helfen?`, MAIN_MENU, 500, true);
+        return;
+      }
+      case 'date': {
+        const dateStr2 = new Date().toLocaleDateString('de-DE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+        botReply(`Heute ist **${dateStr2}**. Kann ich dir noch mit etwas helfen?`, MAIN_MENU, 500, true);
+        return;
+      }
+      case 'about-afa':
+        botReply('**AFA** entwickelt KI-Mitarbeiter für moderne Unternehmen: KI-Telefon-Agenten, KI-Chatbots, Premium Websites, Leadgenerierung und automatisierte Terminbuchung – alles aus einer Hand.', ['Beratung buchen', 'Preise / Angebot', 'Expertenkontakt', 'Zurück zum Start']);
         return;
       default:
         showMenu();
@@ -413,11 +438,25 @@ export default function PremiumChatbot() {
         return;
       }
 
-      case 'lead-interesse':
-        setLead(l => ({ ...l, interesse: text }));
-        setStep('cal-date');
-        botReply('Super! Wähle jetzt deinen **Wunschtermin** im Kalender. 📅', undefined, 600);
+      case 'lead-interesse': {
+        const interesse = text;
+        setLead(l => ({ ...l, interesse }));
+        if (editingLead) {
+          setEditingLead(false);
+          setStep('confirm');
+          botReply('Danke! Prüfe deine aktualisierte **Zusammenfassung** unten. 📋', undefined, 500);
+          return;
+        }
+        // Show the message first, then reveal the calendar below it after a short delay
+        // so the user sees the message before the calendar scrolls into view
+        setTyping(true);
+        setTimeout(() => {
+          setTyping(false);
+          setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Super! Wähle jetzt deinen **Wunschtermin** im Kalender. 📅' }]);
+          setTimeout(() => setStep('cal-date'), 80);
+        }, 600);
         return;
+      }
 
       case 'cal-date': case 'cal-time': case 'confirm': case 'submitting':
         botReply('Bitte nutze die Auswahl unten. 👇', undefined, 400);
@@ -470,7 +509,7 @@ export default function PremiumChatbot() {
     setStep('welcome'); setLead({}); setLeadGoal('book');
     setSelDate(null); setSelTime(null);
     setCalYear(new Date().getFullYear()); setCalMonth(new Date().getMonth());
-    setSubmitting(false); setMsgs([]);
+    setSubmitting(false); setEditingLead(false); setMsgs([]);
     setTyping(true);
     setTimeout(() => {
       setTyping(false);
@@ -583,7 +622,7 @@ export default function PremiumChatbot() {
     }
 
     return (
-      <div>
+      <div className="afa-cal-wrap">
         {stepDots(1)}
         <Card>
           {/* Month nav */}
@@ -633,7 +672,7 @@ export default function PremiumChatbot() {
   // ── Render: premium time picker ───────────────────────────────────────────
   function renderCalTime() {
     return (
-      <div>
+      <div className="afa-cal-wrap">
         {stepDots(2)}
         <Card>
           {/* Date strip */}
@@ -690,7 +729,7 @@ export default function PremiumChatbot() {
 
     const icoStroke = 'rgba(255,255,255,0.35)';
     return (
-      <div>
+      <div className="afa-cal-wrap">
         {stepDots(3)}
         <Card>
           {/* Appointment box */}
@@ -718,13 +757,21 @@ export default function PremiumChatbot() {
             <div style={{ display:'flex', gap:8, marginBottom:8 }}>
               <button className="afa-btn-ghost" onClick={() => setStep('cal-date')} style={ghostBase}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                Datum
+                Datum ändern
               </button>
               <button className="afa-btn-ghost" onClick={() => setStep('cal-time')} style={ghostBase}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                Uhrzeit
+                Uhrzeit ändern
               </button>
             </div>
+            <button className="afa-btn-ghost" onClick={() => {
+              setEditingLead(true);
+              setStep('lead-vorname');
+              botReply('Kein Problem! Lass uns deine Kontaktdaten aktualisieren. Wie ist dein **Vorname**?', ['Zurück zum Start'], 300);
+            }} style={{ ...ghostBase, flex: 'none', width: '100%' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Kontaktdaten ändern
+            </button>
           </div>
         </Card>
         <BackLink />
