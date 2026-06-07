@@ -5,7 +5,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 type Step =
   | 'welcome'
   | 'lead-vorname' | 'lead-nachname' | 'lead-email'
-  | 'lead-telefon' | 'lead-unternehmen' | 'lead-interesse'
+  | 'lead-telefon' | 'lead-unternehmen' | 'lead-interesse' | 'lead-custom'
   | 'cal-date' | 'cal-time' | 'confirm' | 'submitting'
   | 'success' | 'error' | 'handoff-done';
 
@@ -37,7 +37,7 @@ const MAIN_MENU: string[] = [
 
 const INTEREST_REPLIES = [
   'KI-Telefon', 'KI-Chatbot', 'Premium Website',
-  'Leadgenerierung', 'Automatisierung', 'Allgemeine Beratung',
+  'Leadgenerierung', 'Automatisierung', 'Allgemeine Beratung', 'Eigenes Anliegen',
 ];
 
 const TIME_SLOTS = [
@@ -252,6 +252,7 @@ export default function PremiumChatbot() {
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
+  const calRef    = useRef<HTMLDivElement>(null);
   const idRef     = useRef(0);
   const nextId    = () => ++idRef.current;
 
@@ -267,10 +268,22 @@ export default function PremiumChatbot() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  // Scroll to bottom on new messages or typing changes only
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [msgs, step, typing]);
+  }, [msgs, typing]);
+
+  // When a calendar/confirm panel appears, scroll it gently into view so
+  // the preceding message stays visible above it (not hidden behind the panel)
+  useEffect(() => {
+    if (step === 'cal-date' || step === 'cal-time' || step === 'confirm') {
+      const t = setTimeout(() => {
+        calRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+      return () => clearTimeout(t);
+    }
+  }, [step]);
 
   useEffect(() => {
     const t = setTimeout(() => setPulse(false), 6000);
@@ -396,7 +409,7 @@ export default function PremiumChatbot() {
       case 'lead-vorname':
         setLead(l => ({ ...l, vorname: text }));
         setStep('lead-nachname');
-        botReply(`Schön, **${text}**! Wie lautet dein **Nachname**?`, ['Zurück zum Start']);
+        botReply(`Perfekt, ${text}. Wie lautet dein **Nachname**?`, ['Zurück zum Start']);
         return;
 
       case 'lead-nachname':
@@ -439,6 +452,11 @@ export default function PremiumChatbot() {
       }
 
       case 'lead-interesse': {
+        if (text === 'Eigenes Anliegen') {
+          setStep('lead-custom');
+          botReply('Beschreibe kurz dein Anliegen. Wir prüfen es und melden uns persönlich bei dir.', ['Zurück zum Start'], 600);
+          return;
+        }
         const interesse = text;
         setLead(l => ({ ...l, interesse }));
         if (editingLead) {
@@ -447,14 +465,29 @@ export default function PremiumChatbot() {
           botReply('Danke! Prüfe deine aktualisierte **Zusammenfassung** unten. 📋', undefined, 500);
           return;
         }
-        // Show the message first, then reveal the calendar below it after a short delay
-        // so the user sees the message before the calendar scrolls into view
         setTyping(true);
         setTimeout(() => {
           setTyping(false);
           setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Super! Wähle jetzt deinen **Wunschtermin** im Kalender. 📅' }]);
           setTimeout(() => setStep('cal-date'), 80);
         }, 600);
+        return;
+      }
+
+      case 'lead-custom': {
+        setLead(l => ({ ...l, interesse: text }));
+        if (editingLead) {
+          setEditingLead(false);
+          setStep('confirm');
+          botReply('Danke! Prüfe deine aktualisierte **Zusammenfassung** unten. 📋', undefined, 500);
+          return;
+        }
+        setTyping(true);
+        setTimeout(() => {
+          setTyping(false);
+          setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Vielen Dank! Wähle jetzt deinen **Wunschtermin** im Kalender, damit wir uns persönlich bei dir melden können. 📅' }]);
+          setTimeout(() => setStep('cal-date'), 80);
+        }, 700);
         return;
       }
 
@@ -622,7 +655,7 @@ export default function PremiumChatbot() {
     }
 
     return (
-      <div className="afa-cal-wrap">
+      <div className="afa-cal-wrap" ref={calRef}>
         {stepDots(1)}
         <Card>
           {/* Month nav */}
@@ -672,7 +705,7 @@ export default function PremiumChatbot() {
   // ── Render: premium time picker ───────────────────────────────────────────
   function renderCalTime() {
     return (
-      <div className="afa-cal-wrap">
+      <div className="afa-cal-wrap" ref={calRef}>
         {stepDots(2)}
         <Card>
           {/* Date strip */}
@@ -729,7 +762,7 @@ export default function PremiumChatbot() {
 
     const icoStroke = 'rgba(255,255,255,0.35)';
     return (
-      <div className="afa-cal-wrap">
+      <div className="afa-cal-wrap" ref={calRef}>
         {stepDots(3)}
         <Card>
           {/* Appointment box */}
