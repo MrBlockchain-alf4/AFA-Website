@@ -62,10 +62,10 @@ const FAQ: Record<string, string> = {
     'Wir automatisieren Geschäftsprozesse mit **n8n, Make und Zapier** – ohne teure Individualentwicklung. Lead-Routing ins CRM, automatische E-Mail-Sequenzen, Kalender-Sync, Reporting. Du sparst Zeit, dein Team konzentriert sich auf das Wesentliche.',
 };
 
-const TEASER_MSGS = [
-  'Brauchst du Hilfe? Frag mich einfach.',
-  'Ich kann dir bei KI-Telefon, Chatbots oder Terminen helfen.',
-  'Möchtest du eine Beratung buchen?',
+const TEASER_MSGS: { title: string; body: string }[] = [
+  { title: 'Brauchst du Hilfe?',    body: 'Frag mich einfach.' },
+  { title: 'KI für dein Business.', body: 'Telefon, Chatbot & Termine.' },
+  { title: 'Beratung buchen?',      body: 'Kostenlos & unverbindlich.' },
 ];
 
 const DE_MONTHS = ['Januar','Februar','März','April','Mai','Juni',
@@ -276,6 +276,18 @@ const CHAT_CSS = `
     background: #00bbfd; animation: afa-tdot 1.1s ease-in-out infinite;
   }
 
+  /* Teaser bubble glow pulse */
+  @keyframes afa-tsr-pulse {
+    0%   { box-shadow: 0 18px 52px rgba(0,0,0,0.72), 0 4px 18px rgba(0,0,0,0.5), 0 0 0 0   rgba(0,187,253,0.24); }
+    50%  { box-shadow: 0 18px 52px rgba(0,0,0,0.72), 0 4px 18px rgba(0,0,0,0.5), 0 0 0 10px rgba(0,187,253,0.05); }
+    100% { box-shadow: 0 18px 52px rgba(0,0,0,0.72), 0 4px 18px rgba(0,0,0,0.5), 0 0 0 0   rgba(0,187,253,0); }
+  }
+  .afa-tsr-pulse { animation: afa-tsr-pulse 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+  /* Teaser bubble hover */
+  .afa-teaser:hover { border-color: rgba(255,255,255,0.16) !important; }
+  .afa-teaser:hover .afa-tsr-cta { color: rgba(0,187,253,0.95) !important; }
+
   /* Crafted by AFA credit */
   .afa-credit {
     text-align: center; font-size: 9.5px; letter-spacing: 0.09em;
@@ -324,6 +336,7 @@ export default function PremiumChatbot() {
   const [editingLead,   setEditingLead]   = useState(false);
   const [teaserIdx,     setTeaserIdx]     = useState(0);
   const [teaserVisible, setTeaserVisible] = useState(false);
+  const [teaserPulse,   setTeaserPulse]   = useState(false);
 
   const scrollRef      = useRef<HTMLDivElement>(null);
   const inputRef       = useRef<HTMLInputElement>(null);
@@ -394,6 +407,16 @@ export default function PremiumChatbot() {
       clearInterval(teaserCycleRef.current);
     };
   }, [open]);
+
+  // Fire a brief glow pulse each time the teaser becomes visible
+  useEffect(() => {
+    if (!teaserVisible) return;
+    const t = setTimeout(() => {
+      setTeaserPulse(true);
+      setTimeout(() => setTeaserPulse(false), 850);
+    }, 360);
+    return () => clearTimeout(t);
+  }, [teaserVisible]);
 
   // ── Core messaging ────────────────────────────────────────────────────────
   function botReply(text: string, qr?: string[], delay = 950, menuGrid?: boolean) {
@@ -941,35 +964,54 @@ export default function PremiumChatbot() {
         {/* Proactive teaser bubble */}
         {!open && (
           <div
+            className={`afa-teaser${teaserPulse ? ' afa-tsr-pulse' : ''}`}
             onClick={handleOpen}
             style={{
-              position:'absolute', bottom:72, right:0, width:240,
-              background:'rgba(13,13,16,0.96)',
-              backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
-              border:'1px solid rgba(255,255,255,0.09)',
-              borderLeft:`2px solid rgba(0,187,253,0.55)`,
-              borderRadius:14, padding:'12px 16px', cursor:'pointer',
-              boxShadow:'0 12px 40px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,187,253,0.06)',
+              position: 'absolute',
+              bottom: isMobile ? 74 : 76,
+              right: 0,
+              width: isMobile ? 218 : 268,
+              background: 'linear-gradient(145deg,rgba(18,18,23,0.97) 0%,rgba(13,13,18,0.98) 100%)',
+              backdropFilter: 'blur(28px) saturate(1.5)',
+              WebkitBackdropFilter: 'blur(28px) saturate(1.5)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              borderRadius: 20,
+              padding: isMobile ? '14px 16px 12px' : '16px 20px 14px',
+              cursor: 'pointer',
+              boxShadow: '0 18px 52px rgba(0,0,0,0.72), 0 4px 18px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,187,253,0.07)',
               opacity: teaserVisible ? 1 : 0,
-              transform: teaserVisible ? 'translateY(0) scale(1)' : 'translateY(10px) scale(0.95)',
-              transition: 'opacity 0.32s ease, transform 0.34s cubic-bezier(0.22,1,0.36,1)',
+              transform: teaserVisible ? 'translateY(0) scale(1)' : 'translateY(14px) scale(0.94)',
+              transition: 'opacity 0.38s cubic-bezier(0.22,1,0.36,1), transform 0.40s cubic-bezier(0.22,1,0.36,1)',
               pointerEvents: teaserVisible ? 'auto' : 'none',
             }}
           >
-            {/* Arrow pointing down toward the button */}
-            <div style={{
-              position:'absolute', bottom:-5, right:22, width:10, height:10,
-              background:'rgba(13,13,16,0.96)',
-              border:'1px solid rgba(255,255,255,0.09)',
-              borderTop:'none', borderLeft:'none',
-              transform:'rotate(45deg)',
-            }} />
-            <p style={{ margin:0, fontSize:13, fontWeight:500, color:'#e4e4e7', lineHeight:1.55, letterSpacing:'-0.01em', fontFamily:'var(--font-jakarta,"Plus Jakarta Sans",sans-serif)' }}>
-              {TEASER_MSGS[teaserIdx]}
-            </p>
-            <p style={{ margin:'8px 0 0', fontSize:11, fontWeight:700, color:'rgba(0,187,253,0.75)', letterSpacing:'0.01em' }}>
-              Jetzt chatten →
-            </p>
+            {/* Top cyan accent bar */}
+            <div style={{ position:'absolute', top:0, left:20, right:20, height:2, background:'linear-gradient(90deg,transparent,rgba(0,187,253,0.65),transparent)', borderRadius:'0 0 2px 2px', pointerEvents:'none' }} />
+
+            {/* Header row: dot + label */}
+            <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:10 }}>
+              <div style={{ width:7, height:7, borderRadius:'50%', background:T.acc, boxShadow:'0 0 7px rgba(0,187,253,0.7)', flexShrink:0 }} />
+              <span style={{ fontSize:9.5, fontWeight:700, letterSpacing:'0.11em', textTransform:'uppercase', color:'rgba(0,187,253,0.6)', fontFamily:'var(--font-chivo,"Chivo Mono",monospace)', lineHeight:1 }}>AFA KI-Assistent</span>
+            </div>
+
+            {/* Message */}
+            <div style={{ marginBottom:12 }}>
+              <div style={{ fontSize: isMobile ? 13.5 : 14.5, fontWeight:700, color:'#f0f0f3', lineHeight:1.3, letterSpacing:'-0.02em', fontFamily:'var(--font-jakarta,"Plus Jakarta Sans",sans-serif)', marginBottom:3 }}>
+                {TEASER_MSGS[teaserIdx].title}
+              </div>
+              <div style={{ fontSize: isMobile ? 12 : 13, fontWeight:400, color:'rgba(161,161,170,0.82)', lineHeight:1.55, letterSpacing:'-0.005em', fontFamily:'var(--font-jakarta,"Plus Jakarta Sans",sans-serif)' }}>
+                {TEASER_MSGS[teaserIdx].body}
+              </div>
+            </div>
+
+            {/* CTA row */}
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', paddingTop:10, borderTop:'1px solid rgba(255,255,255,0.06)' }}>
+              <span className="afa-tsr-cta" style={{ fontSize:12, fontWeight:700, color:'rgba(0,187,253,0.75)', letterSpacing:'0.01em', transition:'color 0.18s' }}>Jetzt chatten</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(0,187,253,0.65)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+
+            {/* Arrow pointing down-right to the launcher */}
+            <div style={{ position:'absolute', bottom:-5, right:26, width:10, height:10, background:'rgba(13,13,18,0.98)', border:'1px solid rgba(255,255,255,0.10)', borderTop:'none', borderLeft:'none', transform:'rotate(45deg)' }} />
           </div>
         )}
         {pulse && !open && (
