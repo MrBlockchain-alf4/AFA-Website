@@ -62,6 +62,12 @@ const FAQ: Record<string, string> = {
     'Wir automatisieren Geschäftsprozesse mit **n8n, Make und Zapier** – ohne teure Individualentwicklung. Lead-Routing ins CRM, automatische E-Mail-Sequenzen, Kalender-Sync, Reporting. Du sparst Zeit, dein Team konzentriert sich auf das Wesentliche.',
 };
 
+const TEASER_MSGS = [
+  'Brauchst du Hilfe? Frag mich einfach.',
+  'Ich kann dir bei KI-Telefon, Chatbots oder Terminen helfen.',
+  'Möchtest du eine Beratung buchen?',
+];
+
 const DE_MONTHS = ['Januar','Februar','März','April','Mai','Juni',
                    'Juli','August','September','Oktober','November','Dezember'];
 const DE_DAYS   = ['Mo','Di','Mi','Do','Fr','Sa','So'];
@@ -315,12 +321,16 @@ export default function PremiumChatbot() {
   const [pulse,      setPulse]     = useState(true);
   const [micTip,     setMicTip]    = useState(false);
   const [isMobile,   setIsMobile]  = useState(false);
-  const [editingLead, setEditingLead] = useState(false);
+  const [editingLead,   setEditingLead]   = useState(false);
+  const [teaserIdx,     setTeaserIdx]     = useState(0);
+  const [teaserVisible, setTeaserVisible] = useState(false);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef  = useRef<HTMLInputElement>(null);
-  const calRef    = useRef<HTMLDivElement>(null);
-  const idRef     = useRef(0);
+  const scrollRef      = useRef<HTMLDivElement>(null);
+  const inputRef       = useRef<HTMLInputElement>(null);
+  const calRef         = useRef<HTMLDivElement>(null);
+  const idRef          = useRef(0);
+  const teaserTimerRef = useRef<ReturnType<typeof setTimeout>  | undefined>(undefined);
+  const teaserCycleRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const nextId    = () => ++idRef.current;
 
   const lastBotId = useMemo(
@@ -347,6 +357,43 @@ export default function PremiumChatbot() {
     const t = setTimeout(() => setPulse(false), 6000);
     return () => clearTimeout(t);
   }, []);
+
+  // Proactive teaser messages while chat is closed
+  useEffect(() => {
+    clearTimeout(teaserTimerRef.current);
+    clearInterval(teaserCycleRef.current);
+    if (open) { setTeaserVisible(false); return; }
+
+    let msgIdx = 0;
+    let shown  = 0;
+    const MAX  = TEASER_MSGS.length + 1; // show each message at most once, then stop
+
+    teaserTimerRef.current = setTimeout(() => {
+      setTeaserIdx(0);
+      setTeaserVisible(true);
+
+      teaserCycleRef.current = setInterval(() => {
+        shown++;
+        if (shown >= MAX) {
+          clearInterval(teaserCycleRef.current);
+          setTeaserVisible(false);
+          return;
+        }
+        // Fade out → swap message → fade in
+        setTeaserVisible(false);
+        setTimeout(() => {
+          msgIdx = (msgIdx + 1) % TEASER_MSGS.length;
+          setTeaserIdx(msgIdx);
+          setTeaserVisible(true);
+        }, 420);
+      }, 13000);
+    }, 5000);
+
+    return () => {
+      clearTimeout(teaserTimerRef.current);
+      clearInterval(teaserCycleRef.current);
+    };
+  }, [open]);
 
   // ── Core messaging ────────────────────────────────────────────────────────
   function botReply(text: string, qr?: string[], delay = 950, menuGrid?: boolean) {
@@ -891,6 +938,40 @@ export default function PremiumChatbot() {
 
       {/* Launcher */}
       <div style={{ position:'fixed', bottom:24, right:24, zIndex:9998 }}>
+        {/* Proactive teaser bubble */}
+        {!open && (
+          <div
+            onClick={handleOpen}
+            style={{
+              position:'absolute', bottom:72, right:0, width:240,
+              background:'rgba(13,13,16,0.96)',
+              backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
+              border:'1px solid rgba(255,255,255,0.09)',
+              borderLeft:`2px solid rgba(0,187,253,0.55)`,
+              borderRadius:14, padding:'12px 16px', cursor:'pointer',
+              boxShadow:'0 12px 40px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,187,253,0.06)',
+              opacity: teaserVisible ? 1 : 0,
+              transform: teaserVisible ? 'translateY(0) scale(1)' : 'translateY(10px) scale(0.95)',
+              transition: 'opacity 0.32s ease, transform 0.34s cubic-bezier(0.22,1,0.36,1)',
+              pointerEvents: teaserVisible ? 'auto' : 'none',
+            }}
+          >
+            {/* Arrow pointing down toward the button */}
+            <div style={{
+              position:'absolute', bottom:-5, right:22, width:10, height:10,
+              background:'rgba(13,13,16,0.96)',
+              border:'1px solid rgba(255,255,255,0.09)',
+              borderTop:'none', borderLeft:'none',
+              transform:'rotate(45deg)',
+            }} />
+            <p style={{ margin:0, fontSize:13, fontWeight:500, color:'#e4e4e7', lineHeight:1.55, letterSpacing:'-0.01em', fontFamily:'var(--font-jakarta,"Plus Jakarta Sans",sans-serif)' }}>
+              {TEASER_MSGS[teaserIdx]}
+            </p>
+            <p style={{ margin:'8px 0 0', fontSize:11, fontWeight:700, color:'rgba(0,187,253,0.75)', letterSpacing:'0.01em' }}>
+              Jetzt chatten →
+            </p>
+          </div>
+        )}
         {pulse && !open && (
           <div style={{ position:'absolute', inset:-12, borderRadius:'50%', border:`2px solid ${T.acc}`, opacity:0.45, animation:'ring-pulse 2s ease-in-out infinite', pointerEvents:'none' }} />
         )}
@@ -959,7 +1040,7 @@ export default function PremiumChatbot() {
             </button>
           </div>
           {/* Signature */}
-          <div className="afa-credit">✦ Crafted by AFA</div>
+          <div className="afa-credit">Crafted by AFA</div>
         </div>
       )}
     </>
