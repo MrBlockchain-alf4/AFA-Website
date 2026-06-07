@@ -4,39 +4,58 @@ import { useEffect } from 'react';
 
 declare global {
   interface Window {
-    voiceflowChat: {
-      load: (config: Record<string, unknown>) => void;
+    voiceflow: {
+      chat: {
+        load: (config: Record<string, unknown>) => void;
+      };
     };
     VFBookingCalendar: unknown;
   }
 }
 
+// Hardcoded so the widget never silently fails from a missing env var.
+// Override via NEXT_PUBLIC_VF_PROJECT_ID if needed.
+const VF_PROJECT_ID =
+  process.env.NEXT_PUBLIC_VF_PROJECT_ID ?? '6a2030a95716f1fd46819baf';
+
 export default function VoiceflowWidget() {
   useEffect(() => {
-    const projectId = process.env.NEXT_PUBLIC_VF_PROJECT_ID;
-    if (!projectId) {
-      console.warn('[AFA] NEXT_PUBLIC_VF_PROJECT_ID is not set — Voiceflow widget not loaded.');
-      return;
-    }
+    // Guard: only run once, skip SSR
+    if (typeof window === 'undefined') return;
 
-    // Step 1: load the booking calendar extension
+    // 1 — Load the AFA booking calendar extension first
     const extScript = document.createElement('script');
     extScript.src = '/booking-calendar-extension.js';
+
+    extScript.onerror = () =>
+      console.error('[AFA] Failed to load /booking-calendar-extension.js');
+
     extScript.onload = () => {
-      // Step 2: load the Voiceflow widget only after extension is ready
+      // 2 — Load Voiceflow widget-next (bundle.mjs)
       const vfScript = document.createElement('script');
-      vfScript.src = 'https://cdn.voiceflow.com/widget/latest/voiceflow.js';
+      vfScript.src = 'https://cdn.voiceflow.com/widget-next/bundle.mjs';
       vfScript.type = 'text/javascript';
+
+      vfScript.onerror = () =>
+        console.error('[AFA] Failed to load Voiceflow widget-next bundle');
+
       vfScript.onload = () => {
-        window.voiceflowChat.load({
-          verify:    { projectID: projectId },
-          url:       'https://general-runtime.voiceflow.com',
-          versionID: 'production',
-          extensions: [window.VFBookingCalendar],
-        });
+        // 3 — Initialise with the extension registered
+        try {
+          window.voiceflow.chat.load({
+            verify:     { projectID: VF_PROJECT_ID },
+            url:        'https://general-runtime.voiceflow.com',
+            versionID:  'production',
+            extensions: [window.VFBookingCalendar],
+          });
+        } catch (err) {
+          console.error('[AFA] window.voiceflow.chat.load failed:', err);
+        }
       };
+
       document.head.appendChild(vfScript);
     };
+
     document.head.appendChild(extScript);
   }, []);
 
