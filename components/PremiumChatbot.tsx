@@ -7,6 +7,7 @@ type Step =
   | 'lead-vorname' | 'lead-nachname' | 'lead-email'
   | 'lead-telefon' | 'lead-unternehmen' | 'lead-interesse' | 'lead-custom'
   | 'cal-date' | 'cal-time' | 'confirm' | 'submitting'
+  | 'sms-confirm'
   | 'success' | 'error' | 'handoff-done';
 
 type LeadGoal = 'book' | 'handoff';
@@ -619,6 +620,10 @@ export default function PremiumChatbot() {
         return;
       }
 
+      case 'sms-confirm':
+        handleSmsConfirm(text === 'Ja, SMS senden');
+        return;
+
       case 'cal-date': case 'cal-time': case 'confirm': case 'submitting':
         botReply('Bitte nutze die Auswahl unten. 👇', undefined, 400);
         return;
@@ -657,13 +662,33 @@ export default function PremiumChatbot() {
     try {
       if (WEBHOOK) await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...lead, appointmentDate:dateStr, appointmentTime:selTime, appointmentDateTime:`${dateStr}T${selTime}:00`, source:'AFA Website Chatbot', status:'Neu' }) });
       setTyping(false); setSubmitting(false);
-      setMsgs(m => [...m, { id:nextId(), role:'bot', text:'🎉 Perfekt! Dein Termin wurde erfolgreich gebucht. Du erhältst in Kürze eine **Bestätigung per E-Mail**.', quickReplies:['Neue Anfrage starten'] }]);
-      setStep('success');
+      if (lead.telefon) {
+        setMsgs(m => [...m, { id:nextId(), role:'bot', text:`Termin gebucht! ✅ Möchtest du eine **SMS-Bestätigung** an **${lead.telefon}** erhalten?`, quickReplies:['Ja, SMS senden','Nein, danke'] }]);
+        setStep('sms-confirm');
+      } else {
+        setMsgs(m => [...m, { id:nextId(), role:'bot', text:`🎉 Dein Termin ist bestätigt! Eine Bestätigung wird an **${lead.email}** gesendet.`, quickReplies:['Neue Anfrage starten'] }]);
+        setStep('success');
+      }
     } catch {
       setTyping(false); setSubmitting(false);
       setMsgs(m => [...m, { id:nextId(), role:'bot', text:'Es gab ein technisches Problem beim Buchen. Bitte versuche es erneut oder kontaktiere uns direkt.', quickReplies:['Erneut versuchen','Neue Anfrage starten'] }]);
       setStep('error');
     }
+  }
+
+  async function handleSmsConfirm(wantsSms: boolean) {
+    if (wantsSms) {
+      setTyping(true);
+      const dateStr = selDate ? `${selDate.year}-${pad2(selDate.month+1)}-${pad2(selDate.day)}` : '';
+      try {
+        if (WEBHOOK) await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...lead, appointmentDate:dateStr, appointmentTime:selTime, action:'send_sms_confirmation', source:'AFA Website Chatbot' }) });
+      } catch { /* non-critical */ }
+      setTyping(false);
+      setMsgs(m => [...m, { id:nextId(), role:'bot', text:`📱 SMS wird gesendet! Eine Bestätigung wird ebenfalls an **${lead.email}** gesendet.`, quickReplies:['Neue Anfrage starten'] }]);
+    } else {
+      setMsgs(m => [...m, { id:nextId(), role:'bot', text:`🎉 Alles klar! Eine Bestätigung wird an **${lead.email}** gesendet.`, quickReplies:['Neue Anfrage starten'] }]);
+    }
+    setStep('success');
   }
 
   function reset() {
