@@ -3,7 +3,7 @@
   /* ── Field values from n8n item ─────────────────────────────────────── */
   const vorname  = $json["Vorname "]     || '';
   const email    = $json["E-Mail"]       || '';
-  const meetLink = $json["hangoutLink"] || $json["Meeting Link"] || '';
+  const meetLink = $json["hangoutLink"] || $json["meeting_link"] || $json["Meeting Link"] || '';
   const dauer    = $json["Dauer"]        || '30 Minuten';
 
   /* ── Date / time formatting ──────────────────────────────────────────── */
@@ -401,12 +401,13 @@
             <td align="center" class="cta-pad email-body"
               style="background-color:#0c0c0f;padding:36px 40px 44px;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;">
 
-              <!-- Google Meet button -->
-              <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+              <!-- Google Meet button — conditional: only renders if meetLink is set -->
+              ${meetLink
+                ? `<table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center"
                     style="border-radius:10px;background-color:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.18),0 4px 16px rgba(0,0,0,0.12);">
-                    <a href="${meetLink}" class="cta-btn"
+                    <a href="${meetLink}" target="_blank" rel="noopener noreferrer" class="cta-btn"
                       style="display:inline-block;padding:15px 32px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#111111;text-decoration:none;letter-spacing:-0.01em;white-space:nowrap;vertical-align:middle;">
                       <!--[if mso]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td style="vertical-align:middle;padding-right:10px;"><![endif]-->
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -421,7 +422,9 @@
                     </a>
                   </td>
                 </tr>
-              </table>
+              </table>`
+                : `<p style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;color:#71717a;text-align:center;margin:0;line-height:1.65;">Der Google Meet Link wird separat gesendet.</p>`
+              }
 
               <!-- Divider -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top:36px;">
