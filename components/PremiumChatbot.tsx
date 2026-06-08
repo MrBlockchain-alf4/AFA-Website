@@ -415,6 +415,10 @@ export default function PremiumChatbot() {
   const [availLoading,  setAvailLoading]  = useState(false);
   const [availError,    setAvailError]    = useState(false);
   const [availRetryTick, setAvailRetryTick] = useState(0);
+  const [dateSlots,          setDateSlots]          = useState<string[] | null>(null);
+  const [dateSlotsLoading,   setDateSlotsLoading]   = useState(false);
+  const [dateSlotsError,     setDateSlotsError]     = useState(false);
+  const [dateSlotsRetryTick, setDateSlotsRetryTick] = useState(0);
 
   const scrollRef      = useRef<HTMLDivElement>(null);
   const inputRef       = useRef<HTMLInputElement>(null);
@@ -524,32 +528,39 @@ export default function PremiumChatbot() {
     return () => { cancelled = true; };
   }, [step, calYear, calMonth, availRetryTick]);
 
-  // Rescue fetch: if the user lands on cal-time without availability data (e.g. timing race,
-  // navigation from confirm screen, or slot_taken redirect), fetch fresh for the selected date.
+  // Per-date fetch: fires every time the user enters cal-time for a selected date.
+  // Always queries the webhook with the specific date so n8n checks Google Calendar in real time.
+  // Never falls back to hardcoded slots — only uses what n8n returns.
   useEffect(() => {
-    if (step !== 'cal-time' || availability || availLoading || !selDate) return;
-    const yr  = selDate.year;
-    const mo  = selDate.month;
-    const startDate = `${yr}-${pad2(mo + 1)}-01`;
-    const lastDay   = new Date(yr, mo + 1, 0).getDate();
-    const endDate   = `${yr}-${pad2(mo + 1)}-${pad2(lastDay)}`;
-    setAvailLoading(true);
-    setAvailError(false);
-    console.log('[AFA Cal] Rescue availability fetch for cal-time, URL:', AVAILABILITY_WEBHOOK);
+    if (step !== 'cal-time' || !selDate) return;
+    const ds = `${selDate.year}-${pad2(selDate.month + 1)}-${pad2(selDate.day)}`;
+    let cancelled = false;
+    setDateSlots(null);
+    setDateSlotsLoading(true);
+    setDateSlotsError(false);
+    console.log('[AFA availability request]', { date: ds, startDate: ds, endDate: ds });
     fetch(AVAILABILITY_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ startDate, endDate }),
+      body: JSON.stringify({ date: ds, startDate: ds, endDate: ds }),
     })
       .then(r => r.json())
       .then((data: AvailabilityResponse) => {
-        console.log('[AFA Cal] Rescue availability response:', data);
-        if (data.success) setAvailability(data);
-        else setAvailError(true);
+        if (cancelled) return;
+        console.log('[AFA availability response]', data);
+        if (data.success) {
+          const slots = extractSlotsForDate(data, ds);
+          console.log('[AFA selected date]', ds);
+          console.log('[AFA slots rendered]', slots);
+          setDateSlots(slots);
+        } else {
+          setDateSlotsError(true);
+        }
       })
-      .catch(() => setAvailError(true))
-      .finally(() => setAvailLoading(false));
-  }, [step, selDate]); // eslint-disable-line react-hooks/exhaustive-deps
+      .catch(() => { if (!cancelled) setDateSlotsError(true); })
+      .finally(() => { if (!cancelled) setDateSlotsLoading(false); });
+    return () => { cancelled = true; };
+  }, [step, selDate, dateSlotsRetryTick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Core messaging ────────────────────────────────────────────────────────
   function botReply(text: string, qr?: string[], delay = 950, menuGrid?: boolean) {
@@ -872,14 +883,14 @@ export default function PremiumChatbot() {
           })
             .then(r => r.json())
             .then((fresh: AvailabilityResponse) => {
-              if (fresh.success && fresh.availableDates.length > 0) {
+              if (fresh.success && (fresh.availableDates?.length ?? 0) > 0) {
                 setAvailability(prev => {
                   if (!prev) return fresh;
-                  const merged = prev.availableDates.map(d => {
-                    const updated = fresh.availableDates.find(fd => fd.date === d.date);
+                  const merged = (prev.availableDates ?? []).map(d => {
+                    const updated = fresh.availableDates?.find(fd => fd.date === d.date);
                     return updated ?? d;
                   });
-                  const added = fresh.availableDates.filter(fd => !prev.availableDates.find(d => d.date === fd.date));
+                  const added = (fresh.availableDates ?? []).filter(fd => !(prev.availableDates ?? []).find(d => d.date === fd.date));
                   return { ...prev, availableDates: [...merged, ...added] };
                 });
               }
@@ -922,7 +933,7 @@ export default function PremiumChatbot() {
 
       if (freshData.success) {
         setAvailability(freshData);  // update cached data with fresh response
-        const freshDay    = freshData.availableDates.find(a => a.date === ds);
+        const freshDay    = freshData.availableDates?.find(a => a.date === ds);
         const freshBlocked = new Set<string>(freshDay?.blockedSlots ?? []);
         const slotAllowed  = !!(freshDay?.slots ?? []).filter(s => !freshBlocked.has(s)).includes(selTime);
         console.log('[AFA Cal] Selected time allowed (re-check):', slotAllowed, selTime);
@@ -938,7 +949,7 @@ export default function PremiumChatbot() {
       // Network error on re-check — fall back to cached availability
       console.warn('[AFA Cal] Pre-booking re-check failed, using cached availability');
       if (availability) {
-        const av         = availability.availableDates.find(a => a.date === ds);
+        const av         = availability.availableDates?.find(a => a.date === ds);
         const blocked    = new Set<string>(av?.blockedSlots ?? []);
         const slotAllowed = !!(av?.slots ?? []).filter(s => !blocked.has(s)).includes(selTime);
         if (!slotAllowed) {
@@ -977,6 +988,7 @@ export default function PremiumChatbot() {
     setCalYear(new Date().getFullYear()); setCalMonth(new Date().getMonth());
     setSubmitting(false); setEditingLead(false); setMsgs([]);
     setAvailability(null); setAvailError(false); setAvailRetryTick(0);
+    setDateSlots(null); setDateSlotsLoading(false); setDateSlotsError(false); setDateSlotsRetryTick(0);
     setTyping(true);
     setTimeout(() => {
       setTyping(false);
@@ -1174,27 +1186,16 @@ export default function PremiumChatbot() {
 
   // ── Render: premium time picker ───────────────────────────────────────────
   function renderCalTime() {
-    // Build exact date string in YYYY-MM-DD to match n8n response
     const ds = selDate ? `${selDate.year}-${pad2(selDate.month + 1)}-${pad2(selDate.day)}` : '';
 
-    // Resolve free slots from the webhook response — NEVER falls back to hardcoded TIME_SLOTS.
-    // If availability is not yet loaded, return null so the loading state renders instead.
-    const availSlots: string[] | null = (() => {
-      if (availLoading) return null;           // fetch in progress — show spinner
-      if (!availability) return null;          // no data yet — rescue fetch will fire
-      return extractSlotsForDate(availability, ds);
-    })();
-
-    console.log('[AFA availability response]', availability);
-    console.log('[AFA selected date]', ds);
-    console.log('[AFA slots rendered]', availSlots);
-    if (selTime && availSlots) {
-      console.log('[AFA Cal] Selected time allowed:', availSlots.includes(selTime), selTime);
-    }
+    // Slots come exclusively from the per-date fetch useEffect.
+    // dateSlotsLoading=true → spinner; dateSlotsError=true → error UI; otherwise use dateSlots.
+    const slotsReady = !dateSlotsLoading && !dateSlotsError && dateSlots !== null;
+    const canProceed = slotsReady && !!selTime && dateSlots!.includes(selTime);
 
     function handleWeiter() {
-      if (!selTime || !selDate || !availSlots) return;
-      if (!availSlots.includes(selTime)) {
+      if (!selTime || !selDate || !slotsReady) return;
+      if (!dateSlots!.includes(selTime)) {
         setSelTime(null);
         botReply('Diese Uhrzeit ist leider nicht mehr verfügbar. Bitte wähle eine andere Zeit.', undefined, 300);
         return;
@@ -1203,9 +1204,6 @@ export default function PremiumChatbot() {
       setStep('confirm');
       botReply('Fast geschafft! Prüfe deine **Terminübersicht** und bestätige.', undefined, 500);
     }
-
-    const slotsReady  = availSlots !== null;
-    const canProceed  = slotsReady && !!selTime && availSlots!.includes(selTime);
 
     return (
       <div className="afa-cal-wrap" ref={calRef}>
@@ -1221,27 +1219,39 @@ export default function PremiumChatbot() {
           <div style={{ padding:'16px 18px 18px' }}>
             <div style={{ fontFamily:'var(--font-chivo,"Chivo Mono",monospace)', fontSize:10, fontWeight:700, letterSpacing:'.13em', textTransform:'uppercase', color:T.muted, marginBottom:12 }}>Verfügbare Zeiten</div>
 
-            {/* Loading — availability fetch in progress */}
-            {!slotsReady && (
+            {/* Loading — per-date fetch in progress */}
+            {dateSlotsLoading && (
               <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:80, gap:8, marginBottom:16 }}>
                 <div style={{ display:'flex', gap:6 }}>
                   {[0,1,2].map(i => <div key={i} className="afa-td" style={{ animationDelay:`${i*0.18}s` }} />)}
                 </div>
-                <span style={{ fontSize:11, color:T.muted, letterSpacing:'0.04em' }}>Zeiten werden geladen…</span>
+                <span style={{ fontSize:11, color:T.muted, letterSpacing:'0.04em' }}>Lade verfügbare Zeiten…</span>
+              </div>
+            )}
+
+            {/* Error — fetch failed */}
+            {dateSlotsError && !dateSlotsLoading && (
+              <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:10, marginBottom:16, padding:'12px 0' }}>
+                <p style={{ margin:0, fontSize:13, color:T.muted, lineHeight:1.65, textAlign:'center' }}>
+                  Zeiten konnten nicht geladen werden.<br />Bitte versuche es erneut.
+                </p>
+                <button className="afa-btn-prim" onClick={() => setDateSlotsRetryTick(t => t + 1)} style={{ ...primBase, width:'auto', padding:'10px 22px' }}>
+                  Erneut versuchen
+                </button>
               </div>
             )}
 
             {/* No slots for this date */}
-            {slotsReady && availSlots!.length === 0 && (
+            {slotsReady && dateSlots!.length === 0 && (
               <p style={{ fontSize:13, color:T.muted, lineHeight:1.65, marginBottom:16 }}>
                 Für diesen Tag sind leider keine Termine mehr verfügbar. Bitte wähle ein anderes Datum.
               </p>
             )}
 
-            {/* Slot grid — only rendered from webhook data, never from hardcoded list */}
-            {slotsReady && availSlots!.length > 0 && (
+            {/* Slot grid — rendered exclusively from webhook response, never from hardcoded list */}
+            {slotsReady && dateSlots!.length > 0 && (
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:7, marginBottom:16 }}>
-                {availSlots!.map(t => (
+                {dateSlots!.map(t => (
                   <button key={t} className={`afa-slot${selTime===t?' sel':''}`} onClick={() => setSelTime(t)}>{t}</button>
                 ))}
               </div>
