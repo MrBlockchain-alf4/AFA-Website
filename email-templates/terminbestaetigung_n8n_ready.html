@@ -1,4 +1,40 @@
-<!DOCTYPE html>
+{{ (()=>{
+
+  /* ── Field values from n8n item ─────────────────────────────────────── */
+  const vorname  = $json["Vorname "]     || '';
+  const email    = $json["E-Mail"]       || '';
+  const meetLink = $json["hangoutLink"] || $json["Meeting Link"] || '';
+  const dauer    = $json["Dauer"]        || '30 Minuten';
+
+  /* ── Date / time formatting ──────────────────────────────────────────── */
+  let datumFormatted = 'Termin wird separat bestätigt';
+  let datumKurz      = '';   // "8. Juni 2026"  — used in preheader
+  let uhrzeit        = '';   // "11:30"
+
+  const r = $json["Termin Datum/Zeit"];
+  if (r) {
+    try {
+      /* Normalise: Google Sheets sometimes uses space instead of T */
+      const d = new Date(String(r).replace(' ', 'T'));
+      if (!isNaN(d.getTime())) {
+        const ds = d.toLocaleDateString('de-DE', {
+          timeZone: 'Europe/Berlin',
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+        /* de-DE produces "Montag, 8. Juni 2026" — split on first ", " */
+        const ci   = ds.indexOf(', ');
+        const wd   = ci > -1 ? ds.slice(0, ci) : '';
+        const rest = ci > -1 ? ds.slice(ci + 2) : ds;
+        datumFormatted = ci > -1 ? (wd + ', den ' + rest) : ds;
+        datumKurz      = rest;
+        uhrzeit        = d.toLocaleTimeString('de-DE', {
+          timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit'
+        });
+      }
+    } catch(e) { /* fallback values already set above */ }
+  }
+
+  return `<!DOCTYPE html>
 <html lang="de" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="UTF-8">
@@ -52,7 +88,7 @@
     /* ── Google Meet CTA — hover / active (Gmail, Apple Mail, iOS Mail)
          Inline styles on the element are the static fallback for Outlook. ── */
     .cta-btn {
-      border-radius: 10px; /* matches the td wrapper radius */
+      border-radius: 10px;
       transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
     }
     .cta-btn:hover {
@@ -75,7 +111,6 @@
       50%       { box-shadow: 0 0 0 10px rgba(0,187,253,0.07), 0 0 28px 8px rgba(0,187,253,0.14); }
     }
     .icon-glow {
-      /* static fallback for clients that don't support keyframes */
       box-shadow: 0 0 20px 6px rgba(0,187,253,0.10);
       animation: afa-glow 3.6s ease-in-out infinite;
     }
@@ -86,7 +121,7 @@
 
   <!-- Preheader -->
   <div style="display:none;font-size:1px;color:#09090b;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-    Dein Termin mit AFA ist bestätigt – {{$json.datum}} um {{$json.uhrzeit}} Uhr. Wir freuen uns auf das Gespräch.&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+    Dein Termin mit AFA ist bestätigt – ${datumKurz} um ${uhrzeit} Uhr. Wir freuen uns auf das Gespräch.&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
   </div>
 
   <!-- Outer wrapper -->
@@ -123,7 +158,7 @@
             <td align="center" class="hero-section"
               style="padding:52px 40px 44px;background-color:#0c0c0f;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;">
 
-              <!-- Confirmation badge — single div, border-radius:50% reliable in Gmail/Workspace -->
+              <!-- Confirmation badge -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 28px;">
                 <tr>
                   <td align="center" style="padding:0;font-size:0;line-height:0;">
@@ -145,7 +180,7 @@
 
               <!-- Subtitle -->
               <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:400;color:#71717a;line-height:1.75;max-width:400px;">
-                Hallo {{$json.vorname}}, wir haben deinen Termin erfolgreich eingetragen.<br>Alle Details findest du unten.
+                Hallo ${vorname}, wir haben deinen Termin erfolgreich eingetragen.<br>Alle Details findest du unten.
               </p>
 
             </td>
@@ -199,7 +234,7 @@
                                 Datum
                               </td>
                               <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">
-                                {{$json.datum}}
+                                ${datumFormatted}
                               </td>
                             </tr>
                           </table>
@@ -216,7 +251,7 @@
                                 Uhrzeit
                               </td>
                               <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">
-                                {{$json.uhrzeit}} Uhr
+                                ${uhrzeit} Uhr
                               </td>
                             </tr>
                           </table>
@@ -233,7 +268,7 @@
                                 Dauer
                               </td>
                               <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">
-                                {{$json.dauer}}
+                                ${dauer}
                               </td>
                             </tr>
                           </table>
@@ -296,11 +331,9 @@
                   <td style="padding:0 0 20px;vertical-align:top;">
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
-                        <!-- Badge 1 — div circle, no table border -->
                         <td style="width:50px;padding-right:18px;vertical-align:top;">
                           <div style="width:32px;height:32px;border-radius:50%;background-color:rgba(0,187,253,0.10);text-align:center;line-height:32px;font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;color:#00bbfd;">1</div>
                         </td>
-                        <!-- Text -->
                         <td style="vertical-align:top;padding-top:5px;">
                           <p style="margin:0 0 5px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#e4e4e7;line-height:1.45;">
                             Termin in den Kalender eintragen
@@ -368,22 +401,18 @@
             <td align="center" class="cta-pad email-body"
               style="background-color:#0c0c0f;padding:36px 40px 44px;border-left:1px solid #1a1a22;border-right:1px solid #1a1a22;">
 
-              <!-- Google Meet button — white, enterprise-grade -->
+              <!-- Google Meet button -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center"
                     style="border-radius:10px;background-color:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.18),0 4px 16px rgba(0,0,0,0.12);">
-                    <a href="{{$json.hangoutLink}}" class="cta-btn"
+                    <a href="${meetLink}" class="cta-btn"
                       style="display:inline-block;padding:15px 32px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#111111;text-decoration:none;letter-spacing:-0.01em;white-space:nowrap;vertical-align:middle;">
                       <!--[if mso]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td style="vertical-align:middle;padding-right:10px;"><![endif]-->
-                      <!-- Google Meet camera icon (inline SVG) -->
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
                         style="display:inline-block;vertical-align:middle;margin-right:10px;position:relative;top:-1px;">
-                        <!-- Camera body -->
                         <rect x="1" y="4.5" width="12" height="11" rx="2" fill="#00897B"/>
-                        <!-- Highlight inside body -->
                         <rect x="3.5" y="7" width="4" height="4" rx="2" fill="white" opacity="0.85"/>
-                        <!-- Video panel (right triangle) -->
                         <path d="M13 8.2L18.5 5.5V14.5L13 11.8V8.2Z" fill="#43A047"/>
                       </svg>
                       <!--[if mso]></td><td style="vertical-align:middle;"><![endif]-->
@@ -455,20 +484,35 @@
   </table>
 
 </body>
-</html>
+</html>`;
+})() }}
 
 <!--
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TEMPLATE VARIABLES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HOW TO USE IN n8n
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  {{$json.vorname}}      — First name, e.g. "Max"
-  {{$json.datum}}        — Full date, e.g. "Dienstag, 10. Juni 2025"
-  {{$json.uhrzeit}}      — Time, e.g. "14:00"
-  {{$json.dauer}}        — Duration, e.g. "30 Minuten"
-  {{$json.hangoutLink}}  — Google Meet URL (from Google Calendar "Create an event" node)
+  1. In the Gmail node, set "Email Type" to HTML.
+  2. Click the Message field → switch to Expression mode.
+  3. Select ALL content in this file (Ctrl+A) and paste it.
+     The outer {{ (()=>{ ... })() }} is the n8n expression.
 
-  Compatible with: SendGrid, Postmark, Mailchimp, Brevo (Sendinblue),
-  Google Workspace SMTP, and any ESP supporting {{mustache}} syntax.
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FIELD MAPPING (from your Google Sheets / upstream node):
+  ─────────────────────────────────────────────────────────
+  $json["Vorname "]          → recipient first name
+  $json["Termin Datum/Zeit"] → ISO or "YYYY-MM-DD HH:MM:SS"
+  $json["E-Mail"]            → recipient email address
+  $json["hangoutLink"]       → Google Meet URL (from Google Calendar "Create an event" node)
+  $json["Dauer"]             → duration string, e.g. "30 Minuten"
+                               (defaults to "30 Minuten" if missing)
+
+  DATE FORMATTING:
+  ─────────────────────────────────────────────────────────
+  Input:  "2026-06-08T11:30:00" or "2026-06-08 11:30:00"
+  Output: "Montag, den 8. Juni 2026"  (Datum row)
+          "11:30"                      (Uhrzeit row)
+  Fallback: "Termin wird separat bestätigt"
+
+  Timezone: Europe/Berlin (CET/CEST auto-handled by Intl API).
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -->
