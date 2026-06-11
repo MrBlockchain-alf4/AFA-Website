@@ -462,6 +462,7 @@ export default function PremiumChatbot() {
   const [pendingCancellationAppointment, setPendingCancellationAppointment] = useState<{
     event_id: string; email: string; name: string;
     interesse: string; terminFormatted: string; besprechungslink: string;
+    cancel_url: string;
   } | null>(null);
 
   const scrollRef      = useRef<HTMLDivElement>(null);
@@ -725,7 +726,7 @@ export default function PremiumChatbot() {
     if (text === 'Ja, Termin stornieren' && step === 'cancel-confirm') {
       if (pendingCancellationAppointment) {
         setTyping(true);
-        doCancelAppointment(pendingCancellationAppointment.event_id, pendingCancellationAppointment.email);
+        doCancelAppointment(pendingCancellationAppointment.cancel_url);
       }
       return;
     }
@@ -1094,6 +1095,7 @@ export default function PremiumChatbot() {
           interesse:       String(data.interesse ?? ''),
           terminFormatted: String(data.terminFormatted ?? ''),
           besprechungslink,
+          cancel_url:      String(data.cancel_url ?? ''),
         };
         setPendingCancellationAppointment(appt);
         const lines: string[] = [
@@ -1115,13 +1117,14 @@ export default function PremiumChatbot() {
     }
   }
 
-  async function doCancelAppointment(eventId: string, email: string) {
+  async function doCancelAppointment(cancelUrl: string) {
     setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Einen Moment, ich storniere deinen Termin...' }]);
+    console.log('Cancelling appointment via hidden cancel_url:', cancelUrl);
     try {
-      const res  = await fetch(CANCEL_APPT_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event_id: eventId, email }) });
-      const data = await res.json();
+      const res = await fetch(cancelUrl, { method: 'GET' });
+      console.log('Cancel response status:', res.status);
       setTyping(false);
-      if (data.success) {
+      if (res.ok) {
         setPendingCancellationAppointment(null);
         setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Dein Termin wurde erfolgreich storniert. Du erhältst zusätzlich eine Bestätigung per E-Mail.', quickReplies: ['Neue Anfrage starten'] }]);
         setStep('success');
