@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useRef, useEffect, useMemo } from 'react';
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -8,6 +8,7 @@ type Step =
   | 'lead-telefon' | 'lead-unternehmen' | 'lead-interesse' | 'lead-custom'
   | 'cal-date' | 'cal-time' | 'confirm' | 'submitting'
   | 'sms-confirm'
+  | 'cancel-email' | 'cancel-found'
   | 'success' | 'error' | 'handoff-done';
 
 type LeadGoal = 'book' | 'handoff';
@@ -60,6 +61,7 @@ interface AvailabilityResponse {
 const LEAD_WEBHOOK         = process.env.NEXT_PUBLIC_AFA_LEAD_WEBHOOK_URL         ?? '';
 const TERMIN_WEBHOOK       = process.env.NEXT_PUBLIC_AFA_TERMIN_WEBHOOK_URL       ?? '';
 const AVAILABILITY_WEBHOOK = process.env.NEXT_PUBLIC_AFA_AVAILABILITY_WEBHOOK_URL ?? 'https://afa-team.app.n8n.cloud/webhook/afa-calendar-availability';
+const FIND_APPT_WEBHOOK    = 'https://afa-team.app.n8n.cloud/webhook/afa-chatbot-find-appointment';
 
 const MAIN_MENU: string[] = [
   'Beratung buchen',     'Termin vereinbaren',
@@ -67,6 +69,7 @@ const MAIN_MENU: string[] = [
   'Premium Website',     'Leadgenerierung',
   'Automatisierung',     'Preise / Angebot',
   'DSGVO / Datenschutz', 'Expertenkontakt',
+  'Termin stornieren',
 ];
 
 const INTEREST_REPLIES = [
@@ -167,8 +170,44 @@ function fmtDate(y: number, m: number, d: number) {
   return `${DE_DAYS_L[idx]}, den ${d}. ${DE_MONTHS[m]} ${y}`;
 }
 
+function normalizeChatText(value: string): string {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function isCancelAppointmentIntent(value: string): boolean {
+  const text = normalizeChatText(value);
+  return (
+    text.includes('storn')               ||
+    text.includes('storni')              ||
+    text.includes('absag')               ||
+    text.includes('cancel')              ||
+    text.includes('cansel')              ||
+    text.includes('loesch')              ||
+    text.includes('losch')               ||
+    text.includes('entfern')             ||
+    text.includes('nicht kommen')        ||
+    text.includes('nicht wahrnehmen')    ||
+    text.includes('schaffe es nicht')    ||
+    text.includes('passt mir nicht')     ||
+    text.includes('termin no')           ||
+    text.includes('termin weg')          ||
+    text.includes('buchung weg')         ||
+    text.includes('termin loschen')      ||
+    text.includes('termin loeschen')     ||
+    text.includes('buchung loschen')     ||
+    text.includes('buchung loeschen')
+  );
+}
+
 function detectIntent(text: string): string {
   const t = text.toLowerCase();
+  if (isCancelAppointmentIntent(text)) return 'cancel';
   if (/\b(termin|buchen|vereinbaren|beratung|gespräch|meeting|angebot anfordern|demo anfragen|erstgespräch)\b/.test(t)) return 'book';
   if (/ki.?telefon|voicebot|telefonassistent|phone.?ai|sprachassistent/.test(t))  return 'ki-telefon';
   if (/ki.?chat|chatbot|chat.assistent/.test(t))                                    return 'ki-chat';
@@ -419,6 +458,7 @@ export default function PremiumChatbot() {
   const [dateSlotsLoading,   setDateSlotsLoading]   = useState(false);
   const [dateSlotsError,     setDateSlotsError]     = useState(false);
   const [dateSlotsRetryTick, setDateSlotsRetryTick] = useState(0);
+  const [foundAppt, setFoundAppt] = useState<{ name: string; interesse: string; terminFormatted: string; cancel_url: string } | null>(null);
 
   const scrollRef      = useRef<HTMLDivElement>(null);
   const inputRef       = useRef<HTMLInputElement>(null);
@@ -434,6 +474,7 @@ export default function PremiumChatbot() {
   );
 
   useEffect(() => {
+    console.log('AFA_CHATBOT_CANCEL_FIX_ACTIVE_V3');
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener('resize', check);
@@ -639,6 +680,11 @@ export default function PremiumChatbot() {
       case 'datenschutz':
         botReply(FAQ['datenschutz'],['Expertenkontakt', 'Beratung buchen', ...back]);
         return;
+      case 'cancel':
+        setFoundAppt(null);
+        setStep('cancel-email');
+        botReply('Gerne. Bitte nenne mir die **E-Mail-Adresse**, mit der der Termin gebucht wurde.', ['Zurück zum Start']);
+        return;
       case 'human':
         startLead('handoff', 'Kein Problem! Ich verbinde dich mit einem Experten. Wie ist dein **Vorname**?');
         return;
@@ -670,6 +716,16 @@ export default function PremiumChatbot() {
 
     if (text === 'Zurück zum Start' || text === 'Neue Anfrage starten') { reset(); return; }
     if (text === 'Weitere Fragen')     { showMenu(); return; }
+
+    // ── Cancellation intent — absolute highest priority, interrupts any active flow ──
+    if (text === 'Termin stornieren' || isCancelAppointmentIntent(text)) {
+      setFoundAppt(null);
+      setLead({});
+      setStep('cancel-email');
+      botReply('Gerne. Bitte nenne mir die **E-Mail-Adresse**, mit der der Termin gebucht wurde.', ['Zurück zum Start']);
+      return;
+    }
+
     if (text === 'Details anfragen' || text === 'Demo anfragen') {
       startLead('book', 'Super! Für dein individuelles Angebot brauche ich kurz deine Daten. Wie ist dein **Vorname**?');
       return;
@@ -768,6 +824,27 @@ export default function PremiumChatbot() {
       case 'sms-confirm':
         handleSmsConfirm(text === 'Ja, SMS senden');
         return;
+
+      case 'cancel-email': {
+        if (text === 'Erneut versuchen') {
+          botReply('Kein Problem! Bitte nenne mir die **E-Mail-Adresse**, mit der der Termin gebucht wurde.', ['Zurück zum Start'], 400);
+          return;
+        }
+        if (!validateEmail(text)) {
+          botReply('Das scheint keine gültige E-Mail zu sein. Bitte nochmal versuchen. 📧', ['Zurück zum Start'], 500);
+          return;
+        }
+        setTyping(true);
+        doFindAppointment(text);
+        return;
+      }
+
+      case 'cancel-found': {
+        setFoundAppt(null);
+        setStep('welcome');
+        showMenu('Kann ich dir noch mit etwas helfen?');
+        return;
+      }
 
       case 'cal-date': case 'cal-time': case 'confirm': case 'submitting':
         botReply('Bitte nutze die Auswahl unten. 👇', undefined, 400);
@@ -982,6 +1059,50 @@ export default function PremiumChatbot() {
     await doTermin(wantsSms);
   }
 
+  async function doFindAppointment(email: string) {
+    try {
+      const res  = await fetch(FIND_APPT_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+      const data = await res.json();
+      setTyping(false);
+      if (!data.success) {
+        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Ich konnte leider keine aktive Buchung mit dieser E-Mail-Adresse finden. Bitte prüfe die E-Mail-Adresse oder kontaktiere uns direkt unter info@afa-ai.com.', quickReplies: ['Erneut versuchen', 'Zurück zum Start'] }]);
+        setStep('cancel-email');
+      } else {
+        setFoundAppt({ name: data.name, interesse: data.interesse, terminFormatted: data.terminFormatted, cancel_url: data.cancel_url });
+        const meetLink: string = data.meetLink || data.hangoutLink || data.conferenceLink || data.videoCallLink || '';
+        const lines: string[] = [
+          'Ich habe deinen Termin gefunden:',
+          '',
+          `**Name:** ${data.name}`,
+          `**Leistung:** ${data.interesse}`,
+          `**Termin:** ${data.terminFormatted}`,
+        ];
+        if (meetLink) lines.push(`**Besprechungslink:** ${meetLink}`);
+        lines.push('', `Du kannst deinen Termin hier stornieren: [Termin stornieren](${data.cancel_url})`);
+        setStep('cancel-found');
+        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: lines.join('\n'), quickReplies: ['Zurück zum Start'] }]);
+      }
+    } catch {
+      setTyping(false);
+      setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Es gab ein Problem bei der Suche. Bitte versuche es erneut.', quickReplies: ['Erneut versuchen', 'Zurück zum Start'] }]);
+      setStep('cancel-email');
+    }
+  }
+
+  async function doCancelAppointment(cancelUrl: string) {
+    setTyping(true);
+    try {
+      await fetch(cancelUrl, { method: 'GET' });
+      setTyping(false);
+      setFoundAppt(null);
+      setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Dein Termin wurde erfolgreich storniert. Du erhältst gleich eine Bestätigung per E-Mail.', quickReplies: ['Neue Anfrage starten'] }]);
+      setStep('success');
+    } catch {
+      setTyping(false);
+      setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Es gab ein Problem beim Stornieren. Bitte versuche es erneut oder kontaktiere uns direkt.', quickReplies: ['Erneut versuchen', 'Neue Anfrage starten'] }]);
+    }
+  }
+
   function reset() {
     setStep('welcome'); setLead({}); setLeadGoal('book');
     setSelDate(null); setSelTime(null);
@@ -989,6 +1110,7 @@ export default function PremiumChatbot() {
     setSubmitting(false); setEditingLead(false); setMsgs([]);
     setAvailability(null); setAvailError(false); setAvailRetryTick(0);
     setDateSlots(null); setDateSlotsLoading(false); setDateSlotsError(false); setDateSlotsRetryTick(0);
+    setFoundAppt(null);
     setTyping(true);
     setTimeout(() => {
       setTyping(false);
@@ -1045,7 +1167,9 @@ export default function PremiumChatbot() {
   // ── Render: messages ──────────────────────────────────────────────────────
   function renderMsg(m: Msg) {
     const isBot  = m.role === 'bot';
-    const html   = m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    const html   = m.text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:#00bbfd;text-decoration:underline;text-underline-offset:2px;">$1</a>');
     const showQR = !!m.quickReplies && m.id === lastBotId && !typing;
     return (
       <div key={m.id} style={{ marginBottom:12, animation:'msg-in 0.22s ease' }}>
