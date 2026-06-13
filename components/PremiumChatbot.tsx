@@ -9,7 +9,8 @@ type Step =
   | 'cal-date' | 'cal-time' | 'confirm' | 'submitting'
   | 'sms-confirm'
   | 'cancel-email' | 'cancel-confirm'
-  | 'reschedule-email' | 'reschedule-confirm' | 'reschedule-datetime'
+  | 'reschedule-email' | 'reschedule-confirm'
+  | 'reschedule-cal-date' | 'reschedule-cal-time' | 'reschedule-datetime'
   | 'success' | 'error' | 'handoff-done';
 
 type LeadGoal = 'book' | 'handoff';
@@ -535,7 +536,7 @@ export default function PremiumChatbot() {
   );
 
   useEffect(() => {
-    console.log('AFA_CHATBOT_RESCHEDULE_V1');
+    console.log('AFA_CHATBOT_RESCHEDULE_V2');
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener('resize', check);
@@ -604,7 +605,7 @@ export default function PremiumChatbot() {
 
   // Fetch real availability from n8n whenever the booking calendar is open or month changes
   useEffect(() => {
-    if (step !== 'cal-date') return;
+    if (step !== 'cal-date' && step !== 'reschedule-cal-date') return;
     const startDate = `${calYear}-${pad2(calMonth + 1)}-01`;
     const lastDay   = new Date(calYear, calMonth + 1, 0).getDate();
     const endDate   = `${calYear}-${pad2(calMonth + 1)}-${pad2(lastDay)}`;
@@ -634,7 +635,7 @@ export default function PremiumChatbot() {
   // Always queries the webhook with the specific date so n8n checks Google Calendar in real time.
   // Never falls back to hardcoded slots — only uses what n8n returns.
   useEffect(() => {
-    if (step !== 'cal-time' || !selDate) return;
+    if ((step !== 'cal-time' && step !== 'reschedule-cal-time') || !selDate) return;
     const ds = `${selDate.year}-${pad2(selDate.month + 1)}-${pad2(selDate.day)}`;
     let cancelled = false;
     setDateSlots(null);
@@ -802,8 +803,16 @@ export default function PremiumChatbot() {
     // ── Reschedule confirm/deny — must run BEFORE isRescheduleAppointmentIntent ──
     if (text === 'Ja, Termin verschieben' && step === 'reschedule-confirm') {
       if (pendingRescheduleAppointment) {
-        setStep('reschedule-datetime');
-        botReply('Auf welchen neuen Tag und welche Uhrzeit möchtest du den Termin verschieben?\n\nBeispiel: 18.06.2026 um 14:30 Uhr', ['Zurück zum Start']);
+        setSelDate(null);
+        setSelTime(null);
+        setCalYear(new Date().getFullYear());
+        setCalMonth(new Date().getMonth());
+        setAvailability(null);
+        setAvailError(false);
+        setDateSlots(null);
+        setDateSlotsError(false);
+        setStep('reschedule-cal-date');
+        botReply('Bitte wähle jetzt den neuen Termin aus.', undefined, 600);
       }
       return;
     }
@@ -814,15 +823,22 @@ export default function PremiumChatbot() {
       return;
     }
 
-    // ── Reschedule datetime step — bypass intent detection entirely ──
+    // ── Reschedule datetime step (manual fallback) — bypass intent detection ──
     if (step === 'reschedule-datetime') {
-      if (text === 'Andere Uhrzeit wählen') {
-        botReply('Auf welchen neuen Tag und welche Uhrzeit möchtest du den Termin verschieben?\n\nBeispiel: 18.06.2026 um 14:30 Uhr', ['Zurück zum Start'], 400);
+      if (text === 'Andere Uhrzeit wählen' || text === 'Kalender öffnen') {
+        setSelDate(null);
+        setSelTime(null);
+        setAvailability(null);
+        setAvailError(false);
+        setDateSlots(null);
+        setDateSlotsError(false);
+        setStep('reschedule-cal-date');
+        botReply('Bitte wähle jetzt den neuen Termin aus.', undefined, 400);
         return;
       }
       const dt = parseGermanDatetime(text);
       if (!dt) {
-        botReply('Bitte gib den neuen Termin im Format **TT.MM.JJJJ um HH:MM** an, zum Beispiel: 18.06.2026 um 14:30 Uhr.', ['Andere Uhrzeit wählen', 'Zurück zum Start'], 500);
+        botReply('Bitte gib den neuen Termin im Format **TT.MM.JJJJ um HH:MM** an, zum Beispiel: 18.06.2026 um 14:30 Uhr.', ['Kalender öffnen', 'Zurück zum Start'], 500);
         return;
       }
       if (!pendingRescheduleAppointment) {
@@ -833,6 +849,11 @@ export default function PremiumChatbot() {
       setTyping(true);
       doRescheduleAppointment(pendingRescheduleAppointment.event_id, pendingRescheduleAppointment.email, dt);
       return;
+    }
+
+    // ── Reschedule cal steps — bypass intent detection ──
+    if (step === 'reschedule-cal-date' || step === 'reschedule-cal-time') {
+      return; // all interaction happens via the visual picker; ignore free text
     }
 
     // ── Cancellation intent — absolute highest priority, interrupts any active flow ──
@@ -1337,15 +1358,16 @@ export default function PremiumChatbot() {
         setMsgs(m => [...m, { id: nextId(), role: 'bot', text: msg, quickReplies: ['Zurück zum Start', 'Beratung buchen', 'Termin stornieren'] }]);
         setStep('success');
       } else if (data.error === 'not_available') {
-        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Diese Uhrzeit ist leider nicht verfügbar. Bitte wähle eine andere Uhrzeit.\n\nAuf welchen neuen Tag und welche Uhrzeit möchtest du den Termin verschieben?\n\nBeispiel: 18.06.2026 um 14:30 Uhr', quickReplies: ['Zurück zum Start'] }]);
-        setStep('reschedule-datetime');
+        setSelTime(null);
+        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Diese Uhrzeit ist leider nicht verfügbar. Bitte wähle eine andere Uhrzeit.' }]);
+        setStep('reschedule-cal-time');
       } else {
-        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Der Termin konnte leider nicht automatisch verschoben werden. Bitte versuche es erneut oder kontaktiere uns direkt per E-Mail: info@afa-ai.com', quickReplies: ['Andere Uhrzeit wählen', 'Zurück zum Start'] }]);
+        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Der Termin konnte leider nicht automatisch verschoben werden. Bitte versuche es erneut oder kontaktiere uns direkt per E-Mail: info@afa-ai.com', quickReplies: ['Kalender öffnen', 'Zurück zum Start'] }]);
         setStep('reschedule-datetime');
       }
     } catch {
       setTyping(false);
-      setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Der Termin konnte leider nicht automatisch verschoben werden. Bitte versuche es erneut oder kontaktiere uns direkt per E-Mail: info@afa-ai.com', quickReplies: ['Andere Uhrzeit wählen', 'Zurück zum Start'] }]);
+      setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Der Termin konnte leider nicht automatisch verschoben werden. Bitte versuche es erneut oder kontaktiere uns direkt per E-Mail: info@afa-ai.com', quickReplies: ['Kalender öffnen', 'Zurück zum Start'] }]);
       setStep('reschedule-datetime');
     }
   }
@@ -1719,6 +1741,175 @@ export default function PremiumChatbot() {
     );
   }
 
+  // ── Render: reschedule date picker ───────────────────────────────────────
+  function renderRescheduleCalDate() {
+    const today = new Date();
+    const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
+    const cells   = buildMonthGrid(calYear, calMonth);
+    const canPrev = calYear > tY || (calYear === tY && calMonth > tM);
+
+    function navMonth(dir: 1 | -1) {
+      const nm = calMonth + dir;
+      if (nm < 0)       { setCalMonth(11); setCalYear(y => y - 1); }
+      else if (nm > 11) { setCalMonth(0);  setCalYear(y => y + 1); }
+      else setCalMonth(nm);
+      setSelDate(null);
+    }
+
+    function isOff(d: number) {
+      if (calYear < tY || (calYear === tY && calMonth < tM)) return true;
+      if (calYear === tY && calMonth === tM && d < tD) return true;
+      if ([0, 6].includes(new Date(calYear, calMonth, d).getDay())) return true;
+      if (availability) {
+        const ds = `${calYear}-${pad2(calMonth + 1)}-${pad2(d)}`;
+        const freeSlots = extractSlotsForDate(availability, ds);
+        if (freeSlots.length === 0) return true;
+      }
+      return false;
+    }
+
+    if (availError) {
+      return (
+        <div className="afa-cal-wrap" ref={calRef}>
+          <Card>
+            <div style={{ padding:'32px 24px', textAlign:'center' }}>
+              <p style={{ margin:'0 0 14px', fontSize:13, color:T.soft, lineHeight:1.65 }}>Verfügbarkeit konnte nicht geladen werden.</p>
+              <button className="afa-btn-prim" onClick={() => setAvailRetryTick(t => t + 1)} style={{ ...primBase, width:'auto', padding:'10px 24px' }}>Erneut versuchen</button>
+            </div>
+          </Card>
+          <button className="afa-btn-ghost" onClick={() => {
+            setStep('reschedule-datetime');
+            botReply('Bitte gib den neuen Termin im Format **TT.MM.JJJJ um HH:MM** an, zum Beispiel: 18.06.2026 um 14:30 Uhr.', ['Zurück zum Start'], 400);
+          }} style={{ ...ghostBase, width:'100%', marginTop:6 }}>Datum manuell eingeben</button>
+          <BackLink />
+        </div>
+      );
+    }
+
+    return (
+      <div className="afa-cal-wrap" ref={calRef}>
+        {/* Label */}
+        <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:10 }}>
+          <div style={{ width:3, height:18, borderRadius:2, background:T.acc }} />
+          <span style={{ fontFamily:'var(--font-chivo,"Chivo Mono",monospace)', fontSize:9.5, fontWeight:700, letterSpacing:'.13em', textTransform:'uppercase', color:T.acc }}>Neuen Termin wählen</span>
+        </div>
+        <Card>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 16px 8px' }}>
+            <button className="afa-nbtn" disabled={!canPrev} onClick={() => navMonth(-1)}>‹</button>
+            <span style={{ fontSize:14, fontWeight:700, letterSpacing:'-.02em', color:T.txt }}>{DE_MONTHS[calMonth]} {calYear}</span>
+            <button className="afa-nbtn" onClick={() => navMonth(1)}>›</button>
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', padding:'0 10px 4px', gap:2 }}>
+            {DE_DAYS.map(d => <div key={d} style={{ textAlign:'center', fontFamily:'var(--font-chivo,"Chivo Mono",monospace)', fontSize:9, fontWeight:700, letterSpacing:'.1em', textTransform:'uppercase', color:T.muted }}>{d}</div>)}
+          </div>
+          {availLoading ? (
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:140, gap:8 }}>
+              <div style={{ display:'flex', gap:6 }}>{[0,1,2].map(i => <div key={i} className="afa-td" style={{ animationDelay:`${i*0.18}s` }} />)}</div>
+              <span style={{ fontSize:11, color:T.muted, letterSpacing:'0.04em' }}>Verfügbarkeit wird geladen…</span>
+            </div>
+          ) : (
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', padding:'0 10px 8px', gap:2 }}>
+              {cells.map((day, i) => {
+                if (!day) return <div key={i} />;
+                const off = isOff(day);
+                const tod = calYear === tY && calMonth === tM && day === tD;
+                const sel = selDate?.day === day && selDate.month === calMonth && selDate.year === calYear;
+                const cls = `afa-dc${sel ? ' selected' : !off ? ' available' + (tod ? ' today' : '') : ' past'}`;
+                return <div key={i} className={cls} onClick={!off && !sel ? () => setSelDate({ year: calYear, month: calMonth, day }) : undefined}>{day}</div>;
+              })}
+            </div>
+          )}
+          <div style={{ display:'flex', gap:12, padding:'2px 16px 12px' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:10.5, color:T.muted }}><div style={{ width:8, height:8, borderRadius:2, background:'rgba(0,187,253,0.28)', border:'1px solid rgba(0,187,253,0.38)' }} />Verfügbar</div>
+            <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:10.5, color:T.muted }}><div style={{ width:8, height:8, borderRadius:2, background:'rgba(255,255,255,0.07)' }} />Nicht verfügbar</div>
+          </div>
+        </Card>
+        <button className="afa-btn-prim" disabled={!selDate || availLoading} onClick={() => {
+          if (!selDate) return;
+          addUserMsg(fmtDate(selDate.year, selDate.month, selDate.day));
+          setStep('reschedule-cal-time');
+          botReply('Welche **Uhrzeit** passt dir am besten?', undefined, 500);
+        }} style={{ ...primBase, opacity: selDate && !availLoading ? 1 : 0.35, marginBottom:6 }}>
+          Weiter →
+        </button>
+        <button className="afa-btn-ghost" onClick={() => {
+          setStep('reschedule-datetime');
+          botReply('Bitte gib den neuen Termin im Format **TT.MM.JJJJ um HH:MM** an, zum Beispiel: 18.06.2026 um 14:30 Uhr.', ['Zurück zum Start'], 400);
+        }} style={{ ...ghostBase, width:'100%', marginBottom:4 }}>Datum manuell eingeben</button>
+        <BackLink />
+      </div>
+    );
+  }
+
+  // ── Render: reschedule time picker ───────────────────────────────────────
+  function renderRescheduleCalTime() {
+    const slotsReady = !dateSlotsLoading && !dateSlotsError && dateSlots !== null;
+    const canProceed = slotsReady && !!selTime && dateSlots!.includes(selTime);
+
+    function handleRescheduleWeiter() {
+      if (!selTime || !selDate || !slotsReady || !pendingRescheduleAppointment) return;
+      if (!dateSlots!.includes(selTime)) {
+        setSelTime(null);
+        botReply('Diese Uhrzeit ist leider nicht mehr verfügbar. Bitte wähle eine andere Zeit.', undefined, 300);
+        return;
+      }
+      const ds          = `${selDate.year}-${pad2(selDate.month + 1)}-${pad2(selDate.day)}`;
+      const newDatetime = `${ds} ${selTime}:00`;
+      addUserMsg(`${fmtDate(selDate.year, selDate.month, selDate.day)} · ${selTime} Uhr`);
+      setTyping(true);
+      doRescheduleAppointment(pendingRescheduleAppointment.event_id, pendingRescheduleAppointment.email, newDatetime);
+    }
+
+    return (
+      <div className="afa-cal-wrap" ref={calRef}>
+        <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:10 }}>
+          <div style={{ width:3, height:18, borderRadius:2, background:T.acc }} />
+          <span style={{ fontFamily:'var(--font-chivo,"Chivo Mono",monospace)', fontSize:9.5, fontWeight:700, letterSpacing:'.13em', textTransform:'uppercase', color:T.acc }}>Neuen Termin wählen</span>
+        </div>
+        <Card>
+          {selDate && (
+            <div style={{ display:'flex', alignItems:'center', gap:8, padding:'10px 16px', background:'rgba(0,187,253,0.05)', borderBottom:'1px solid rgba(0,187,253,0.1)' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#00bbfd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span style={{ fontSize:13, fontWeight:600, color:T.txt }}>{fmtDate(selDate.year, selDate.month, selDate.day)}</span>
+            </div>
+          )}
+          <div style={{ padding:'14px 16px 16px' }}>
+            <div style={{ fontFamily:'var(--font-chivo,"Chivo Mono",monospace)', fontSize:10, fontWeight:700, letterSpacing:'.13em', textTransform:'uppercase', color:T.muted, marginBottom:12 }}>Verfügbare Zeiten</div>
+            {dateSlotsLoading && (
+              <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:72, gap:8, marginBottom:14 }}>
+                <div style={{ display:'flex', gap:6 }}>{[0,1,2].map(i => <div key={i} className="afa-td" style={{ animationDelay:`${i*0.18}s` }} />)}</div>
+                <span style={{ fontSize:11, color:T.muted, letterSpacing:'0.04em' }}>Lade verfügbare Zeiten…</span>
+              </div>
+            )}
+            {dateSlotsError && !dateSlotsLoading && (
+              <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, marginBottom:14, padding:'10px 0' }}>
+                <p style={{ margin:0, fontSize:13, color:T.muted, lineHeight:1.65, textAlign:'center' }}>Zeiten konnten nicht geladen werden.</p>
+                <button className="afa-btn-prim" onClick={() => setDateSlotsRetryTick(t => t + 1)} style={{ ...primBase, width:'auto', padding:'9px 20px' }}>Erneut versuchen</button>
+              </div>
+            )}
+            {slotsReady && dateSlots!.length === 0 && (
+              <p style={{ fontSize:13, color:T.muted, lineHeight:1.65, marginBottom:14 }}>
+                Für diesen Tag sind keine Termine verfügbar. Bitte wähle ein anderes Datum.
+              </p>
+            )}
+            {slotsReady && dateSlots!.length > 0 && (
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:7, marginBottom:14 }}>
+                {dateSlots!.map(t => (
+                  <button key={t} className={`afa-slot${selTime === t ? ' sel' : ''}`} onClick={() => setSelTime(t)}>{t}</button>
+                ))}
+              </div>
+            )}
+            <div style={{ display:'flex', gap:8 }}>
+              <button className="afa-btn-ghost" onClick={() => setStep('reschedule-cal-date')} style={{ ...ghostBase, flex:'0 0 auto', padding:'10px 14px' }}>‹ Datum</button>
+              <button className="afa-btn-prim" disabled={!canProceed} onClick={handleRescheduleWeiter} style={{ ...primBase, flex:1, width:'auto', opacity: canProceed ? 1 : 0.35 }}>Termin verschieben →</button>
+            </div>
+          </div>
+        </Card>
+        <BackLink />
+      </div>
+    );
+  }
+
   // ── Avatar ────────────────────────────────────────────────────────────────
   function Avatar() {
     return (
@@ -1835,7 +2026,9 @@ export default function PremiumChatbot() {
           <div ref={scrollRef} style={{ flex:1, overflowY:'auto', padding:'18px 18px 6px', display:'flex', flexDirection:'column', scrollbarWidth:'thin', scrollbarColor:'rgba(255,255,255,0.08) transparent' }}>
             {msgs.map(renderMsg)}
             {typing && renderTypingDots()}
-            {step==='cal-date' && !typing && renderCalDate()}
+            {step==='cal-date'           && !typing && renderCalDate()}
+            {step==='reschedule-cal-date' && !typing && renderRescheduleCalDate()}
+            {step==='reschedule-cal-time' && !typing && renderRescheduleCalTime()}
             {step==='cal-time' && !typing && renderCalTime()}
             {step==='confirm'  && !typing && renderConfirm()}
             <div style={{ height:6 }} />
