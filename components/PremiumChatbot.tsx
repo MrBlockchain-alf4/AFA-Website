@@ -536,7 +536,7 @@ export default function PremiumChatbot() {
   );
 
   useEffect(() => {
-    console.log('AFA_CHATBOT_RESCHEDULE_V2');
+    console.log('AFA_CHATBOT_RESCHEDULE_V3');
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener('resize', check);
@@ -1352,12 +1352,14 @@ export default function PremiumChatbot() {
       const data = await res.json().catch(() => ({})) as Record<string, unknown>;
       console.log('[AFA Reschedule] Response:', data);
       setTyping(false);
-      if (data.success === true) {
+      const isSuccess = data.success === true || data.status === 'success';
+      const isNotAvailable = !isSuccess && (data.error === 'not_available' || data.status === 'not_available');
+      if (isSuccess) {
         setPendingRescheduleAppointment(null);
         const msg = (data.message as string) || 'Dein Termin wurde erfolgreich verschoben. Du erhältst zusätzlich eine Bestätigung per E-Mail.';
         setMsgs(m => [...m, { id: nextId(), role: 'bot', text: msg, quickReplies: ['Zurück zum Start', 'Beratung buchen', 'Termin stornieren'] }]);
         setStep('success');
-      } else if (data.error === 'not_available') {
+      } else if (isNotAvailable) {
         setSelTime(null);
         setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Diese Uhrzeit ist leider nicht verfügbar. Bitte wähle eine andere Uhrzeit.' }]);
         setStep('reschedule-cal-time');
