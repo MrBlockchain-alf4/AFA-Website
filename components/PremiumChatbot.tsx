@@ -9,6 +9,7 @@ type Step =
   | 'cal-date' | 'cal-time' | 'confirm' | 'submitting'
   | 'sms-confirm'
   | 'cancel-email' | 'cancel-confirm'
+  | 'reschedule-email' | 'reschedule-confirm' | 'reschedule-datetime'
   | 'success' | 'error' | 'handoff-done';
 
 type LeadGoal = 'book' | 'handoff';
@@ -61,8 +62,9 @@ interface AvailabilityResponse {
 const LEAD_WEBHOOK         = process.env.NEXT_PUBLIC_AFA_LEAD_WEBHOOK_URL         ?? '';
 const TERMIN_WEBHOOK       = process.env.NEXT_PUBLIC_AFA_TERMIN_WEBHOOK_URL       ?? '';
 const AVAILABILITY_WEBHOOK = process.env.NEXT_PUBLIC_AFA_AVAILABILITY_WEBHOOK_URL ?? 'https://afa-team.app.n8n.cloud/webhook/afa-calendar-availability';
-const FIND_APPT_WEBHOOK    = 'https://afa-team.app.n8n.cloud/webhook/afa-chatbot-find-appointment';
-const CANCEL_APPT_WEBHOOK  = 'https://afa-team.app.n8n.cloud/webhook/afa-chatbot-cancel-appointment';
+const FIND_APPT_WEBHOOK       = 'https://afa-team.app.n8n.cloud/webhook/afa-chatbot-find-appointment';
+const CANCEL_APPT_WEBHOOK     = 'https://afa-team.app.n8n.cloud/webhook/afa-chatbot-cancel-appointment';
+const RESCHEDULE_APPT_WEBHOOK = 'https://afa-team.app.n8n.cloud/webhook/afa-termin-verschieben-auto';
 
 const MAIN_MENU: string[] = [
   'Beratung buchen',     'Termin vereinbaren',
@@ -70,7 +72,7 @@ const MAIN_MENU: string[] = [
   'Premium Website',     'Leadgenerierung',
   'Automatisierung',     'Preise / Angebot',
   'DSGVO / Datenschutz', 'Expertenkontakt',
-  'Termin stornieren',
+  'Termin stornieren',   'Termin verschieben',
 ];
 
 const INTEREST_REPLIES = [
@@ -206,9 +208,59 @@ function isCancelAppointmentIntent(value: string): boolean {
   );
 }
 
+function isRescheduleAppointmentIntent(value: string): boolean {
+  if (isCancelAppointmentIntent(value)) return false;
+  const text = normalizeChatText(value);
+  return (
+    text.includes('verschie')               ||
+    text.includes('verleg')                 ||
+    text.includes('umbuch')                 ||
+    text.includes('andere uhrzeit')         ||
+    text.includes('anderen tag')            ||
+    text.includes('anderen termin')         ||
+    text.includes('anderer termin')         ||
+    text.includes('neuer termin')           ||
+    text.includes('neuen termin')           ||
+    text.includes('termin andern')          ||
+    (text.includes('termin') && text.includes('andern')) ||
+    text.includes('ich kann zu dem termin nicht')        ||
+    text.includes('mochte eine andere')
+  );
+}
+
+function parseGermanDatetime(raw: string): string | null {
+  const t = raw.trim();
+  // DD.MM.YYYY um HH:MM  or  DD.MM.YYYY HH:MM
+  const m1 = t.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s+um\s*|\s+)(\d{1,2}):(\d{2})/i);
+  if (m1) {
+    const day  = String(m1[1]).padStart(2, '0');
+    const mon  = String(m1[2]).padStart(2, '0');
+    const hour = String(m1[4]).padStart(2, '0');
+    const min  = String(m1[5]).padStart(2, '0');
+    return `${m1[3]}-${mon}-${day} ${hour}:${min}:00`;
+  }
+  // DD.MM.YYYY um HH Uhr  (no minutes)
+  const m2 = t.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s+um\s*|\s+)(\d{1,2})\s*(?:uhr)?/i);
+  if (m2) {
+    const day  = String(m2[1]).padStart(2, '0');
+    const mon  = String(m2[2]).padStart(2, '0');
+    const hour = String(m2[4]).padStart(2, '0');
+    return `${m2[3]}-${mon}-${day} ${hour}:00:00`;
+  }
+  // YYYY-MM-DD HH:MM  or  YYYY-MM-DDTHH:MM
+  const m3 = t.match(/(\d{4})-(\d{2})-(\d{2})[T\s](\d{1,2}):(\d{2})/);
+  if (m3) {
+    const hour = String(m3[4]).padStart(2, '0');
+    const min  = String(m3[5]).padStart(2, '0');
+    return `${m3[1]}-${m3[2]}-${m3[3]} ${hour}:${min}:00`;
+  }
+  return null;
+}
+
 function detectIntent(text: string): string {
   const t = text.toLowerCase();
-  if (isCancelAppointmentIntent(text)) return 'cancel';
+  if (isCancelAppointmentIntent(text))    return 'cancel';
+  if (isRescheduleAppointmentIntent(text)) return 'reschedule';
   if (/\b(termin|buchen|vereinbaren|beratung|gespräch|meeting|angebot anfordern|demo anfragen|erstgespräch)\b/.test(t)) return 'book';
   if (/ki.?telefon|voicebot|telefonassistent|phone.?ai|sprachassistent/.test(t))  return 'ki-telefon';
   if (/ki.?chat|chatbot|chat.assistent/.test(t))                                    return 'ki-chat';
@@ -464,6 +516,10 @@ export default function PremiumChatbot() {
     interesse: string; terminFormatted: string; besprechungslink: string;
     cancel_url: string;
   } | null>(null);
+  const [pendingRescheduleAppointment, setPendingRescheduleAppointment] = useState<{
+    event_id: string; email: string; name: string;
+    interesse: string; terminFormatted: string;
+  } | null>(null);
 
   const scrollRef      = useRef<HTMLDivElement>(null);
   const inputRef       = useRef<HTMLInputElement>(null);
@@ -479,7 +535,7 @@ export default function PremiumChatbot() {
   );
 
   useEffect(() => {
-    console.log('AFA_CHATBOT_CANCEL_FIX_ACTIVE_V4');
+    console.log('AFA_CHATBOT_RESCHEDULE_V1');
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener('resize', check);
@@ -690,6 +746,12 @@ export default function PremiumChatbot() {
         setStep('cancel-email');
         botReply('Gerne. Bitte nenne mir die **E-Mail-Adresse**, mit der der Termin gebucht wurde.', ['Zurück zum Start']);
         return;
+      case 'reschedule':
+        setPendingRescheduleAppointment(null);
+        setLead({});
+        setStep('reschedule-email');
+        botReply('Gerne. Bitte nenne mir die **E-Mail-Adresse**, mit der der Termin gebucht wurde.', ['Zurück zum Start']);
+        return;
       case 'human':
         startLead('handoff', 'Kein Problem! Ich verbinde dich mit einem Experten. Wie ist dein **Vorname**?');
         return;
@@ -737,11 +799,56 @@ export default function PremiumChatbot() {
       return;
     }
 
+    // ── Reschedule confirm/deny — must run BEFORE isRescheduleAppointmentIntent ──
+    if (text === 'Ja, Termin verschieben' && step === 'reschedule-confirm') {
+      if (pendingRescheduleAppointment) {
+        setStep('reschedule-datetime');
+        botReply('Auf welchen neuen Tag und welche Uhrzeit möchtest du den Termin verschieben?\n\nBeispiel: 18.06.2026 um 14:30 Uhr', ['Zurück zum Start']);
+      }
+      return;
+    }
+    if (text === 'Nein' && step === 'reschedule-confirm') {
+      setPendingRescheduleAppointment(null);
+      setStep('welcome');
+      botReply('Alles klar. Der Termin bleibt unverändert.', ['Zurück zum Start', 'Termin stornieren', 'Beratung buchen']);
+      return;
+    }
+
+    // ── Reschedule datetime step — bypass intent detection entirely ──
+    if (step === 'reschedule-datetime') {
+      if (text === 'Andere Uhrzeit wählen') {
+        botReply('Auf welchen neuen Tag und welche Uhrzeit möchtest du den Termin verschieben?\n\nBeispiel: 18.06.2026 um 14:30 Uhr', ['Zurück zum Start'], 400);
+        return;
+      }
+      const dt = parseGermanDatetime(text);
+      if (!dt) {
+        botReply('Bitte gib den neuen Termin im Format **TT.MM.JJJJ um HH:MM** an, zum Beispiel: 18.06.2026 um 14:30 Uhr.', ['Andere Uhrzeit wählen', 'Zurück zum Start'], 500);
+        return;
+      }
+      if (!pendingRescheduleAppointment) {
+        botReply('Es ist ein Fehler aufgetreten. Bitte starte von vorne.', ['Zurück zum Start'], 400);
+        setStep('welcome');
+        return;
+      }
+      setTyping(true);
+      doRescheduleAppointment(pendingRescheduleAppointment.event_id, pendingRescheduleAppointment.email, dt);
+      return;
+    }
+
     // ── Cancellation intent — absolute highest priority, interrupts any active flow ──
     if (text === 'Termin stornieren' || isCancelAppointmentIntent(text)) {
       setPendingCancellationAppointment(null);
       setLead({});
       setStep('cancel-email');
+      botReply('Gerne. Bitte nenne mir die **E-Mail-Adresse**, mit der der Termin gebucht wurde.', ['Zurück zum Start']);
+      return;
+    }
+
+    // ── Reschedule intent — second priority after cancel ──
+    if (text === 'Termin verschieben' || isRescheduleAppointmentIntent(text)) {
+      setPendingRescheduleAppointment(null);
+      setLead({});
+      setStep('reschedule-email');
       botReply('Gerne. Bitte nenne mir die **E-Mail-Adresse**, mit der der Termin gebucht wurde.', ['Zurück zum Start']);
       return;
     }
@@ -862,6 +969,30 @@ export default function PremiumChatbot() {
       case 'cancel-confirm': {
         // Ja/Nein already handled above; catch-all if user types something else
         botReply('Bitte wähle eine Option.', ['Ja, Termin stornieren', 'Nein, nicht stornieren'], 400);
+        return;
+      }
+
+      case 'reschedule-email': {
+        if (text === 'E-Mail erneut eingeben' || text === 'Erneut versuchen') {
+          botReply('Kein Problem! Bitte nenne mir die **E-Mail-Adresse**, mit der der Termin gebucht wurde.', ['Zurück zum Start'], 400);
+          return;
+        }
+        if (text === 'Termin vereinbaren') {
+          startLead('book', 'Sehr gerne buche ich einen Termin für dich! Wie ist dein **Vorname**?');
+          return;
+        }
+        if (!validateEmail(text)) {
+          botReply('Das scheint keine gültige E-Mail zu sein. Bitte nochmal versuchen. 📧', ['Zurück zum Start'], 500);
+          return;
+        }
+        setTyping(true);
+        doFindAppointmentForReschedule(text);
+        return;
+      }
+
+      case 'reschedule-confirm': {
+        // Ja/Nein handled above; catch-all
+        botReply('Bitte wähle eine Option.', ['Ja, Termin verschieben', 'Nein'], 400);
         return;
       }
 
@@ -1139,6 +1270,86 @@ export default function PremiumChatbot() {
     }
   }
 
+  async function doFindAppointmentForReschedule(email: string) {
+    try {
+      const res  = await fetch(FIND_APPT_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'Website Chatbot' }),
+      });
+      const data = await res.json();
+      setTyping(false);
+      if (!data.success) {
+        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Ich konnte zu dieser E-Mail-Adresse leider keinen aktiven Termin finden. Bitte prüfe die E-Mail-Adresse.', quickReplies: ['E-Mail erneut eingeben', 'Termin vereinbaren', 'Zurück zum Start'] }]);
+        setStep('reschedule-email');
+      } else {
+        const appt = {
+          event_id:        String(data.event_id ?? ''),
+          email,
+          name:            String(data.name ?? ''),
+          interesse:       String(data.interesse ?? ''),
+          terminFormatted: String(data.terminFormatted ?? ''),
+        };
+        setPendingRescheduleAppointment(appt);
+        const lines: string[] = [
+          'Ich habe diesen Termin gefunden:',
+          '',
+          `**Name:** ${appt.name}`,
+          `**Leistung:** ${appt.interesse}`,
+          `**Termin:** ${appt.terminFormatted}`,
+          '',
+          'Möchtest du diesen Termin verschieben?',
+        ];
+        setStep('reschedule-confirm');
+        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: lines.join('\n'), quickReplies: ['Ja, Termin verschieben', 'Nein'] }]);
+      }
+    } catch {
+      setTyping(false);
+      setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Es gab ein Problem bei der Suche. Bitte versuche es erneut.', quickReplies: ['E-Mail erneut eingeben', 'Zurück zum Start'] }]);
+      setStep('reschedule-email');
+    }
+  }
+
+  async function doRescheduleAppointment(eventId: string, email: string, newDatetime: string) {
+    setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Einen Moment, ich prüfe die Verfügbarkeit und verschiebe deinen Termin...' }]);
+    const payload = {
+      event_id:         eventId,
+      email,
+      new_datetime:     newDatetime,
+      duration_minutes: 30,
+      timezone:         'Europe/Berlin',
+      source:           'Website Chatbot',
+      message:          'Terminverschiebung über Website Chatbot',
+    };
+    console.log('[AFA Reschedule] Payload:', payload);
+    try {
+      const res  = await fetch(RESCHEDULE_APPT_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({})) as Record<string, unknown>;
+      console.log('[AFA Reschedule] Response:', data);
+      setTyping(false);
+      if (data.success === true) {
+        setPendingRescheduleAppointment(null);
+        const msg = (data.message as string) || 'Dein Termin wurde erfolgreich verschoben. Du erhältst zusätzlich eine Bestätigung per E-Mail.';
+        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: msg, quickReplies: ['Zurück zum Start', 'Beratung buchen', 'Termin stornieren'] }]);
+        setStep('success');
+      } else if (data.error === 'not_available') {
+        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Diese Uhrzeit ist leider nicht verfügbar. Bitte wähle eine andere Uhrzeit.\n\nAuf welchen neuen Tag und welche Uhrzeit möchtest du den Termin verschieben?\n\nBeispiel: 18.06.2026 um 14:30 Uhr', quickReplies: ['Zurück zum Start'] }]);
+        setStep('reschedule-datetime');
+      } else {
+        setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Der Termin konnte leider nicht automatisch verschoben werden. Bitte versuche es erneut oder kontaktiere uns direkt per E-Mail: info@afa-ai.com', quickReplies: ['Andere Uhrzeit wählen', 'Zurück zum Start'] }]);
+        setStep('reschedule-datetime');
+      }
+    } catch {
+      setTyping(false);
+      setMsgs(m => [...m, { id: nextId(), role: 'bot', text: 'Der Termin konnte leider nicht automatisch verschoben werden. Bitte versuche es erneut oder kontaktiere uns direkt per E-Mail: info@afa-ai.com', quickReplies: ['Andere Uhrzeit wählen', 'Zurück zum Start'] }]);
+      setStep('reschedule-datetime');
+    }
+  }
+
   function reset() {
     setStep('welcome'); setLead({}); setLeadGoal('book');
     setSelDate(null); setSelTime(null);
@@ -1147,6 +1358,7 @@ export default function PremiumChatbot() {
     setAvailability(null); setAvailError(false); setAvailRetryTick(0);
     setDateSlots(null); setDateSlotsLoading(false); setDateSlotsError(false); setDateSlotsRetryTick(0);
     setPendingCancellationAppointment(null);
+    setPendingRescheduleAppointment(null);
     setTyping(true);
     setTimeout(() => {
       setTyping(false);
