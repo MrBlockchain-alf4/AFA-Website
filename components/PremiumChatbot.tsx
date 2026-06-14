@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 // ── Types ──────────────────────────────────────────────────────────────────
 type Step =
   | 'welcome'
+  | 'privacy-notice'
   | 'lead-vorname' | 'lead-nachname' | 'lead-email'
   | 'lead-telefon' | 'lead-unternehmen' | 'lead-interesse' | 'lead-custom'
   | 'cal-date' | 'cal-time' | 'confirm' | 'submitting'
@@ -68,12 +69,16 @@ const CANCEL_APPT_WEBHOOK     = 'https://afa-team.app.n8n.cloud/webhook/afa-chat
 const RESCHEDULE_APPT_WEBHOOK = 'https://afa-team.app.n8n.cloud/webhook/afa-termin-verschieben-auto';
 
 const MAIN_MENU: string[] = [
-  'Beratung buchen',     'Termin vereinbaren',
-  'KI-Telefon',          'KI-Chatbot',
-  'Premium Website',     'Leadgenerierung',
-  'Automatisierung',     'Preise / Angebot',
-  'DSGVO / Datenschutz', 'Expertenkontakt',
-  'Termin stornieren',   'Termin verschieben',
+  'Termin buchen',    'KI-Telefon',
+  'KI-Chatbot',       'Premium Website',
+  'Preise / Angebot', 'Weitere Optionen',
+];
+
+const SECONDARY_MENU: string[] = [
+  'Termin verschieben', 'Termin stornieren',
+  'Automatisierung',    'Leadgenerierung',
+  'DSGVO / Datenschutz','Expertenkontakt',
+  'Zurück zum Start',
 ];
 
 const INTEREST_REPLIES = [
@@ -521,11 +526,15 @@ export default function PremiumChatbot() {
     event_id: string; email: string; name: string;
     interesse: string; terminFormatted: string;
   } | null>(null);
+  const [privacyAccepted,  setPrivacyAccepted]  = useState(false);
+  const [pendingLeadGoal,  setPendingLeadGoal]  = useState<LeadGoal>('book');
+  const [pendingLeadIntro, setPendingLeadIntro] = useState<string | null>(null);
 
   const scrollRef      = useRef<HTMLDivElement>(null);
   const inputRef       = useRef<HTMLInputElement>(null);
   const calRef         = useRef<HTMLDivElement>(null);
   const idRef          = useRef(0);
+  const handleOpenRef  = useRef<(mode?: string) => void>(() => {});
   const teaserTimerRef = useRef<ReturnType<typeof setTimeout>  | undefined>(undefined);
   const teaserCycleRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const nextId    = () => ++idRef.current;
@@ -536,11 +545,17 @@ export default function PremiumChatbot() {
   );
 
   useEffect(() => {
-    console.log('AFA_CHATBOT_RESCHEDULE_V3');
+    console.log('AFA_CHATBOT_V4');
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
+  }, []);
+
+  useEffect(() => {
+    (window as Window & { AFAChatbot?: { open: (mode?: string) => void } }).AFAChatbot = {
+      open: (mode?: string) => handleOpenRef.current(mode),
+    };
   }, []);
 
   // Scroll to bottom only on new text messages and typing indicator changes.
@@ -691,28 +706,48 @@ export default function PremiumChatbot() {
   }
 
   // ── Navigation ────────────────────────────────────────────────────────────
-  function handleOpen() {
+  function handleOpen(mode?: string) {
     setOpen(true);
     if (msgs.length === 0) {
       setTyping(true);
       setTimeout(() => {
         setTyping(false);
-        setMsgs([{
-          id: nextId(), role: 'bot',
-          text: 'Willkommen bei **AFA**! Ich bin dein KI-Assistent für autonome Unternehmenslösungen. Wie kann ich dir heute helfen? 👋',
-          quickReplies: MAIN_MENU, menuGrid: true,
-        }]);
+        if (mode === 'appointment_booking') {
+          setMsgs([{ id: nextId(), role: 'bot', text: 'Sehr gerne. Ich helfe dir, einen passenden Beratungstermin zu buchen.' }]);
+          setTimeout(() => startLead('book', 'Gerne buche ich einen Termin für dich! Wie ist dein **Vorname**?'), 800);
+        } else {
+          setMsgs([{
+            id: nextId(), role: 'bot',
+            text: 'Willkommen bei **AFA**. Ich bin dein KI-Assistent für moderne Unternehmenslösungen. Ich helfe dir bei Beratungsterminen, KI-Telefon, KI-Chatbots und Premium-Websites. Wobei darf ich helfen?',
+            quickReplies: MAIN_MENU, menuGrid: true,
+          }]);
+        }
       }, 700);
     }
     setTimeout(() => inputRef.current?.focus(), 800);
   }
+  handleOpenRef.current = handleOpen;
 
-  function startLead(goal: LeadGoal, intro?: string) {
+  function startLeadInternal(goal: LeadGoal, intro?: string) {
     setLeadGoal(goal);
     setLead({});
     setEditingLead(false);
     setStep('lead-vorname');
     botReply(intro ?? 'Gerne! Wie ist dein **Vorname**?', ['Zurück zum Start']);
+  }
+
+  function startLead(goal: LeadGoal, intro?: string) {
+    if (!privacyAccepted) {
+      setPendingLeadGoal(goal);
+      setPendingLeadIntro(intro ?? null);
+      setStep('privacy-notice');
+      botReply(
+        'Bevor wir deine Kontaktdaten aufnehmen:\n\nDeine Angaben werden ausschließlich zur Bearbeitung deiner Anfrage und zur Terminorganisation verwendet.',
+        ['Einverstanden', 'Datenschutzerklärung öffnen', 'Abbrechen'],
+      );
+      return;
+    }
+    startLeadInternal(goal, intro);
   }
 
   function handleIntent(intent: string) {
@@ -856,6 +891,32 @@ export default function PremiumChatbot() {
       return; // all interaction happens via the visual picker; ignore free text
     }
 
+    // ── Weitere Optionen — show secondary menu ──
+    if (text === 'Weitere Optionen') {
+      botReply('Weitere Optionen:', SECONDARY_MENU, 400, true);
+      return;
+    }
+
+    // ── Privacy notice step ──
+    if (step === 'privacy-notice') {
+      if (text === 'Einverstanden') {
+        setPrivacyAccepted(true);
+        startLeadInternal(pendingLeadGoal, pendingLeadIntro ?? undefined);
+        return;
+      }
+      if (text === 'Datenschutzerklärung öffnen') {
+        window.open('/datenschutz', '_blank');
+        botReply(
+          'Die Datenschutzerklärung wurde in einem neuen Tab geöffnet. Möchtest du fortfahren?',
+          ['Einverstanden', 'Abbrechen'],
+          400,
+        );
+        return;
+      }
+      reset();
+      return;
+    }
+
     // ── Cancellation intent — absolute highest priority, interrupts any active flow ──
     if (text === 'Termin stornieren' || isCancelAppointmentIntent(text)) {
       setPendingCancellationAppointment(null);
@@ -901,24 +962,31 @@ export default function PremiumChatbot() {
         }
         setLead(l => ({ ...l, email: text }));
         setStep('lead-telefon');
-        botReply('Danke! Hast du eine **Telefonnummer**, unter der wir dich erreichen können?', ['Überspringen', 'Zurück zum Start']);
+        botReply('Danke! Wie lautet deine **Telefonnummer**?', ['Zurück zum Start']);
         return;
 
       case 'lead-telefon': {
-        const val = text.toLowerCase() === 'überspringen' ? '' : text;
-        setLead(l => ({ ...l, telefon: val }));
+        const digits = text.replace(/\D/g, '');
+        if (digits.length < 5) {
+          botReply('Bitte gib eine gültige **Telefonnummer** ein (z.B. +49 151 12345678).', ['Zurück zum Start'], 500);
+          return;
+        }
+        setLead(l => ({ ...l, telefon: text }));
         setStep('lead-unternehmen');
-        botReply('Und wie heißt dein **Unternehmen**?', ['Überspringen', 'Zurück zum Start']);
+        botReply('Und wie heißt dein **Unternehmen**?', ['Zurück zum Start']);
         return;
       }
 
       case 'lead-unternehmen': {
-        const val = text.toLowerCase() === 'überspringen' ? '' : text;
-        setLead(l => ({ ...l, unternehmen: val }));
+        if (text.trim().length < 2) {
+          botReply('Bitte gib deinen **Unternehmensnamen** ein.', ['Zurück zum Start'], 500);
+          return;
+        }
+        setLead(l => ({ ...l, unternehmen: text }));
         if (leadGoal === 'handoff') {
           setStep('submitting');
           setTyping(true);
-          const final = { ...lead, unternehmen: val };
+          const final = { ...lead, unternehmen: text };
           setTimeout(() => { doHandoff(final); }, 600);
           return;
         }
@@ -1386,7 +1454,7 @@ export default function PremiumChatbot() {
     setTyping(true);
     setTimeout(() => {
       setTyping(false);
-      setMsgs([{ id:nextId(), role:'bot', text:'Wie kann ich dir weiterhelfen? 👋', quickReplies:MAIN_MENU, menuGrid:true }]);
+      setMsgs([{ id:nextId(), role:'bot', text:'Wie kann ich dir weiterhelfen?', quickReplies:MAIN_MENU, menuGrid:true }]);
     }, 500);
   }
 
@@ -1937,7 +2005,7 @@ export default function PremiumChatbot() {
         {!open && (
           <div
             className={`afa-teaser${teaserPulse ? ' afa-tsr-pulse' : ''}`}
-            onClick={handleOpen}
+            onClick={() => handleOpen()}
             style={{
               position: 'absolute',
               bottom: isMobile ? 74 : 76,

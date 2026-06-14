@@ -402,9 +402,8 @@ function Nav() {
                 )}
               </button>
             )}
-            <a
-              href="#kontakt"
-              onClick={e => handleNavClick(e, "kontakt")}
+            <button
+              onClick={() => (window as Window & { AFAChatbot?: { open: (mode?: string) => void } }).AFAChatbot?.open("appointment_booking")}
               onMouseEnter={e => (e.currentTarget.style.filter = "brightness(1.1)")}
               onMouseLeave={e => (e.currentTarget.style.filter = "brightness(1)")}
               style={{
@@ -412,8 +411,9 @@ function Nav() {
                 background: C.acc, color: "#000",
                 padding: isMobile ? "8px 16px" : "9px 22px", borderRadius: 6,
                 transition: "filter 0.15s", whiteSpace: "nowrap",
+                border: "none", cursor: "pointer",
               }}
-            >Beratung buchen</a>
+            >Beratung buchen</button>
           </div>
         </div>
       </header>
@@ -1077,7 +1077,8 @@ function Hero() {
               transition={{ duration: 0.6, ease: he, delay: 0.96 }}
               style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "center", gap: isMobile ? 14 : 18 }}
             >
-              <a href="#kontakt"
+              <button
+                onClick={() => (window as Window & { AFAChatbot?: { open: (mode?: string) => void } }).AFAChatbot?.open("appointment_booking")}
                 onMouseEnter={e => (e.currentTarget.style.filter = "brightness(1.12)")}
                 onMouseLeave={e => (e.currentTarget.style.filter = "brightness(1)")}
                 style={{
@@ -1087,7 +1088,8 @@ function Hero() {
                   display: "inline-block",
                   boxShadow: "0 0 32px rgba(0,187,253,0.45)",
                   transition: "filter 0.15s",
-                }}>Beratung buchen</a>
+                  border: "none", cursor: "pointer",
+                }}>Beratung buchen</button>
               <a href="#chat"
                 onMouseEnter={e => (e.currentTarget.style.color = C.text)}
                 onMouseLeave={e => (e.currentTarget.style.color = C.soft)}
@@ -2756,14 +2758,16 @@ function SystemSection() {
 
       {/* CTA */}
       <div style={{ textAlign: "center", marginTop: 56 }}>
-        <a href="#kontakt"
+        <button
+          onClick={() => (window as Window & { AFAChatbot?: { open: (mode?: string) => void } }).AFAChatbot?.open("appointment_booking")}
           onMouseEnter={e => (e.currentTarget.style.filter = "brightness(1.12)")}
           onMouseLeave={e => (e.currentTarget.style.filter = "brightness(1)")}
           style={{
             display: "inline-block", fontFamily: C.H, fontWeight: 700, fontSize: 14,
             background: C.acc, color: "#000", padding: "14px 36px", borderRadius: 8,
             boxShadow: "0 0 28px rgba(0,187,253,0.4)", transition: "filter 0.15s",
-          }}>Beratung buchen</a>
+            border: "none", cursor: "pointer",
+          }}>Beratung buchen</button>
       </div>
     </Section>
   );
@@ -3213,8 +3217,8 @@ function FinalCTA() {
               animation: "cta-glow-bg 3.8s ease-in-out infinite",
               pointerEvents: "none",
             }} />
-            <a
-              href="mailto:info@afa.agency"
+            <button
+              onClick={() => (window as Window & { AFAChatbot?: { open: (mode?: string) => void } }).AFAChatbot?.open("appointment_booking")}
               onMouseEnter={e => {
                 e.currentTarget.style.filter = "brightness(1.12)";
                 e.currentTarget.style.transform = "scale(1.02)";
@@ -3230,10 +3234,11 @@ function FinalCTA() {
                 padding: isMobile ? "14px 36px" : "18px 68px", borderRadius: 12,
                 animation: "cta-glow 3.6s ease-in-out infinite",
                 transition: "filter 0.18s ease, transform 0.18s ease",
+                border: "none", cursor: "pointer",
               }}
             >
               Beratung buchen
-            </a>
+            </button>
           </div>
         </motion.div>
 
