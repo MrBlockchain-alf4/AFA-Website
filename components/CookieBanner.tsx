@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 
 export default function CookieBanner() {
   const [cookieVisible,    setCookieVisible]    = useState(false);
-  const [cookieClosing,    setCookieClosing]    = useState(false);
   const [settingsOpen,     setSettingsOpen]     = useState(false);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(true);
 
@@ -17,12 +16,31 @@ export default function CookieBanner() {
       'afaCookieConsent',
       JSON.stringify({ status, analytics, timestamp: new Date().toISOString() }),
     );
-    setCookieClosing(true);
-    window.setTimeout(() => {
+
+    const banner = document.querySelector<HTMLElement>('[data-cookie-banner="true"]');
+
+    let done = false;
+    const hide = () => {
+      if (done) return;
+      done = true;
       setCookieVisible(false);
-      setCookieClosing(false);
       setSettingsOpen(false);
-    }, 900);
+    };
+
+    if (banner && typeof banner.animate === 'function') {
+      banner.style.pointerEvents = 'none';
+      const anim = banner.animate(
+        [
+          { opacity: '1', transform: 'translateY(0) scale(1)', filter: 'blur(0px)' },
+          { opacity: '0', transform: 'translateY(24px) scale(0.97)', filter: 'blur(5px)' },
+        ],
+        { duration: 800, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' },
+      );
+      anim.onfinish = hide;
+      window.setTimeout(hide, 1000);
+    } else {
+      hide();
+    }
   }
 
   if (!cookieVisible) return null;
@@ -33,7 +51,6 @@ export default function CookieBanner() {
   return (
     <div
       data-cookie-banner="true"
-      className={cookieClosing ? 'cookie-banner-closing' : ''}
       style={{
         position: 'fixed',
         bottom: 0,
