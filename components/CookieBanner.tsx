@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 export default function CookieBanner() {
   const [cookieVisible,    setCookieVisible]    = useState(false);
+  const [cookieClosing,    setCookieClosing]    = useState(false);
   const [settingsOpen,     setSettingsOpen]     = useState(false);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(true);
 
@@ -11,13 +12,17 @@ export default function CookieBanner() {
     if (!saved) setCookieVisible(true);
   }, []);
 
-  function saveConsent(status: string, analytics: boolean) {
+  function closeCookieBannerWithAnimation(status: string, analytics: boolean) {
     localStorage.setItem(
       'afaCookieConsent',
       JSON.stringify({ status, analytics, timestamp: new Date().toISOString() }),
     );
-    setCookieVisible(false);
-    setSettingsOpen(false);
+    setCookieClosing(true);
+    window.setTimeout(() => {
+      setCookieVisible(false);
+      setCookieClosing(false);
+      setSettingsOpen(false);
+    }, 900);
   }
 
   if (!cookieVisible) return null;
@@ -28,6 +33,7 @@ export default function CookieBanner() {
   return (
     <div
       data-cookie-banner="true"
+      className={cookieClosing ? 'cookie-banner-closing' : ''}
       style={{
         position: 'fixed',
         bottom: 0,
@@ -85,7 +91,7 @@ export default function CookieBanner() {
             </button>
             <button
               type="button"
-              onClick={() => saveConsent('essential', false)}
+              onClick={() => closeCookieBannerWithAnimation('essential', false)}
               style={{
                 background: 'transparent',
                 border: '1px solid rgba(255,255,255,0.12)',
@@ -103,7 +109,7 @@ export default function CookieBanner() {
             </button>
             <button
               type="button"
-              onClick={() => saveConsent('all', true)}
+              onClick={() => closeCookieBannerWithAnimation('all', true)}
               style={{
                 background: '#00bbfd',
                 border: 'none',
@@ -174,7 +180,7 @@ export default function CookieBanner() {
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <button
                 type="button"
-                onClick={() => saveConsent('custom', analyticsEnabled)}
+                onClick={() => closeCookieBannerWithAnimation('custom', analyticsEnabled)}
                 style={{
                   background: '#00bbfd', border: 'none', borderRadius: 8,
                   padding: '9px 22px', color: '#000', fontFamily: H, fontWeight: 700, fontSize: 13,
@@ -187,7 +193,7 @@ export default function CookieBanner() {
               </button>
               <button
                 type="button"
-                onClick={() => saveConsent('all', true)}
+                onClick={() => closeCookieBannerWithAnimation('all', true)}
                 style={{
                   background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8,
                   padding: '9px 22px', color: '#a1a1aa', fontFamily: M, fontSize: 12,
