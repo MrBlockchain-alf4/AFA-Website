@@ -553,8 +553,9 @@ export default function PremiumChatbot() {
   }, []);
 
   useEffect(() => {
-    (window as Window & { AFAChatbot?: { open: (mode?: string) => void } }).AFAChatbot = {
+    (window as Window & { AFAChatbot?: { open: (mode?: string) => void; openWithIntent: (intent: string) => void } }).AFAChatbot = {
       open: (mode?: string) => handleOpenRef.current(mode),
+      openWithIntent: (intent: string) => handleOpenRef.current(intent),
     };
   }, []);
 
@@ -708,20 +709,27 @@ export default function PremiumChatbot() {
   // ── Navigation ────────────────────────────────────────────────────────────
   function handleOpen(mode?: string) {
     setOpen(true);
-    if (msgs.length === 0) {
+    if (mode === 'appointment_booking') {
+      // Always reset and drive directly into booking flow regardless of prior state
+      setMsgs([]);
+      setStep('welcome');
+      setLead({});
+      setEditingLead(false);
       setTyping(true);
       setTimeout(() => {
         setTyping(false);
-        if (mode === 'appointment_booking') {
-          setMsgs([{ id: nextId(), role: 'bot', text: 'Sehr gerne. Ich helfe dir, einen passenden Beratungstermin zu buchen.' }]);
-          setTimeout(() => startLead('book', 'Gerne buche ich einen Termin für dich! Wie ist dein **Vorname**?'), 800);
-        } else {
-          setMsgs([{
-            id: nextId(), role: 'bot',
-            text: 'Willkommen bei **AFA**. Ich bin dein KI-Assistent für moderne Unternehmenslösungen. Ich helfe dir bei Beratungsterminen, KI-Telefon, KI-Chatbots und Premium-Websites. Wobei darf ich helfen?',
-            quickReplies: MAIN_MENU, menuGrid: true,
-          }]);
-        }
+        setMsgs([{ id: nextId(), role: 'bot', text: 'Sehr gerne. Ich helfe dir, einen passenden Beratungstermin zu buchen.' }]);
+        setTimeout(() => startLead('book'), 800);
+      }, 700);
+    } else if (msgs.length === 0) {
+      setTyping(true);
+      setTimeout(() => {
+        setTyping(false);
+        setMsgs([{
+          id: nextId(), role: 'bot',
+          text: 'Willkommen bei **AFA**. Ich bin dein KI-Assistent für moderne Unternehmenslösungen. Ich helfe dir bei Beratungsterminen, KI-Telefon, KI-Chatbots und Premium-Websites. Wobei darf ich helfen?',
+          quickReplies: MAIN_MENU, menuGrid: true,
+        }]);
       }, 700);
     }
     setTimeout(() => inputRef.current?.focus(), 800);
@@ -742,7 +750,7 @@ export default function PremiumChatbot() {
       setPendingLeadIntro(intro ?? null);
       setStep('privacy-notice');
       botReply(
-        'Bevor wir deine Kontaktdaten aufnehmen:\n\nDeine Angaben werden ausschließlich zur Bearbeitung deiner Anfrage und zur Terminorganisation verwendet.',
+        'Bevor wir deine Kontaktdaten aufnehmen: Deine Angaben werden ausschließlich zur Bearbeitung deiner Anfrage und zur Terminorganisation verwendet. Weitere Informationen findest du in unserer Datenschutzerklärung.',
         ['Einverstanden', 'Datenschutzerklärung öffnen', 'Abbrechen'],
       );
       return;
@@ -957,7 +965,7 @@ export default function PremiumChatbot() {
 
       case 'lead-email':
         if (!validateEmail(text)) {
-          botReply('Das scheint keine gültige E-Mail zu sein. Bitte nochmal versuchen. 📧', ['Zurück zum Start'], 500);
+          botReply('Bitte gib eine gültige E-Mail-Adresse ein.', ['Zurück zum Start'], 500);
           return;
         }
         setLead(l => ({ ...l, email: text }));
@@ -968,7 +976,7 @@ export default function PremiumChatbot() {
       case 'lead-telefon': {
         const digits = text.replace(/\D/g, '');
         if (digits.length < 5) {
-          botReply('Bitte gib eine gültige **Telefonnummer** ein (z.B. +49 151 12345678).', ['Zurück zum Start'], 500);
+          botReply('Bitte gib eine Telefonnummer an, unter der wir dich erreichen können.', ['Zurück zum Start'], 500);
           return;
         }
         setLead(l => ({ ...l, telefon: text }));
@@ -979,7 +987,7 @@ export default function PremiumChatbot() {
 
       case 'lead-unternehmen': {
         if (text.trim().length < 2) {
-          botReply('Bitte gib deinen **Unternehmensnamen** ein.', ['Zurück zum Start'], 500);
+          botReply('Bitte gib den Namen deines Unternehmens an. Falls du als Privatperson anfragst, schreibe bitte Privatperson.', ['Zurück zum Start'], 500);
           return;
         }
         setLead(l => ({ ...l, unternehmen: text }));
@@ -1047,7 +1055,7 @@ export default function PremiumChatbot() {
           return;
         }
         if (!validateEmail(text)) {
-          botReply('Das scheint keine gültige E-Mail zu sein. Bitte nochmal versuchen. 📧', ['Zurück zum Start'], 500);
+          botReply('Bitte gib eine gültige E-Mail-Adresse ein.', ['Zurück zum Start'], 500);
           return;
         }
         setTyping(true);
@@ -1071,7 +1079,7 @@ export default function PremiumChatbot() {
           return;
         }
         if (!validateEmail(text)) {
-          botReply('Das scheint keine gültige E-Mail zu sein. Bitte nochmal versuchen. 📧', ['Zurück zum Start'], 500);
+          botReply('Bitte gib eine gültige E-Mail-Adresse ein.', ['Zurück zum Start'], 500);
           return;
         }
         setTyping(true);
@@ -1149,6 +1157,21 @@ export default function PremiumChatbot() {
     const dateStr     = `${selDate.year}-${pad2(selDate.month+1)}-${pad2(selDate.day)}`;
     // Plain local string — never toISOString() as that converts to UTC
     const dateTimeStr = `${dateStr}T${selTime}:00`;
+
+    // Compute end time as exactly 30 minutes after start — never rely on calendar defaults
+    const [startH, startM] = selTime.split(':').map(Number);
+    const endTotal = startH * 60 + startM + 30;
+    const endTimeStr     = `${pad2(Math.floor(endTotal / 60))}:${pad2(endTotal % 60)}`;
+    const endDateTimeStr = `${dateStr}T${endTimeStr}:00`;
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[AFA Booking Debug] Date:', dateStr);
+      console.log('[AFA Booking Debug] Time:', selTime);
+      console.log('[AFA Booking Debug] Start:', dateTimeStr);
+      console.log('[AFA Booking Debug] End:', endDateTimeStr);
+      console.log('[AFA Booking Debug] Duration: 30 minutes');
+    }
+
     const payload = {
       type: 'termin',
       vorname:             lead.vorname     ?? '',
@@ -1157,12 +1180,17 @@ export default function PremiumChatbot() {
       telefon:             lead.telefon     ?? '',
       unternehmen:         lead.unternehmen ?? '',
       interesse:           lead.interesse   ?? '',
-      appointmentDate:     dateStr,       // "2026-06-18"
-      appointmentTime:     selTime,       // "16:00"
-      appointmentDateTime: dateTimeStr,   // "2026-06-18T16:00:00" — no UTC offset
+      appointmentDate:     dateStr,         // "2026-06-18"
+      appointmentTime:     selTime,         // "11:00"
+      appointmentDateTime: dateTimeStr,     // "2026-06-18T11:00:00"
+      appointmentEndTime:  endTimeStr,      // "11:30"
+      appointmentEndDateTime: endDateTimeStr, // "2026-06-18T11:30:00"
+      endDateTime:         endDateTimeStr,  // alias for n8n Google Calendar node
+      durationMinutes:     30,             // explicit — never let calendar infer duration
       terminDatumZeit:     dateTimeStr,
       datum:               dateStr,
-      uhrzeit:             selTime,       // use this in n8n emails to avoid tz shift
+      uhrzeit:             selTime,         // use this in n8n emails to avoid tz shift
+      timezone:            'Europe/Berlin',
       sms:                 smsWanted ? 'Ja' : 'Nein',
       smsWanted,
       quelle:  'Website Chatbot',
