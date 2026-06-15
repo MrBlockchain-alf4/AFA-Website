@@ -64,6 +64,7 @@ interface AvailabilityResponse {
 const LEAD_WEBHOOK         = process.env.NEXT_PUBLIC_AFA_LEAD_WEBHOOK_URL         ?? '';
 const TERMIN_WEBHOOK       = process.env.NEXT_PUBLIC_AFA_TERMIN_WEBHOOK_URL       ?? '';
 const AVAILABILITY_WEBHOOK = process.env.NEXT_PUBLIC_AFA_AVAILABILITY_WEBHOOK_URL ?? 'https://afa-team.app.n8n.cloud/webhook/afa-calendar-availability';
+const SMS_WEBHOOK          = process.env.NEXT_PUBLIC_AFA_SMS_WEBHOOK_URL          ?? 'https://afa-team.app.n8n.cloud/webhook/send_sms_confirmation';
 const FIND_APPT_WEBHOOK       = 'https://afa-team.app.n8n.cloud/webhook/afa-chatbot-find-appointment';
 const CANCEL_APPT_WEBHOOK     = 'https://afa-team.app.n8n.cloud/webhook/afa-chatbot-cancel-appointment';
 const RESCHEDULE_APPT_WEBHOOK = 'https://afa-team.app.n8n.cloud/webhook/afa-termin-verschieben-auto';
@@ -1245,10 +1246,60 @@ export default function PremiumChatbot() {
       }
 
       setTyping(false); setSubmitting(false);
-      const confirmText = smsWanted
-        ? `📱 SMS wird gesendet! Perfekt! Dein Termin wurde erfolgreich gebucht. Du erhältst in Kürze eine Bestätigung per E-Mail an **${lead.email}**.`
-        : `Perfekt! Dein Termin wurde erfolgreich gebucht. Du erhältst in Kürze eine Bestätigung per E-Mail an **${lead.email}**.`;
-      setMsgs(m => [...m, { id:nextId(), role:'bot', text:confirmText, quickReplies:['Neue Anfrage starten'] }]);
+
+      if (smsWanted && lead.telefon && SMS_WEBHOOK) {
+        const smsPayload = {
+          first_name:                  lead.vorname     ?? '',
+          last_name:                   lead.nachname    ?? '',
+          vorname:                     lead.vorname     ?? '',
+          nachname:                    lead.nachname    ?? '',
+          email:                       lead.email       ?? '',
+          phone:                       lead.telefon     ?? '',
+          telefon:                     lead.telefon     ?? '',
+          appointment_date:            dateStr,
+          appointment_time:            selTime,
+          appointment_type:            lead.interesse   ?? '',
+          anliegen:                    lead.interesse   ?? '',
+          company:                     lead.unternehmen ?? '',
+          unternehmen:                 lead.unternehmen ?? '',
+          source:                      'afa-website-chatbot',
+          sms_opt_in:                  true,
+          sms_confirmation_requested:  true,
+          created_at:                  new Date().toISOString(),
+        };
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[AFA SMS] webhook url exists:', !!SMS_WEBHOOK);
+          console.log('[AFA SMS] payload:', smsPayload);
+        }
+
+        try {
+          const smsRes = await fetch(SMS_WEBHOOK, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(smsPayload),
+          });
+
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[AFA SMS] response status:', smsRes.status);
+            console.log('[AFA SMS] success:', smsRes.ok);
+          }
+
+          if (smsRes.ok) {
+            setMsgs(m => [...m, { id:nextId(), role:'bot', text:`Perfekt, Ihr Termin wurde angefragt. Sie erhalten eine Bestätigung per E-Mail und zusätzlich per SMS.`, quickReplies:['Neue Anfrage starten'] }]);
+          } else {
+            setMsgs(m => [...m, { id:nextId(), role:'bot', text:`Ihr Termin wurde angefragt. Die E-Mail-Bestätigung wird gesendet. Die SMS konnte eventuell nicht gesendet werden.`, quickReplies:['Neue Anfrage starten'] }]);
+          }
+        } catch {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[AFA SMS] failure: webhook call threw an error');
+          }
+          setMsgs(m => [...m, { id:nextId(), role:'bot', text:`Ihr Termin wurde angefragt. Die E-Mail-Bestätigung wird gesendet. Die SMS konnte eventuell nicht gesendet werden.`, quickReplies:['Neue Anfrage starten'] }]);
+        }
+      } else {
+        setMsgs(m => [...m, { id:nextId(), role:'bot', text:`Perfekt, Ihr Termin wurde angefragt. Sie erhalten eine Bestätigung per E-Mail.`, quickReplies:['Neue Anfrage starten'] }]);
+      }
+
       setStep('success');
     } catch (err) {
       console.error('[AFA Termin error]', err);
