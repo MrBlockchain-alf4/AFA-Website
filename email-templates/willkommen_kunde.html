@@ -40,7 +40,7 @@
 <body style="margin:0;padding:0;background-color:#09090b;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
 
   <div style="display:none;font-size:1px;color:#09090b;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-    Herzlich willkommen bei AFA, {{$json.body.vorname}}! Wir freuen uns auf die Zusammenarbeit.&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+    Herzlich willkommen bei AFA, {{$json.vorname}}! Wir freuen uns auf die Zusammenarbeit.&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
   </div>
 
   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="outer-bg" style="background-color:#09090b;">
@@ -68,7 +68,7 @@
                 </tr>
               </table>
               <p style="margin:0 0 12px;font-family:'Courier New',Courier,monospace;font-size:11px;font-weight:400;letter-spacing:0.16em;text-transform:uppercase;color:#00bbfd;">Willkommen bei AFA</p>
-              <h1 class="h1" style="margin:0 0 16px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:30px;font-weight:700;color:#f4f4f5;line-height:1.22;letter-spacing:-0.025em;">Herzlich willkommen, {{$json.body.vorname}}!</h1>
+              <h1 class="h1" style="margin:0 0 16px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:30px;font-weight:700;color:#f4f4f5;line-height:1.22;letter-spacing:-0.025em;">Herzlich willkommen, {{$json.vorname}}!</h1>
               <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:400;color:#71717a;line-height:1.75;max-width:420px;">
                 Wir freuen uns sehr, dich als neuen AFA-Kunden begrüßen zu dürfen. Ab jetzt automatisieren wir gemeinsam dein Unternehmen.
               </p>
@@ -95,7 +95,7 @@
                         <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
                             <td class="detail-label" style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#8a8a96;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">Name</td>
-                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.body.vorname}} {{$json.body.nachname}}</td>
+                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.vorname}} {{$json.nachname}}</td>
                           </tr></table>
                         </td>
                       </tr>
@@ -103,7 +103,7 @@
                         <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
                             <td class="detail-label" style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#8a8a96;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">Unternehmen</td>
-                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.body.unternehmen}}</td>
+                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.unternehmen}}</td>
                           </tr></table>
                         </td>
                       </tr>
@@ -226,7 +226,7 @@
 </body>
 </html>
 <!--
-  n8n VARIABLES
-  {{$json.body.vorname}}    {{$json.body.nachname}}
-  {{$json.body.unternehmen}} {{$json.paket}}  {{$json.startdatum}}
+  n8n VARIABLES (normalized top-level fields — calling assistant workflow)
+  {{$json.vorname}}    {{$json.nachname}}
+  {{$json.unternehmen}} {{$json.paket}}  {{$json.startdatum}}
 -->

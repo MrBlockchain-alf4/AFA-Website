@@ -39,7 +39,7 @@
 <body style="margin:0;padding:0;background-color:#09090b;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
 
   <div style="display:none;font-size:1px;color:#09090b;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-    INTERN: Neuer Lead von {{$json.body.vorname}} {{$json.body.nachname}} – {{$json.body.unternehmen}}. Sofort nachfassen.&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+    INTERN: Neuer Lead über den KI-Telefonassistenten von {{$json.vorname}} {{$json.nachname}} – {{$json.unternehmen}}. Sofort nachfassen.&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
   </div>
 
   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="outer-bg" style="background-color:#09090b;">
@@ -71,7 +71,7 @@
               <p style="margin:0 0 12px;font-family:'Courier New',Courier,monospace;font-size:11px;font-weight:400;letter-spacing:0.16em;text-transform:uppercase;color:#00bbfd;">Neuer Lead · Intern</p>
               <h1 class="h1" style="margin:0 0 16px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:30px;font-weight:700;color:#f4f4f5;line-height:1.22;letter-spacing:-0.025em;">Neuer Lead eingegangen</h1>
               <p style="margin:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:400;color:#71717a;line-height:1.75;max-width:400px;">
-                Ein potenzieller Kunde hat das Kontaktformular ausgefüllt.<br>Alle Details findest du unten – bitte zeitnah nachfassen.
+                Ein potenzieller Kunde hat über den KI-Telefonassistenten eine Anfrage gestellt.<br>Alle Details findest du unten – bitte zeitnah nachfassen.
               </p>
             </td>
           </tr>
@@ -96,7 +96,7 @@
                         <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
                             <td class="detail-label" style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#8a8a96;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">Vorname</td>
-                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.body.vorname}}</td>
+                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.vorname}}</td>
                           </tr></table>
                         </td>
                       </tr>
@@ -104,7 +104,7 @@
                         <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
                             <td class="detail-label" style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#8a8a96;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">Nachname</td>
-                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.body.nachname}}</td>
+                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.nachname}}</td>
                           </tr></table>
                         </td>
                       </tr>
@@ -112,7 +112,7 @@
                         <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
                             <td class="detail-label" style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#8a8a96;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">E-Mail</td>
-                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;"><a href="mailto:{{$json.body.email}}" style="color:#00bbfd;text-decoration:none;">{{$json.body.email}}</a></td>
+                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;"><a href="mailto:{{$json.email}}" style="color:#00bbfd;text-decoration:none;">{{$json.email}}</a></td>
                           </tr></table>
                         </td>
                       </tr>
@@ -120,7 +120,7 @@
                         <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
                             <td class="detail-label" style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#8a8a96;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">Telefon</td>
-                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;"><a href="tel:{{$json.body.telefon}}" style="color:#00bbfd;text-decoration:none;">{{$json.body.telefon}}</a></td>
+                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;"><a href="tel:{{$json.telefon}}" style="color:#00bbfd;text-decoration:none;">{{$json.telefon}}</a></td>
                           </tr></table>
                         </td>
                       </tr>
@@ -128,7 +128,7 @@
                         <td style="padding:12px 0;border-bottom:1px solid #1c1c24;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
                             <td class="detail-label" style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#8a8a96;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">Unternehmen</td>
-                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.body.unternehmen}}</td>
+                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.unternehmen}}</td>
                           </tr></table>
                         </td>
                       </tr>
@@ -136,7 +136,7 @@
                         <td style="padding:12px 0;vertical-align:middle;">
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
                             <td class="detail-label" style="width:110px;padding-right:16px;vertical-align:middle;font-family:'Courier New',Courier,monospace;font-size:11px;color:#8a8a96;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">Interesse</td>
-                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.body.interesse}}</td>
+                            <td style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#ffffff;line-height:1.6;vertical-align:middle;">{{$json.interesse}}</td>
                           </tr></table>
                         </td>
                       </tr>
@@ -153,7 +153,7 @@
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" style="border-radius:10px;background-color:#00bbfd;box-shadow:0 1px 3px rgba(0,0,0,0.18),0 4px 16px rgba(0,187,253,0.20);">
-                    <a href="mailto:{{$json.body.email}}?subject=Deine%20Anfrage%20bei%20AFA&body=Hallo%20{{$json.body.vorname}}," class="cta-btn" style="display:inline-block;padding:15px 32px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#09090b;text-decoration:none;letter-spacing:-0.01em;white-space:nowrap;">Jetzt nachfassen →</a>
+                    <a href="mailto:{{$json.email}}?subject=Deine%20Anfrage%20bei%20AFA&body=Hallo%20{{$json.vorname}}," class="cta-btn" style="display:inline-block;padding:15px 32px;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#09090b;text-decoration:none;letter-spacing:-0.01em;white-space:nowrap;">Jetzt nachfassen →</a>
                   </td>
                 </tr>
               </table>
@@ -188,9 +188,9 @@
 </body>
 </html>
 <!--
-  n8n VARIABLES
-  {{$json.body.vorname}}     {{$json.body.nachname}}
-  {{$json.body.email}}       {{$json.body.telefon}}
-  {{$json.body.unternehmen}} {{$json.body.interesse}}
+  n8n VARIABLES (normalized top-level fields — calling assistant workflow)
+  {{$json.vorname}}     {{$json.nachname}}
+  {{$json.email}}       {{$json.telefon}}
+  {{$json.unternehmen}} {{$json.interesse}}
   Recipient: internal AFA address (e.g. info@afa-ai.com)
 -->
