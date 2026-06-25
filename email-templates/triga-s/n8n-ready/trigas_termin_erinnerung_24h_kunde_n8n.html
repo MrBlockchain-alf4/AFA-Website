@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Erinnerung: Ihre Projektberatung mit TRIGA-S findet morgen statt</title>
+  <!-- n8n Subject: Erinnerung: Ihre Projektberatung mit TRIGA-S findet morgen statt -->
+  <!-- TO: {{ $('leadId').first().json.email || $('leadId').first().json.body?.email || $('TrigaS-ChatBot-Lead').first().json.body?.email || '' }} -->
+  <style>
+    body{margin:0;padding:0;background-color:#F4F7FB;-webkit-font-smoothing:antialiased;}
+    img{border:0;outline:none;text-decoration:none;display:block;}
+    a{color:#005BAA;text-decoration:none;}
+    @media only screen and (max-width:640px){
+      .ew{width:100%!important;}
+      .ep{padding:26px 22px 24px!important;}
+      .eh{padding:24px 22px 30px 28px!important;}
+      .hm{display:none!important;width:0!important;max-width:0!important;overflow:hidden!important;}
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#F4F7FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4F7FB;">
+<tr><td align="center" style="padding:36px 16px 52px;">
+
+  <table class="ew" width="680" cellpadding="0" cellspacing="0" border="0" style="max-width:680px;border-radius:14px;overflow:hidden;box-shadow:0 8px 48px rgba(0,30,80,0.13),0 2px 8px rgba(0,0,0,0.06);">
+
+    <!-- HEADER -->
+    <tr>
+      <td style="background-color:#003B70;padding:0;border-radius:14px 14px 0 0;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td class="eh" style="padding:28px 20px 34px 36px;vertical-align:top;">
+              <img src="https://www.afa-ai.com/triga-s-email/trigas-full-logo-white.png" alt="TRIGA-S" width="170" style="display:block;border:0;outline:none;text-decoration:none;width:170px;max-width:170px;height:auto;margin-bottom:22px;">
+              <p style="margin:0 0 10px;line-height:1;font-size:0;padding:0;"><span style="display:inline-block;padding:3px 11px;background-color:rgba(255,216,74,0.15);color:#FFD84A;font-size:10.5px;font-weight:700;border-radius:4px;text-transform:uppercase;letter-spacing:0.12em;border:1px solid rgba(255,216,74,0.30);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Erinnerung – Morgen</span></p>
+              <p style="margin:0 0 9px;font-size:23px;font-weight:800;color:#FFFFFF;line-height:1.25;letter-spacing:-0.02em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ihr Termin findet morgen statt</p>
+              <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.60);line-height:1.55;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_datum || $('leadId').first().json["Termin Datum"] || $('leadId').first().json.body?.termin_datum || $('TrigaS-ChatBot-Lead').first().json.body?.termin_datum || '' }} &nbsp;·&nbsp; {{ $('leadId').first().json.termin_uhrzeit || $('leadId').first().json["Termin Uhrzeit"] || $('leadId').first().json.body?.termin_uhrzeit || $('TrigaS-ChatBot-Lead').first().json.body?.termin_uhrzeit || '' }} Uhr &nbsp;·&nbsp; {{ $('leadId').first().json.zeitzone || $('leadId').first().json.Zeitzone || $('leadId').first().json.body?.zeitzone || 'Europe/Berlin' }}</p>
+            </td>
+            <td class="hm" style="width:220px;vertical-align:top;padding:0;text-align:right;">
+              <img src="https://www.afa-ai.com/triga-s-email/trigas-lines.png" width="220" alt="" style="display:block;border:0;outline:none;text-decoration:none;width:220px;max-width:220px;height:auto;opacity:0.28;">
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- YELLOW ACCENT LINE -->
+    <tr><td style="height:3px;background-color:#FFD84A;font-size:1px;line-height:3px;mso-line-height-rule:exactly;"></td></tr>
+
+    <!-- CONTENT -->
+    <tr>
+      <td class="ep" style="background-color:#FFFFFF;padding:36px 40px 32px;">
+
+        <p style="margin:0 0 6px;font-size:15px;color:#1F2933;line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Sehr geehrte/r {{ $('leadId').first().json.vorname || $('leadId').first().json.body?.vorname || $('TrigaS-ChatBot-Lead').first().json.body?.vorname || '' }},</p>
+        <p style="margin:0 0 30px;font-size:15px;color:#1F2933;line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Wir möchten Sie daran erinnern, dass Ihre Projektberatung mit TRIGA-S morgen stattfindet. Bitte stellen Sie sicher, dass Sie rechtzeitig eingeloggt sind.</p>
+
+        <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ihr Termin</p>
+
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #003B70;border-radius:8px;margin-bottom:28px;">
+          <tr><td style="padding:4px 0;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Datum</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;font-weight:500;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_datum || $('leadId').first().json["Termin Datum"] || $('leadId').first().json.body?.termin_datum || $('TrigaS-ChatBot-Lead').first().json.body?.termin_datum || '' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Uhrzeit</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;font-weight:500;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_uhrzeit || $('leadId').first().json["Termin Uhrzeit"] || $('leadId').first().json.body?.termin_uhrzeit || $('TrigaS-ChatBot-Lead').first().json.body?.termin_uhrzeit || '' }} Uhr</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Zeitzone</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.zeitzone || $('leadId').first().json.Zeitzone || $('leadId').first().json.body?.zeitzone || 'Europe/Berlin' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Format</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.terminart || $('leadId').first().json.Terminart || $('leadId').first().json.body?.terminart || $('TrigaS-ChatBot-Lead').first().json.body?.terminart || 'Online-Meeting' }}</td>
+              </tr>
+            </table>
+          </td></tr>
+        </table>
+
+        <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
+          <tr>
+            <td align="center" style="background-color:#003B70;border-radius:6px;">
+              <a href="{{ $('leadId').first().json.besprechungslink || $('leadId').first().json.Besprechungslink || $('leadId').first().json.body?.besprechungslink || $('TrigaS-ChatBot-Lead').first().json.body?.besprechungslink || '' }}" style="display:inline-block;padding:14px 32px;color:#FFFFFF;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.02em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Meeting-Link öffnen</a>
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin:0 0 3px;font-size:14px;color:#667085;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Mit freundlichen Grüßen</p>
+        <p style="margin:0 0 2px;font-size:14px;font-weight:700;color:#003B70;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ihr TRIGA-S Team</p>
+        <p style="margin:0;font-size:12px;color:#B0BAC9;font-style:italic;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Studies. Services. Solutions.</p>
+
+      </td>
+    </tr>
+
+    <!-- FOOTER -->
+    <tr>
+      <td style="background-color:#003B70;padding:20px 40px;text-align:center;border-radius:0 0 14px 14px;">
+        <p style="margin:0 0 3px;color:#FFFFFF;font-size:12.5px;font-weight:700;letter-spacing:0.04em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">TRIGA-S GmbH</p>
+        <p style="margin:0 0 2px;color:rgba(255,255,255,0.48);font-size:11.5px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Mühltal 5, 82392 Habach, Deutschland</p>
+        <p style="margin:0;color:rgba(255,255,255,0.30);font-size:11px;font-style:italic;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Studies. Services. Solutions.</p>
+      </td>
+    </tr>
+
+  </table>
+</td></tr>
+</table>
+</body>
+</html>

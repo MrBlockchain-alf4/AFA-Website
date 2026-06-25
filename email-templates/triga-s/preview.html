@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRIGA-S Email Templates – Preview</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0A1628;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #E8EDF5;
+    }
+
+    /* Header */
+    .header {
+      background-color: #003B70;
+      padding: 18px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #FFD84A;
+    }
+    .header img { height: 34px; width: auto; display: block; }
+    .header-right {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.50);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #003B70 0%, #005BAA 100%);
+      padding: 48px 48px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 300px;
+      background: url('assets/trigas-lines.png') right bottom / auto 100% no-repeat;
+      opacity: 0.11;
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 4px 12px;
+      background-color: rgba(255,216,74,0.14);
+      color: #FFD84A;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      border: 1px solid rgba(255,216,74,0.28);
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
+    }
+
+    /* Main */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 48px 80px;
+    }
+
+    /* Section header */
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #FFD84A;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin: 0 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,216,74,0.20);
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    /* Card */
+    .card {
+      background-color: #0F1E35;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,216,74,0.30);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    }
+    .card-top {
+      padding: 20px 22px 16px;
+    }
+    .card-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .badge-intern {
+      background-color: rgba(255,216,74,0.12);
+      color: #FFD84A;
+      border: 1px solid rgba(255,216,74,0.25);
+    }
+    .badge-kunde {
+      background-color: rgba(0,105,180,0.18);
+      color: #78BCEF;
+      border: 1px solid rgba(0,105,180,0.30);
+    }
+    .badge-num {
+      background-color: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.40);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.35;
+    }
+    .card p {
+      margin: 0;
+      font-size: 12px;
+      color: rgba(255,255,255,0.42);
+      line-height: 1.55;
+    }
+    .card-foot {
+      padding: 12px 22px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-subject {
+      font-size: 11px;
+      color: rgba(255,255,255,0.28);
+      font-style: italic;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+    .card-arrow {
+      font-size: 13px;
+      color: rgba(255,216,74,0.50);
+      flex-shrink: 0;
+    }
+    .card:hover .card-arrow { color: #FFD84A; }
+
+    /* Footer */
+    .footer {
+      background-color: #003B70;
+      padding: 22px 48px;
+      text-align: center;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.40);
+    }
+    .footer strong { color: rgba(255,255,255,0.75); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <img src="assets/trigas-full-logo-white.png" alt="TRIGA-S">
+    <span class="header-right">Email Template Preview</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">9 Templates</div>
+    <h1>TRIGA-S E-Mail-Templates</h1>
+    <p>Premium-Vorlagen für den TRIGA-S n8n-Workflow &nbsp;·&nbsp; Chatbot, Terminbuchung, Anfragen, Fragen</p>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- CUSTOMER TEMPLATES -->
+    <div class="section-title">Kunden-Templates</div>
+    <div class="grid">
+
+      <a href="trigas_anfrage_bestaetigung_kunde.html" class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-num">#1</span>
+            <span class="badge badge-kunde">Kunde</span>
+          </div>
+          <h3>Anfrage Bestätigung</h3>
+          <p>Bestätigung an den Kunden nach Chatbot-Anfrage — ohne Terminbuchung</p>
+        </div>
+        <div class="card-foot">
+          <span class="card-subject">Vielen Dank für Ihre Anfrage</span>
+          <span class="card-arrow">&#8599;</span>
+        </div>
+      </a>
+
+      <a href="trigas_termin_bestaetigung_kunde.html" class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-num">#4</span>
+            <span class="badge badge-kunde">Kunde</span>
+          </div>
+          <h3>Terminbestätigung</h3>
+          <p>Bestätigung nach erfolgreicher Buchung einer Projektberatung mit Meeting-Link</p>
+        </div>
+        <div class="card-foot">
+          <span class="card-subject">Ihre Projektberatung wurde bestätigt</span>
+          <span class="card-arrow">&#8599;</span>
+        </div>
+      </a>
+
+      <a href="trigas_termin_erinnerung_24h_kunde.html" class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-num">#5</span>
+            <span class="badge badge-kunde">Kunde</span>
+          </div>
+          <h3>Erinnerung 24h</h3>
+          <p>Erinnerung an den Kunden 24 Stunden vor der Projektberatung</p>
+        </div>
+        <div class="card-foot">
+          <span class="card-subject">Ihre Projektberatung findet morgen statt</span>
+          <span class="card-arrow">&#8599;</span>
+        </div>
+      </a>
+
+      <a href="trigas_termin_verschoben_kunde.html" class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-num">#8</span>
+            <span class="badge badge-kunde">Kunde</span>
+          </div>
+          <h3>Termin verschoben</h3>
+          <p>Benachrichtigung über neuen Termin — alter und neuer Zeitpunkt im Vergleich</p>
+        </div>
+        <div class="card-foot">
+          <span class="card-subject">Ihr TRIGA-S Termin wurde aktualisiert</span>
+          <span class="card-arrow">&#8599;</span>
+        </div>
+      </a>
+
+      <a href="trigas_termin_storniert_kunde.html" class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-num">#9</span>
+            <span class="badge badge-kunde">Kunde</span>
+          </div>
+          <h3>Termin storniert</h3>
+          <p>Stornierungsbestätigung mit Hinweis zur Neubuchung über den Assistenten</p>
+        </div>
+        <div class="card-foot">
+          <span class="card-subject">Ihr TRIGA-S Termin wurde storniert</span>
+          <span class="card-arrow">&#8599;</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- INTERNAL TEMPLATES -->
+    <div class="section-title">Interne Templates</div>
+    <div class="grid">
+
+      <a href="trigas_anfrage_intern.html" class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-num">#2</span>
+            <span class="badge badge-intern">Intern</span>
+          </div>
+          <h3>Neue Anfrage – Lead</h3>
+          <p>Vollständiges Lead-Dashboard mit KI-Zusammenfassung, Priorität und Status-Badges</p>
+        </div>
+        <div class="card-foot">
+          <span class="card-subject">Neue TRIGA-S Chatbot-Anfrage</span>
+          <span class="card-arrow">&#8599;</span>
+        </div>
+      </a>
+
+      <a href="trigas_frage_intern.html" class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-num">#3</span>
+            <span class="badge badge-intern">Intern</span>
+          </div>
+          <h3>Frage – Prüfung</h3>
+          <p>Interne Benachrichtigung bei Chatbot-Frage mit menschlicher Prüfung erforderlich</p>
+        </div>
+        <div class="card-foot">
+          <span class="card-subject">Chatbot-Frage – Prüfung erforderlich</span>
+          <span class="card-arrow">&#8599;</span>
+        </div>
+      </a>
+
+      <a href="trigas_termin_erinnerung_24h_intern.html" class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-num">#6</span>
+            <span class="badge badge-intern">Intern</span>
+          </div>
+          <h3>Erinnerung 24h – Intern</h3>
+          <p>24h-Erinnerung für das Team mit vollständigen Kontakt- und Projektdetails</p>
+        </div>
+        <div class="card-foot">
+          <span class="card-subject">Morgen Projektberatung mit {{unternehmen}}</span>
+          <span class="card-arrow">&#8599;</span>
+        </div>
+      </a>
+
+      <a href="trigas_termin_erinnerung_1h_intern.html" class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-num">#7</span>
+            <span class="badge badge-intern">Intern</span>
+          </div>
+          <h3>Erinnerung 1h – JETZT</h3>
+          <p>Kompakte 1h-Erinnerung mit prominentem Meeting-Button und JETZT-Badge</p>
+        </div>
+        <div class="card-foot">
+          <span class="card-subject">In 1 Stunde: Projektberatung</span>
+          <span class="card-arrow">&#8599;</span>
+        </div>
+      </a>
+
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <strong>TRIGA-S GmbH</strong> &nbsp;·&nbsp; Mühltal 5, 82392 Habach &nbsp;·&nbsp; Studies. Services. Solutions.
+  </div>
+
+</body>
+</html>
