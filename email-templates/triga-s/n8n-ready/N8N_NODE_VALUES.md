@@ -2,6 +2,8 @@
 
 Copy these values verbatim into each n8n node's fields.
 
+> **Note on email header image loading:** Email header images are loaded by Gmail as remote images from `https://www.afa-ai.com/triga-s-email/headers/`. This cannot be made completely instant — Gmail fetches external images after the email body structure renders. However, the following optimizations reduce visible loading as much as possible: optimized PNG file size (22–27 KB each), fixed `width` and `height` attributes (Gmail reserves the exact space immediately), and a matching `background-color:#003B70` fallback on the container `<td>` (shows TRIGA-S blue instead of a white flash while the image loads).
+
 ---
 
 ## Node: TRIGA-S Lead Intern

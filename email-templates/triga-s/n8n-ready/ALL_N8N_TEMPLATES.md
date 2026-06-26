@@ -28,33 +28,36 @@ Each template uses a **single pre-rendered PNG** for the entire header section (
 
 Header images are hosted at `https://www.afa-ai.com/triga-s-email/headers/` (deployed via Vercel from `public/triga-s-email/headers/`). **Verify each URL loads in a browser before testing in Gmail:**
 
-| Template | Header Image URL |
-|---|---|
-| #1 Anfrage Bestätigung Kunde | `https://www.afa-ai.com/triga-s-email/headers/anfrage-bestaetigung-kunde.png` |
-| #2 Anfrage Intern | `https://www.afa-ai.com/triga-s-email/headers/anfrage-intern.png` |
-| #3 Frage Intern | `https://www.afa-ai.com/triga-s-email/headers/frage-intern.png` |
-| #4 Termin Bestätigung Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-bestaetigung-kunde.png` |
-| #5 Erinnerung 24h Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-24h-kunde.png` |
-| #6 Erinnerung 24h Intern | `https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-24h-intern.png` |
-| #7 Erinnerung 1h Intern | `https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-1h-intern.png` |
-| #8 Termin verschoben Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-verschoben-kunde.png` |
-| #9 Termin storniert Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-storniert-kunde.png` |
+| Template | Header Image URL | Dimensions | Size |
+|---|---|---|---|
+| #1 Anfrage Bestätigung Kunde | `https://www.afa-ai.com/triga-s-email/headers/anfrage-bestaetigung-kunde.png` | 680×244px | 27.4 KB |
+| #2 Anfrage Intern | `https://www.afa-ai.com/triga-s-email/headers/anfrage-intern.png` | 680×224px | 23 KB |
+| #3 Frage Intern | `https://www.afa-ai.com/triga-s-email/headers/frage-intern.png` | 680×251px | 24.8 KB |
+| #4 Termin Bestätigung Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-bestaetigung-kunde.png` | 680×224px | 23 KB |
+| #5 Erinnerung 24h Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-24h-kunde.png` | 680×224px | 22.4 KB |
+| #6 Erinnerung 24h Intern | `https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-24h-intern.png` | 680×251px | 24.4 KB |
+| #7 Erinnerung 1h Intern | `https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-1h-intern.png` | 680×252px | 25.1 KB |
+| #8 Termin verschoben Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-verschoben-kunde.png` | 680×224px | 23.2 KB |
+| #9 Termin storniert Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-storniert-kunde.png` | 680×224px | 22.6 KB |
 
-**Header image spec:** 680px wide, ~224–252px tall, @2x (deviceScaleFactor:2) — retina-crisp on all displays.
+**Header image spec:** 680px wide, 1x pixel density (22–27 KB each). Fixed `width` + `height` attributes let Gmail reserve the exact space immediately, reducing layout shift while the image loads.
 
 **What is NOT in the header image:** dynamic data (dates, times, names) — these appear in the email body data tables below the header image.
 
-**Header structure in each template:**
+**Header structure in each template (optimized for Gmail fast-load):**
 ```html
 <tr>
-  <td style="padding:0;margin:0;line-height:0;font-size:0;">
-    <img src="https://www.afa-ai.com/triga-s-email/headers/[template].png" width="680" alt="TRIGA-S"
-         style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;">
+  <td style="padding:0;margin:0;line-height:0;font-size:0;background-color:#003B70;">
+    <img src="https://www.afa-ai.com/triga-s-email/headers/[template].png"
+         width="680" height="[exact-height]" alt="TRIGA-S" draggable="false"
+         style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;background-color:#003B70;cursor:default;">
   </td>
 </tr>
 ```
 
-No `position:absolute`, `background-image`, `flex`, `grid`, or `width:100%` in the header.
+- `background-color:#003B70` on the `<td>` shows the TRIGA-S blue immediately while the image loads — no white flash
+- `width` + `height` attributes allow Gmail to reserve layout space before the image arrives
+- No `position:absolute`, `background-image`, `flex`, `grid`, or `width:100%` in the header
 
 ---
 
@@ -188,8 +191,8 @@ Do NOT wrap the entire block in {{ }} — only the dynamic values inside already
   <table class="ew" width="680" cellpadding="0" cellspacing="0" border="0" style="max-width:680px;border-radius:14px;overflow:hidden;box-shadow:0 8px 48px rgba(0,30,80,0.13),0 2px 8px rgba(0,0,0,0.06);">
     <!-- HEADER IMAGE -->
     <tr>
-      <td style="padding:0;margin:0;line-height:0;font-size:0;">
-        <img src="https://www.afa-ai.com/triga-s-email/headers/anfrage-bestaetigung-kunde.png" width="680" alt="TRIGA-S" style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;">
+      <td style="padding:0;margin:0;line-height:0;font-size:0;background-color:#003B70;">
+        <img src="https://www.afa-ai.com/triga-s-email/headers/anfrage-bestaetigung-kunde.png" width="680" height="244" alt="TRIGA-S" draggable="false" style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;background-color:#003B70;cursor:default;">
       </td>
     </tr>
     <tr>
