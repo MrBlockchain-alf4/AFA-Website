@@ -17,6 +17,7 @@ All 9 templates are in `email-templates/triga-s/n8n-ready/`. Copy the HTML conte
 | 7 | `trigas_termin_erinnerung_1h_intern_n8n.html` | `info@afa-ai.com` | `TRIGA-S Meeting in 1 Stunde – {{ vollstaendiger_name }} ({{ termin_uhrzeit }})` |
 | 8 | `trigas_termin_verschoben_kunde_n8n.html` | `{{ $('leadId').first().json.email \|\| ... }}` | `Ihr TRIGA-S Termin wurde verschoben – Neue Termindetails` |
 | 9 | `trigas_termin_storniert_kunde_n8n.html` | `{{ $('leadId').first().json.email \|\| ... }}` | `Ihr TRIGA-S Termin wurde storniert` |
+| 10 | `trigas_termin_bestaetigung_intern_n8n.html` | `info@afa-ai.com` | `TRIGA-S Neuer Termin – {{ vorname }} {{ nachname }} ({{ terminDatumZeit }})` |
 
 See the comment at the top of each HTML file for the exact TO and Subject expressions.
 
@@ -312,3 +313,143 @@ See the file `trigas_termin_storniert_kunde_n8n.html` for the full paste-ready H
 ---
 
 *Note: Templates #2–#9 reference their respective .html files above. For the full inline HTML, open the corresponding file in this directory and copy its entire content into the n8n node.*
+
+---
+
+**File:** `trigas_termin_bestaetigung_intern_n8n.html`
+**n8n Node:** `Send a message1`
+**Subject:** `TRIGA-S Neuer Termin – {{ $('Edit Fields3').first().json.vorname || '' }} {{ $('Edit Fields3').first().json.nachname || '' }} ({{ $('Edit Fields3').first().json.terminDatumZeit || '' }})`
+**To:** `info@afa-ai.com`
+**n8n Source Node:** `Edit Fields3`
+
+Header image: `https://www.afa-ai.com/triga-s-email/headers/termin-bestaetigung-intern.png` (680×251px, 24.8 KB)
+Badge: "Neuer Termin gebucht" · H1: "Termin eingegangen" · Sections: Kontakt (Name/E-Mail/Telefon/Unternehmen), Termin (Interesse/Datum+Zeit/Status/Quelle/Meet-Link/Kalenderlink/Termin-ID), Notizen · Action callout: "Bitte Termin prüfen und vorbereiten."
+
+```html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>TRIGA-S Neuer Termin – Intern</title>
+  <style>
+    body{margin:0;padding:0;background-color:#F4F7FB;-webkit-font-smoothing:antialiased;}
+    img{border:0;outline:none;text-decoration:none;display:block;}
+    a{color:#005BAA;text-decoration:none;}
+    @media only screen and (max-width:640px){
+      .ew{width:100%!important;}
+      .ep{padding:26px 22px 24px!important;}
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#F4F7FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4F7FB;">
+<tr><td align="center" style="padding:36px 16px 52px;">
+  <table class="ew" width="680" cellpadding="0" cellspacing="0" border="0" style="max-width:680px;border-radius:14px;overflow:hidden;box-shadow:0 8px 48px rgba(0,30,80,0.13),0 2px 8px rgba(0,0,0,0.06);">
+    <!-- HEADER IMAGE -->
+    <tr>
+      <td style="padding:0;margin:0;line-height:0;font-size:0;background-color:#003B70;">
+        <img src="https://www.afa-ai.com/triga-s-email/headers/termin-bestaetigung-intern.png" width="680" height="251" alt="TRIGA-S" draggable="false" style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;background-color:#003B70;cursor:default;">
+      </td>
+    </tr>
+    <!-- CONTENT -->
+    <tr>
+      <td class="ep" style="background-color:#FFFFFF;padding:36px 40px 32px;">
+        <!-- SECTION: Kontakt -->
+        <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Kontakt</p>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #003B70;border-radius:8px;margin-bottom:26px;">
+          <tr><td style="padding:4px 0;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Name</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;font-weight:500;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ ($('Edit Fields3').first().json.vorname || '') + ' ' + ($('Edit Fields3').first().json.nachname || '') || 'Nicht angegeben' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">E-Mail</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#005BAA;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;"><a href="mailto:{{ $('Edit Fields3').first().json.email || '' }}" style="color:#005BAA;text-decoration:none;">{{ $('Edit Fields3').first().json.email || 'Nicht angegeben' }}</a></td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Telefon</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('Edit Fields3').first().json.telefon || 'Nicht angegeben' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Unternehmen</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;font-weight:500;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('Edit Fields3').first().json.unternehmen || 'Nicht angegeben' }}</td>
+              </tr>
+            </table>
+          </td></tr>
+        </table>
+        <!-- SECTION: Termin -->
+        <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Termin</p>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #003B70;border-radius:8px;margin-bottom:26px;">
+          <tr><td style="padding:4px 0;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Interesse</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('Edit Fields3').first().json.interesse || 'Nicht angegeben' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Datum / Zeit</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;font-weight:600;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('Edit Fields3').first().json.terminDatumZeit || 'Nicht angegeben' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Status</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('Edit Fields3').first().json.status || 'Nicht angegeben' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Quelle</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('Edit Fields3').first().json.quelle || 'Nicht angegeben' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Google Meet</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#005BAA;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;word-break:break-all;"><a href="{{ $('Edit Fields3').first().json.meeting_link || '' }}" target="_blank" style="color:#005BAA;text-decoration:none;">{{ $('Edit Fields3').first().json.meeting_link || 'Nicht angegeben' }}</a></td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Kalenderlink</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#005BAA;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;word-break:break-all;"><a href="{{ $('Edit Fields3').first().json.calendar_link || '' }}" target="_blank" style="color:#005BAA;text-decoration:none;">{{ $('Edit Fields3').first().json.calendar_link || 'Nicht angegeben' }}</a></td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Termin-ID</td>
+                <td style="padding:12px 20px 12px 0;font-size:12px;color:#667085;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;word-break:break-all;">{{ $('Edit Fields3').first().json.event_id || 'Nicht angegeben' }}</td>
+              </tr>
+            </table>
+          </td></tr>
+        </table>
+        <!-- SECTION: Notizen -->
+        <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Notizen</p>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#EEF5FF;border-left:3px solid #005BAA;border-radius:0 8px 8px 0;margin-bottom:28px;">
+          <tr><td style="padding:15px 20px;font-size:13.5px;color:#1F2933;line-height:1.65;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('Edit Fields3').first().json.notizen || 'Keine Notizen' }}</td></tr>
+        </table>
+        <!-- ACTION CALLOUT -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#002B54;border-radius:8px;">
+          <tr><td style="padding:17px 24px;">
+            <p style="margin:0 0 3px;font-size:14px;font-weight:700;color:#FFD84A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Bitte Termin prüfen und vorbereiten.</p>
+            <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.55);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Automatische Benachrichtigung des TRIGA-S Buchungssystems.</p>
+          </td></tr>
+        </table>
+      </td>
+    </tr>
+    <!-- FOOTER -->
+    <tr>
+      <td style="background-color:#003B70;padding:20px 40px;text-align:center;border-radius:0 0 14px 14px;">
+        <p style="margin:0 0 3px;color:#FFFFFF;font-size:12.5px;font-weight:700;letter-spacing:0.04em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">TRIGA-S GmbH</p>
+        <p style="margin:0 0 2px;color:rgba(255,255,255,0.48);font-size:11.5px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Mühltal 5, 82392 Habach, Deutschland</p>
+        <p style="margin:0;color:rgba(255,255,255,0.30);font-size:11px;font-style:italic;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Studies. Services. Solutions.</p>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+</table>
+</body>
+</html>
+```
