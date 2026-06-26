@@ -8,13 +8,13 @@ All 9 templates are in `email-templates/triga-s/n8n-ready/`. Copy the HTML conte
 
 | # | File | n8n Node TO | Subject |
 |---|---|---|---|
-| 1 | `trigas_anfrage_bestaetigung_kunde_n8n.html` | `{{ $('leadId').first().json.email \|\| ... }}` | `Vielen Dank für Ihre Anfrage bei TRIGA-S` |
-| 2 | `trigas_anfrage_intern_n8n.html` | `info@afa-ai.com` | `Neue TRIGA-S Chatbot-Anfrage – {{ $('leadId').first().json.interesse \|\| ... \|\| 'Allgemein' }}` |
-| 3 | `trigas_frage_intern_n8n.html` | `info@afa-ai.com` | `TRIGA-S Chatbot-Frage zur Prüfung – {{ $('leadId').first().json.frage_kategorie \|\| ... }}` |
+| 1 | `trigas_anfrage_bestaetigung_kunde_n8n.html` | `{{ $('leadId').first().json.email \|\| ... }}` | `Vielen Dank für Ihre Anfrage` |
+| 2 | `trigas_anfrage_intern_n8n.html` | `info@afa-ai.com` | `Neue TRIGA-S Chatbot-Anfrage – {{ interesse }}` |
+| 3 | `trigas_frage_intern_n8n.html` | `info@afa-ai.com` | `Neue TRIGA-S Chatbot-Frage – Prüfung erforderlich` |
 | 4 | `trigas_termin_bestaetigung_kunde_n8n.html` | `{{ $('leadId').first().json.email \|\| ... }}` | `Ihre Projektberatung mit TRIGA-S wurde bestätigt` |
 | 5 | `trigas_termin_erinnerung_24h_kunde_n8n.html` | `{{ $('leadId').first().json.email \|\| ... }}` | `Erinnerung: Ihre Projektberatung mit TRIGA-S findet morgen statt` |
-| 6 | `trigas_termin_erinnerung_24h_intern_n8n.html` | `info@afa-ai.com` | `TRIGA-S Termin morgen – {{ $('leadId').first().json.vollstaendiger_name \|\| ... }} ({{ $('leadId').first().json.termin_datum \|\| ... }} {{ $('leadId').first().json.termin_uhrzeit \|\| ... }})` |
-| 7 | `trigas_termin_erinnerung_1h_intern_n8n.html` | `info@afa-ai.com` | `TRIGA-S Meeting in 1 Stunde – {{ $('leadId').first().json.vollstaendiger_name \|\| ... }} ({{ $('leadId').first().json.termin_uhrzeit \|\| ... }})` |
+| 6 | `trigas_termin_erinnerung_24h_intern_n8n.html` | `info@afa-ai.com` | `TRIGA-S Termin morgen – {{ vollstaendiger_name }} ({{ termin_datum }} {{ termin_uhrzeit }})` |
+| 7 | `trigas_termin_erinnerung_1h_intern_n8n.html` | `info@afa-ai.com` | `TRIGA-S Meeting in 1 Stunde – {{ vollstaendiger_name }} ({{ termin_uhrzeit }})` |
 | 8 | `trigas_termin_verschoben_kunde_n8n.html` | `{{ $('leadId').first().json.email \|\| ... }}` | `Ihr TRIGA-S Termin wurde verschoben – Neue Termindetails` |
 | 9 | `trigas_termin_storniert_kunde_n8n.html` | `{{ $('leadId').first().json.email \|\| ... }}` | `Ihr TRIGA-S Termin wurde storniert` |
 
@@ -22,29 +22,39 @@ See the comment at the top of each HTML file for the exact TO and Subject expres
 
 ---
 
-## Image URLs (hardcoded in all templates — no placeholders)
+## Header Images (one fixed PNG per template)
 
-Both images are hosted at the production domain. **Before testing in Gmail, verify both URLs load in a browser:**
+Each template uses a **single pre-rendered PNG** for the entire header section (navy background + TRIGA-S logo + lines overlay + badge + title + yellow accent line). Gmail cannot reorder or break elements inside a single `<img>` tag.
 
-- `https://www.afa-ai.com/triga-s-email/trigas-full-logo-white.png`
-- `https://www.afa-ai.com/triga-s-email/trigas-lines.png`
+Header images are hosted at `https://www.afa-ai.com/triga-s-email/headers/` (deployed via Vercel from `public/triga-s-email/headers/`). **Verify each URL loads in a browser before testing in Gmail:**
 
-If either returns 404, the file is not deployed yet and Gmail will show a broken image.
+| Template | Header Image URL |
+|---|---|
+| #1 Anfrage Bestätigung Kunde | `https://www.afa-ai.com/triga-s-email/headers/anfrage-bestaetigung-kunde.png` |
+| #2 Anfrage Intern | `https://www.afa-ai.com/triga-s-email/headers/anfrage-intern.png` |
+| #3 Frage Intern | `https://www.afa-ai.com/triga-s-email/headers/frage-intern.png` |
+| #4 Termin Bestätigung Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-bestaetigung-kunde.png` |
+| #5 Erinnerung 24h Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-24h-kunde.png` |
+| #6 Erinnerung 24h Intern | `https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-24h-intern.png` |
+| #7 Erinnerung 1h Intern | `https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-1h-intern.png` |
+| #8 Termin verschoben Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-verschoben-kunde.png` |
+| #9 Termin storniert Kunde | `https://www.afa-ai.com/triga-s-email/headers/termin-storniert-kunde.png` |
 
-| Image | URL | HTML img |
-|---|---|---|
-| Logo (white) | `https://www.afa-ai.com/triga-s-email/trigas-full-logo-white.png` | `<img src="..." width="170" alt="TRIGA-S" style="display:block;border:0;width:170px;max-width:170px;height:auto;">` |
-| Lines (decorative) | `https://www.afa-ai.com/triga-s-email/trigas-lines.png` | `<img src="..." width="220" alt="" style="display:block;border:0;width:220px;max-width:220px;height:auto;opacity:0.28;">` |
+**Header image spec:** 680px wide, ~224–252px tall, @2x (deviceScaleFactor:2) — retina-crisp on all displays.
 
-**Gmail-safe implementation used in all templates:**
-- Logo: real `<img>` tag, left-aligned, `width="170"`, no `position:absolute`, no `margin-left:-12px`
-- Lines: real `<img>` tag in a right-aligned `<td>`, `width="220"`, no `position:absolute`, no `background-image`
-- Both images use absolute HTTPS URLs — no local paths, no `/triga-s-email/...` relative paths
-- On mobile (`max-width:640px`), the lines column is hidden via `.hm{display:none!important}`
+**What is NOT in the header image:** dynamic data (dates, times, names) — these appear in the email body data tables below the header image.
 
-Source files (already copied to `public/triga-s-email/`):
-- `email-templates/triga-s/assets/trigas-full-logo-white.png` → `public/triga-s-email/trigas-full-logo-white.png`
-- `email-templates/triga-s/assets/trigas-lines.png` → `public/triga-s-email/trigas-lines.png`
+**Header structure in each template:**
+```html
+<tr>
+  <td style="padding:0;margin:0;line-height:0;font-size:0;">
+    <img src="https://www.afa-ai.com/triga-s-email/headers/[template].png" width="680" alt="TRIGA-S"
+         style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;">
+  </td>
+</tr>
+```
+
+No `position:absolute`, `background-image`, `flex`, `grid`, or `width:100%` in the header.
 
 ---
 
@@ -89,7 +99,7 @@ Abbreviation used below: `$ld` = `$('leadId').first().json`, `$wb` = `$('TrigaS-
 | Nachricht | `$ld.nachricht` | `$ld.Nachricht` / `$wb?.nachricht` | `''` |
 | KI-Zusammenfassung | `$ld.ki_zusammenfassung` | `$ld["KI-Zusammenfassung"]` | `''` |
 | KI-Antwort | `$ld.ki_antwort` | `$ld["KI-Antwort"]` / `$ld.body?.kiAntwort` | `''` |
-| Frage-Kategorie | `$ld.frage_kategorie` | `$ld["Frage-Kategorie"]` / `$wb?.frage_kategorie` | `''` |
+| Kategorie | `$ld.kategorie` | `$ld.Kategorie` / `$wb?.kategorie` | `''` |
 | Frage | `$ld.frage` | `$ld.Frage` / `$wb?.frage` | `''` |
 | Status | `$ld.status` | `$ld.Status` | `'Neu'` |
 | Priorität | `$ld.prioritaet` | `$ld["Priorität"]` | `'Mittel'` |
@@ -100,7 +110,7 @@ Abbreviation used below: `$ld` = `$('leadId').first().json`, `$wb` = `$('TrigaS-
 | Besprechungslink | `$ld.besprechungslink` | `$ld.Besprechungslink` / `$wb?.besprechungslink` | `''` |
 | Termin Datum Alt | `$ld.termin_datum_alt` | `$ld["Termin Datum Alt"]` / `$wb?.termin_datum_alt` | `''` |
 | Termin Uhrzeit Alt | `$ld.termin_uhrzeit_alt` | `$ld["Termin Uhrzeit Alt"]` / `$wb?.termin_uhrzeit_alt` | `''` |
-| Interne Notizen | `$ld.interne_notizen` | `$ld["Interne Notizen"]` | `''` |
+| Notizen | `$ld.notizen` | `$ld.Notizen` / `$wb?.notizen` | `''` |
 
 ---
 
@@ -108,7 +118,7 @@ Abbreviation used below: `$ld` = `$('leadId').first().json`, `$wb` = `$('TrigaS-
 
 1. Open the Send Email node in n8n
 2. Set **To** using the expression from the `<!-- TO: -->` comment at the top of each HTML file
-3. Set **Subject** using the expression from the `<!-- n8n Subject: -->` comment at the top of each HTML file
+3. Set **Subject** using the expression from the `<!-- Subject: -->` comment at the top of each HTML file
 4. In **Message**, switch to HTML mode
 5. Paste the full HTML file content
 6. Click **Test node** with a real lead to verify all fields render
@@ -133,10 +143,169 @@ Abbreviation used below: `$ld` = `$('leadId').first().json`, `$wb` = `$('TrigaS-
 
 ## Production Checklist
 
-- [ ] `public/triga-s-email/trigas-full-logo-white.png` is deployed and reachable at `https://www.afa-ai.com/triga-s-email/trigas-full-logo-white.png`
-- [ ] `public/triga-s-email/trigas-lines.png` is deployed and reachable at `https://www.afa-ai.com/triga-s-email/trigas-lines.png`
+- [ ] All 9 header images reachable in browser (`https://www.afa-ai.com/triga-s-email/headers/*.png`) — see table above
 - [ ] All 9 HTML files pasted into the correct n8n nodes (HTML mode)
 - [ ] `leadId` Set node outputs all required fields listed in the variable mapping above
-- [ ] Google Sheets Telefon column uses the apostrophe fix (see `N8N_NODE_VALUES.md`)
-- [ ] Test email verified in Gmail for each node — logo and lines image visible
+- [ ] Test email verified in Gmail for each node — logo visible
 - [ ] Customer emails show Vorname, Nachname, Unternehmen, Interesse, Nachricht correctly
+
+---
+
+## Paste-Ready HTML for n8n
+
+Copy the HTML block for each template and paste it directly into the n8n Gmail node **Message** field (HTML mode).
+Do NOT wrap the entire block in {{ }} — only the dynamic values inside already use {{ }}.
+
+---
+
+**File:** `trigas_anfrage_bestaetigung_kunde_n8n.html`
+**Subject:** `Vielen Dank für Ihre Anfrage`
+**To:** `{{ $('leadId').first().json.email || $('leadId').first().json['E-Mail'] || $('leadId').first().json.body?.email || $('TrigaS-ChatBot-Lead').first().json.body?.email || '' }}`
+
+```html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Vielen Dank für Ihre Anfrage – TRIGA-S</title>
+  <style>
+    body{margin:0;padding:0;background-color:#F4F7FB;-webkit-font-smoothing:antialiased;}
+    img{border:0;outline:none;text-decoration:none;display:block;}
+    a{color:#005BAA;text-decoration:none;}
+    @media only screen and (max-width:640px){
+      .ew{width:100%!important;}
+      .ep{padding:26px 22px 24px!important;}
+      .eh{padding:24px 22px 30px 28px!important;}
+      .hm{display:none!important;width:0!important;max-width:0!important;overflow:hidden!important;}
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#F4F7FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4F7FB;">
+<tr><td align="center" style="padding:36px 16px 52px;">
+  <table class="ew" width="680" cellpadding="0" cellspacing="0" border="0" style="max-width:680px;border-radius:14px;overflow:hidden;box-shadow:0 8px 48px rgba(0,30,80,0.13),0 2px 8px rgba(0,0,0,0.06);">
+    <!-- HEADER IMAGE -->
+    <tr>
+      <td style="padding:0;margin:0;line-height:0;font-size:0;">
+        <img src="https://www.afa-ai.com/triga-s-email/headers/anfrage-bestaetigung-kunde.png" width="680" alt="TRIGA-S" style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;">
+      </td>
+    </tr>
+    <tr>
+      <td class="ep" style="background-color:#FFFFFF;padding:36px 40px 32px;">
+        <p style="margin:0 0 6px;font-size:15px;color:#1F2933;line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Sehr geehrte/r {{ $('leadId').first().json.vorname || $('leadId').first().json.body?.vorname || $('TrigaS-ChatBot-Lead').first().json.body?.vorname || '' }} {{ $('leadId').first().json.nachname || $('leadId').first().json.body?.nachname || $('TrigaS-ChatBot-Lead').first().json.body?.nachname || '' }},</p>
+        <p style="margin:0 0 30px;font-size:15px;color:#1F2933;line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ihre Anfrage bei TRIGA-S ist bei uns eingegangen. Unser Team wird Ihre Angaben prüfen und sich zeitnah bei Ihnen melden.</p>
+        <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ihre Angaben</p>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #003B70;border-radius:8px;margin-bottom:28px;">
+          <tr><td style="padding:4px 0;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Unternehmen</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;font-weight:500;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.unternehmen || $('leadId').first().json.Unternehmen || $('leadId').first().json.body?.unternehmen || $('TrigaS-ChatBot-Lead').first().json.body?.unternehmen || '' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Interesse</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.interesse || $('leadId').first().json.Interesse || $('leadId').first().json.body?.interesse || $('TrigaS-ChatBot-Lead').first().json.body?.interesse || '' }}</td>
+              </tr>
+              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr>
+                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Nachricht</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;line-height:1.65;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.nachricht || $('leadId').first().json.Nachricht || $('leadId').first().json.body?.nachricht || $('TrigaS-ChatBot-Lead').first().json.body?.nachricht || '' }}</td>
+              </tr>
+            </table>
+          </td></tr>
+        </table>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#EEF5FF;border-left:3px solid #005BAA;border-radius:0 8px 8px 0;margin-bottom:32px;">
+          <tr><td style="padding:15px 20px;">
+            <p style="margin:0 0 3px;font-size:12.5px;font-weight:700;color:#003B70;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Nächster Schritt</p>
+            <p style="margin:0;font-size:13.5px;color:#1F2933;line-height:1.65;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Unser Team prüft Ihre Anfrage und meldet sich in Kürze bei Ihnen. Bei dringenden Rückfragen können Sie uns direkt über unsere Website kontaktieren.</p>
+          </td></tr>
+        </table>
+        <p style="margin:0 0 3px;font-size:14px;color:#667085;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Mit freundlichen Grüßen</p>
+        <p style="margin:0 0 2px;font-size:14px;font-weight:700;color:#003B70;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ihr TRIGA-S Team</p>
+        <p style="margin:0;font-size:12px;color:#B0BAC9;font-style:italic;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Studies. Services. Solutions.</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color:#003B70;padding:20px 40px;text-align:center;border-radius:0 0 14px 14px;">
+        <p style="margin:0 0 3px;color:#FFFFFF;font-size:12.5px;font-weight:700;letter-spacing:0.04em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">TRIGA-S GmbH</p>
+        <p style="margin:0 0 2px;color:rgba(255,255,255,0.48);font-size:11.5px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Mühltal 5, 82392 Habach, Deutschland</p>
+        <p style="margin:0;color:rgba(255,255,255,0.30);font-size:11px;font-style:italic;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Studies. Services. Solutions.</p>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+</table>
+</body>
+</html>
+```
+
+---
+
+**File:** `trigas_anfrage_intern_n8n.html`
+**Subject:** `Neue TRIGA-S Chatbot-Anfrage – {{ $('leadId').first().json.interesse || $('leadId').first().json.Interesse || $('leadId').first().json.body?.interesse || $('TrigaS-ChatBot-Lead').first().json.body?.interesse || '' }}`
+**To:** `info@afa-ai.com`
+
+See the file `trigas_anfrage_intern_n8n.html` for the full paste-ready HTML. It includes Kontakt, Projektdetails (11 fields), Nachricht, KI-Zusammenfassung, Notizen sections, and a dark navy action callout.
+
+---
+
+**File:** `trigas_frage_intern_n8n.html`
+**Subject:** `Neue TRIGA-S Chatbot-Frage – Prüfung erforderlich`
+**To:** `info@afa-ai.com`
+
+See the file `trigas_frage_intern_n8n.html` for the full paste-ready HTML. It includes Kontakt, Gestellte Frage (Kategorie/Interesse/Frage), KI-Antwort, Bearbeitungsstatus, Notizen sections, and a dark navy action callout.
+
+---
+
+**File:** `trigas_termin_bestaetigung_kunde_n8n.html`
+**Subject:** `Ihre Projektberatung mit TRIGA-S wurde bestätigt`
+**To:** `{{ $('leadId').first().json.email || $('leadId').first().json['E-Mail'] || $('leadId').first().json.body?.email || $('TrigaS-ChatBot-Lead').first().json.body?.email || '' }}`
+
+See the file `trigas_termin_bestaetigung_kunde_n8n.html` for the full paste-ready HTML. Badge: "Projektberatung". Data table: Datum/Uhrzeit/Zeitzone/Format/Thema/Unternehmen. Includes meeting button and "Ihre Nachricht" blue callout.
+
+---
+
+**File:** `trigas_termin_erinnerung_24h_kunde_n8n.html`
+**Subject:** `Erinnerung: Ihre Projektberatung mit TRIGA-S findet morgen statt`
+**To:** `{{ $('leadId').first().json.email || $('leadId').first().json['E-Mail'] || $('leadId').first().json.body?.email || $('TrigaS-ChatBot-Lead').first().json.body?.email || '' }}`
+
+See the file `trigas_termin_erinnerung_24h_kunde_n8n.html` for the full paste-ready HTML. Badge: "Terminerinnerung". H1: "Ihr Termin ist morgen". Data table: Datum/Uhrzeit/Zeitzone/Format. Meeting button.
+
+---
+
+**File:** `trigas_termin_erinnerung_24h_intern_n8n.html`
+**Subject:** `TRIGA-S Termin morgen – {{ $('leadId').first().json.vollstaendiger_name || $('leadId').first().json["Vollständiger Name"] || $('leadId').first().json.body?.vollstaendiger_name || '' }} ({{ $('leadId').first().json.termin_datum || $('leadId').first().json["Termin Datum"] || $('leadId').first().json.body?.termin_datum || '' }} {{ $('leadId').first().json.termin_uhrzeit || $('leadId').first().json["Termin Uhrzeit"] || $('leadId').first().json.body?.termin_uhrzeit || '' }})`
+**To:** `info@afa-ai.com`
+
+See the file `trigas_termin_erinnerung_24h_intern_n8n.html` for the full paste-ready HTML. Badge: "Erinnerung · 24h". H1: "Termin morgen". Sections: Kontakt (5 rows), Termindetails (6 rows), Nachricht callout, Meeting button, dark navy callout.
+
+---
+
+**File:** `trigas_termin_erinnerung_1h_intern_n8n.html`
+**Subject:** `TRIGA-S Meeting in 1 Stunde – {{ $('leadId').first().json.vollstaendiger_name || $('leadId').first().json["Vollständiger Name"] || $('leadId').first().json.body?.vollstaendiger_name || '' }} ({{ $('leadId').first().json.termin_uhrzeit || $('leadId').first().json["Termin Uhrzeit"] || $('leadId').first().json.body?.termin_uhrzeit || '' }})`
+**To:** `info@afa-ai.com`
+
+See the file `trigas_termin_erinnerung_1h_intern_n8n.html` for the full paste-ready HTML. Badge: "Jetzt in 1 Stunde". H1: "Meeting startet gleich". Yellow "JETZT" badge. Kontakt section (5 rows), Meeting button, dark navy callout.
+
+---
+
+**File:** `trigas_termin_verschoben_kunde_n8n.html`
+**Subject:** `Ihr TRIGA-S Termin wurde verschoben – Neue Termindetails`
+**To:** `{{ $('leadId').first().json.email || $('leadId').first().json['E-Mail'] || $('leadId').first().json.body?.email || $('TrigaS-ChatBot-Lead').first().json.body?.email || '' }}`
+
+See the file `trigas_termin_verschoben_kunde_n8n.html` for the full paste-ready HTML. Badge: "Terminaktualisierung". "Bisheriger Termin" section (muted styling, line-through). "Neuer Termin" section (standard styling). Meeting button.
+
+---
+
+**File:** `trigas_termin_storniert_kunde_n8n.html`
+**Subject:** `Ihr TRIGA-S Termin wurde storniert`
+**To:** `{{ $('leadId').first().json.email || $('leadId').first().json['E-Mail'] || $('leadId').first().json.body?.email || $('TrigaS-ChatBot-Lead').first().json.body?.email || '' }}`
+
+See the file `trigas_termin_storniert_kunde_n8n.html` for the full paste-ready HTML. Badge: "Stornierung". "Stornierter Termin" table (Datum/Uhrzeit with line-through, Format normal). "Neuen Termin vereinbaren" blue callout.
+
+---
+
+*Note: Templates #2–#9 reference their respective .html files above. For the full inline HTML, open the corresponding file in this directory and copy its entire content into the n8n node.*

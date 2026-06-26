@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Neue TRIGA-S Chatbot-Anfrage – Intern</title>
-  <!-- n8n Subject: Neue TRIGA-S Chatbot-Anfrage – {{ $('leadId').first().json.interesse || $('leadId').first().json.body?.interesse || $('TrigaS-ChatBot-Lead').first().json.body?.interesse || 'Allgemein' }} -->
-  <!-- n8n Node: TRIGA-S Lead Intern -->
-  <!-- TO: info@afa-ai.com -->
+  <!-- Subject: Neue TRIGA-S Chatbot-Anfrage – {{ $('leadId').first().json.interesse || $('leadId').first().json.Interesse || $('leadId').first().json.body?.interesse || $('TrigaS-ChatBot-Lead').first().json.body?.interesse || '' }} -->
+  <!-- n8n Variables: erstellt_am, quelle, vorname, nachname, vollstaendiger_name, email, telefon, unternehmen, position_funktion, interesse, projekttyp, diagnostikbereich, probentyp, probenanzahl, zeitplan, zielmarkt, regulatorische_anforderungen, bedarf, studienphase, dringlichkeit, nachricht, ki_zusammenfassung, prioritaet, status, sprache, notizen -->
   <style>
     body{margin:0;padding:0;background-color:#F4F7FB;-webkit-font-smoothing:antialiased;}
     img{border:0;outline:none;text-decoration:none;display:block;}
@@ -27,36 +26,18 @@
 
   <table class="ew" width="680" cellpadding="0" cellspacing="0" border="0" style="max-width:680px;border-radius:14px;overflow:hidden;box-shadow:0 8px 48px rgba(0,30,80,0.13),0 2px 8px rgba(0,0,0,0.06);">
 
-    <!-- HEADER -->
+    <!-- HEADER IMAGE -->
     <tr>
-      <td style="background-color:#003B70;padding:0;border-radius:14px 14px 0 0;">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td class="eh" style="padding:28px 20px 34px 36px;vertical-align:top;">
-              <img src="https://www.afa-ai.com/triga-s-email/trigas-full-logo-white.png" alt="TRIGA-S" width="170" style="display:block;border:0;outline:none;text-decoration:none;width:170px;max-width:170px;height:auto;margin-bottom:22px;">
-              <p style="margin:0 0 10px;line-height:1;font-size:0;padding:0;"><span style="display:inline-block;padding:3px 11px;background-color:rgba(255,216,74,0.15);color:#FFD84A;font-size:10.5px;font-weight:700;border-radius:4px;text-transform:uppercase;letter-spacing:0.12em;border:1px solid rgba(255,216,74,0.30);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Neue Chatbot-Anfrage</span></p>
-              <p style="margin:0 0 9px;font-size:23px;font-weight:800;color:#FFFFFF;line-height:1.25;letter-spacing:-0.02em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Lead eingegangen</p>
-              <p style="margin:0 0 14px;font-size:12px;color:rgba(255,255,255,0.50);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.erstellt_am || $('leadId').first().json["Erstellt am"] || $('leadId').first().json.body?.erstellt_am || $now.format('yyyy-MM-dd HH:mm:ss') }} &nbsp;·&nbsp; {{ $('leadId').first().json.quelle || $('leadId').first().json.Quelle || $('leadId').first().json.body?.quelle || $('TrigaS-ChatBot-Lead').first().json.body?.quelle || 'TRIGA-S Chatbot' }}</p>
-              <p style="margin:0;">
-                <span style="display:inline-block;padding:4px 12px;background-color:#FFD84A;color:#003B70;font-size:11px;font-weight:700;border-radius:4px;text-transform:uppercase;letter-spacing:0.05em;margin-right:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.prioritaet || $('leadId').first().json["Priorität"] || $('leadId').first().json.body?.prioritaet || $('TrigaS-ChatBot-Lead').first().json.body?.prioritaet || 'Mittel' }}</span>
-                <span style="display:inline-block;padding:4px 12px;background-color:rgba(255,255,255,0.10);color:rgba(255,255,255,0.85);font-size:11px;font-weight:600;border-radius:4px;text-transform:uppercase;border:1px solid rgba(255,255,255,0.20);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.status || $('leadId').first().json.Status || $('leadId').first().json.body?.status || $('TrigaS-ChatBot-Lead').first().json.body?.status || 'Neu' }}</span>
-              </p>
-            </td>
-            <td class="hm" style="width:220px;vertical-align:top;padding:0;text-align:right;">
-              <img src="https://www.afa-ai.com/triga-s-email/trigas-lines.png" width="220" alt="" style="display:block;border:0;outline:none;text-decoration:none;width:220px;max-width:220px;height:auto;opacity:0.28;">
-            </td>
-          </tr>
-        </table>
+      <td style="padding:0;margin:0;line-height:0;font-size:0;">
+        <img src="https://www.afa-ai.com/triga-s-email/headers/anfrage-intern.png" width="680" alt="TRIGA-S" style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;">
       </td>
     </tr>
-
-    <!-- YELLOW ACCENT LINE -->
-    <tr><td style="height:3px;background-color:#FFD84A;font-size:1px;line-height:3px;mso-line-height-rule:exactly;"></td></tr>
 
     <!-- CONTENT -->
     <tr>
       <td class="ep" style="background-color:#FFFFFF;padding:36px 40px 32px;">
 
+        <!-- SECTION: Kontakt -->
         <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Kontakt</p>
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #003B70;border-radius:8px;margin-bottom:26px;">
           <tr><td style="padding:4px 0;">
@@ -94,6 +75,7 @@
           </td></tr>
         </table>
 
+        <!-- SECTION: Projektdetails -->
         <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Projektdetails</p>
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #003B70;border-radius:8px;margin-bottom:26px;">
           <tr><td style="padding:4px 0;">
@@ -156,21 +138,25 @@
           </td></tr>
         </table>
 
+        <!-- SECTION: Nachricht -->
         <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Nachricht des Kontakts</p>
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-radius:8px;margin-bottom:26px;">
           <tr><td style="padding:16px 20px;font-size:14px;color:#1F2933;line-height:1.65;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.nachricht || $('leadId').first().json.Nachricht || $('leadId').first().json.body?.nachricht || $('TrigaS-ChatBot-Lead').first().json.body?.nachricht || '' }}</td></tr>
         </table>
 
+        <!-- SECTION: KI-Zusammenfassung -->
         <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">KI-Zusammenfassung</p>
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#EEF5FF;border-left:3px solid #005BAA;border-radius:0 8px 8px 0;margin-bottom:26px;">
           <tr><td style="padding:15px 20px;font-size:13.5px;color:#1F2933;line-height:1.65;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.ki_zusammenfassung || $('leadId').first().json["KI-Zusammenfassung"] || $('leadId').first().json.body?.kiZusammenfassung || $('leadId').first().json.body?.ki_zusammenfassung || $('TrigaS-ChatBot-Lead').first().json.body?.kiZusammenfassung || '' }}</td></tr>
         </table>
 
+        <!-- SECTION: Notizen -->
         <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Notizen</p>
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-radius:8px;margin-bottom:28px;">
           <tr><td style="padding:16px 20px;font-size:14px;color:#1F2933;line-height:1.65;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.notizen || $('leadId').first().json.Notizen || $('leadId').first().json.body?.notizen || $('TrigaS-ChatBot-Lead').first().json.body?.notizen || '' }}</td></tr>
         </table>
 
+        <!-- ACTION CALLOUT -->
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#002B54;border-radius:8px;">
           <tr><td style="padding:17px 24px;">
             <p style="margin:0 0 3px;font-size:14px;font-weight:700;color:#FFD84A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Bitte zeitnah prüfen und nachfassen.</p>

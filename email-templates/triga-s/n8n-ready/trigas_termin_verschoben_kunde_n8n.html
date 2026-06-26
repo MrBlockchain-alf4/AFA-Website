@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Ihr TRIGA-S Termin wurde verschoben – Neue Termindetails</title>
-  <!-- n8n Subject: Ihr TRIGA-S Termin wurde verschoben – Neue Termindetails -->
-  <!-- TO: {{ $('leadId').first().json.email || $('leadId').first().json.body?.email || $('TrigaS-ChatBot-Lead').first().json.body?.email || '' }} -->
+  <title>Ihr TRIGA-S Termin wurde verschoben</title>
+  <!-- Subject: Ihr TRIGA-S Termin wurde verschoben – Neue Termindetails -->
+  <!-- n8n Variables: vorname, termin_datum_alt, termin_uhrzeit_alt, termin_datum, termin_uhrzeit, zeitzone, besprechungslink -->
   <style>
     body{margin:0;padding:0;background-color:#F4F7FB;-webkit-font-smoothing:antialiased;}
     img{border:0;outline:none;text-decoration:none;display:block;}
@@ -26,64 +26,51 @@
 
   <table class="ew" width="680" cellpadding="0" cellspacing="0" border="0" style="max-width:680px;border-radius:14px;overflow:hidden;box-shadow:0 8px 48px rgba(0,30,80,0.13),0 2px 8px rgba(0,0,0,0.06);">
 
-    <!-- HEADER -->
+    <!-- HEADER IMAGE -->
     <tr>
-      <td style="background-color:#003B70;padding:0;border-radius:14px 14px 0 0;">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td class="eh" style="padding:28px 20px 34px 36px;vertical-align:top;">
-              <img src="https://www.afa-ai.com/triga-s-email/trigas-full-logo-white.png" alt="TRIGA-S" width="170" style="display:block;border:0;outline:none;text-decoration:none;width:170px;max-width:170px;height:auto;margin-bottom:22px;">
-              <p style="margin:0 0 10px;line-height:1;font-size:0;padding:0;"><span style="display:inline-block;padding:3px 11px;background-color:rgba(255,216,74,0.15);color:#FFD84A;font-size:10.5px;font-weight:700;border-radius:4px;text-transform:uppercase;letter-spacing:0.12em;border:1px solid rgba(255,216,74,0.30);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Terminverschiebung</span></p>
-              <p style="margin:0 0 9px;font-size:23px;font-weight:800;color:#FFFFFF;line-height:1.25;letter-spacing:-0.02em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ihr Termin wurde verschoben</p>
-              <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.60);line-height:1.55;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Neuer Termin: {{ $('leadId').first().json.termin_datum || $('leadId').first().json["Termin Datum"] || $('leadId').first().json.body?.termin_datum || $('TrigaS-ChatBot-Lead').first().json.body?.termin_datum || '' }} &nbsp;·&nbsp; {{ $('leadId').first().json.termin_uhrzeit || $('leadId').first().json["Termin Uhrzeit"] || $('leadId').first().json.body?.termin_uhrzeit || $('TrigaS-ChatBot-Lead').first().json.body?.termin_uhrzeit || '' }} Uhr</p>
-            </td>
-            <td class="hm" style="width:220px;vertical-align:top;padding:0;text-align:right;">
-              <img src="https://www.afa-ai.com/triga-s-email/trigas-lines.png" width="220" alt="" style="display:block;border:0;outline:none;text-decoration:none;width:220px;max-width:220px;height:auto;opacity:0.28;">
-            </td>
-          </tr>
-        </table>
+      <td style="padding:0;margin:0;line-height:0;font-size:0;">
+        <img src="https://www.afa-ai.com/triga-s-email/headers/termin-verschoben-kunde.png" width="680" alt="TRIGA-S" style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;">
       </td>
     </tr>
-
-    <!-- YELLOW ACCENT LINE -->
-    <tr><td style="height:3px;background-color:#FFD84A;font-size:1px;line-height:3px;mso-line-height-rule:exactly;"></td></tr>
 
     <!-- CONTENT -->
     <tr>
       <td class="ep" style="background-color:#FFFFFF;padding:36px 40px 32px;">
 
         <p style="margin:0 0 6px;font-size:15px;color:#1F2933;line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Sehr geehrte/r {{ $('leadId').first().json.vorname || $('leadId').first().json.body?.vorname || $('TrigaS-ChatBot-Lead').first().json.body?.vorname || '' }},</p>
-        <p style="margin:0 0 30px;font-size:15px;color:#1F2933;line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ihr Beratungsgespräch mit TRIGA-S wurde auf einen neuen Termin verschoben. Bitte notieren Sie den neuen Termin.</p>
+        <p style="margin:0 0 30px;font-size:15px;color:#1F2933;line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ihr Beratungsgespräch mit TRIGA-S musste auf einen neuen Termin verschoben werden. Bitte nehmen Sie die aktualisierten Termindetails zur Kenntnis.</p>
 
-        <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ursprünglicher Termin</p>
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #B0BAC9;border-radius:8px;margin-bottom:20px;">
+        <!-- SECTION: Bisheriger Termin -->
+        <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#B0BAC9;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #D9E3EF;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Bisheriger Termin</p>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #EEF1F6;border-radius:8px;margin-bottom:20px;">
           <tr><td style="padding:4px 0;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Datum</td>
-                <td style="padding:12px 20px 12px 0;font-size:14px;color:#B0BAC9;font-weight:500;text-decoration:line-through;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_datum_alt || $('leadId').first().json["Termin Datum Alt"] || $('leadId').first().json.body?.termin_datum_alt || $('TrigaS-ChatBot-Lead').first().json.body?.termin_datum_alt || '' }}</td>
+                <td style="padding:11px 20px;width:36%;font-size:11px;color:#B0BAC9;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Datum</td>
+                <td style="padding:11px 20px 11px 0;font-size:13px;color:#B0BAC9;text-decoration:line-through;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_datum_alt || $('leadId').first().json["Termin Datum Alt"] || $('leadId').first().json.body?.termin_datum_alt || $('TrigaS-ChatBot-Lead').first().json.body?.termin_datum_alt || '' }}</td>
               </tr>
-              <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
+              <tr><td colspan="2" style="height:1px;background-color:#EEF1F6;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
               <tr>
-                <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Uhrzeit</td>
-                <td style="padding:12px 20px 12px 0;font-size:14px;color:#B0BAC9;font-weight:500;text-decoration:line-through;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_uhrzeit_alt || $('leadId').first().json["Termin Uhrzeit Alt"] || $('leadId').first().json.body?.termin_uhrzeit_alt || $('TrigaS-ChatBot-Lead').first().json.body?.termin_uhrzeit_alt || '' }} Uhr</td>
+                <td style="padding:11px 20px;width:36%;font-size:11px;color:#B0BAC9;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Uhrzeit</td>
+                <td style="padding:11px 20px 11px 0;font-size:13px;color:#B0BAC9;text-decoration:line-through;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_uhrzeit_alt || $('leadId').first().json["Termin Uhrzeit Alt"] || $('leadId').first().json.body?.termin_uhrzeit_alt || $('TrigaS-ChatBot-Lead').first().json.body?.termin_uhrzeit_alt || '' }} Uhr</td>
               </tr>
             </table>
           </td></tr>
         </table>
 
+        <!-- SECTION: Neuer Termin -->
         <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Neuer Termin</p>
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #003B70;border-radius:8px;margin-bottom:28px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #003B70;border-radius:8px;margin-bottom:24px;">
           <tr><td style="padding:4px 0;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Datum</td>
-                <td style="padding:12px 20px 12px 0;font-size:14px;color:#003B70;font-weight:700;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_datum || $('leadId').first().json["Termin Datum"] || $('leadId').first().json.body?.termin_datum || $('TrigaS-ChatBot-Lead').first().json.body?.termin_datum || '' }}</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;font-weight:600;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_datum || $('leadId').first().json["Termin Datum"] || $('leadId').first().json.body?.termin_datum || $('TrigaS-ChatBot-Lead').first().json.body?.termin_datum || '' }}</td>
               </tr>
               <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
               <tr>
                 <td style="padding:12px 20px;width:36%;font-size:11px;color:#667085;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Uhrzeit</td>
-                <td style="padding:12px 20px 12px 0;font-size:14px;color:#003B70;font-weight:700;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_uhrzeit || $('leadId').first().json["Termin Uhrzeit"] || $('leadId').first().json.body?.termin_uhrzeit || $('TrigaS-ChatBot-Lead').first().json.body?.termin_uhrzeit || '' }} Uhr</td>
+                <td style="padding:12px 20px 12px 0;font-size:14px;color:#1F2933;font-weight:600;vertical-align:top;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_uhrzeit || $('leadId').first().json["Termin Uhrzeit"] || $('leadId').first().json.body?.termin_uhrzeit || $('TrigaS-ChatBot-Lead').first().json.body?.termin_uhrzeit || '' }} Uhr</td>
               </tr>
               <tr><td colspan="2" style="height:1px;background-color:#D9E3EF;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;"></td></tr>
               <tr>
@@ -94,10 +81,11 @@
           </td></tr>
         </table>
 
-        <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
+        <!-- MEETING BUTTON -->
+        <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
           <tr>
-            <td align="center" style="background-color:#003B70;border-radius:6px;">
-              <a href="{{ $('leadId').first().json.besprechungslink || $('leadId').first().json.Besprechungslink || $('leadId').first().json.body?.besprechungslink || $('TrigaS-ChatBot-Lead').first().json.body?.besprechungslink || '' }}" style="display:inline-block;padding:14px 32px;color:#FFFFFF;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.02em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Meeting-Link öffnen</a>
+            <td align="center" bgcolor="#005BAA" style="border-radius:7px;">
+              <a href="{{ $('leadId').first().json.besprechungslink || $('leadId').first().json.Besprechungslink || $('leadId').first().json.body?.besprechungslink || $('TrigaS-ChatBot-Lead').first().json.body?.besprechungslink || '' }}" target="_blank" style="display:inline-block;padding:14px 36px;color:#FFFFFF;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.02em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Meeting-Link öffnen &rarr;</a>
             </td>
           </tr>
         </table>

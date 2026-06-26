@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>TRIGA-S Meeting in 1 Stunde – Interne 1h-Erinnerung</title>
-  <!-- n8n Subject: TRIGA-S Meeting in 1 Stunde – {{ $('leadId').first().json.vollstaendiger_name || $('leadId').first().json.body?.vollstaendiger_name || '' }} ({{ $('leadId').first().json.termin_uhrzeit || $('leadId').first().json.body?.termin_uhrzeit || '' }}) -->
-  <!-- TO: info@afa-ai.com -->
+  <title>TRIGA-S Meeting in 1 Stunde – Intern</title>
+  <!-- Subject: TRIGA-S Meeting in 1 Stunde – {{ vollstaendiger_name }} ({{ termin_uhrzeit }}) -->
+  <!-- n8n Variables: termin_datum, termin_uhrzeit, vollstaendiger_name, email, telefon, unternehmen, interesse, besprechungslink -->
   <style>
     body{margin:0;padding:0;background-color:#F4F7FB;-webkit-font-smoothing:antialiased;}
     img{border:0;outline:none;text-decoration:none;display:block;}
@@ -26,41 +26,18 @@
 
   <table class="ew" width="680" cellpadding="0" cellspacing="0" border="0" style="max-width:680px;border-radius:14px;overflow:hidden;box-shadow:0 8px 48px rgba(0,30,80,0.13),0 2px 8px rgba(0,0,0,0.06);">
 
-    <!-- HEADER -->
+    <!-- HEADER IMAGE -->
     <tr>
-      <td style="background-color:#003B70;padding:0;border-radius:14px 14px 0 0;">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td class="eh" style="padding:28px 20px 34px 36px;vertical-align:top;">
-              <img src="https://www.afa-ai.com/triga-s-email/trigas-full-logo-white.png" alt="TRIGA-S" width="170" style="display:block;border:0;outline:none;text-decoration:none;width:170px;max-width:170px;height:auto;margin-bottom:22px;">
-              <p style="margin:0 0 10px;line-height:1;font-size:0;padding:0;"><span style="display:inline-block;padding:3px 11px;background-color:rgba(220,38,38,0.20);color:#FCA5A5;font-size:10.5px;font-weight:700;border-radius:4px;text-transform:uppercase;letter-spacing:0.12em;border:1px solid rgba(220,38,38,0.40);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Jetzt – in 1 Stunde</span></p>
-              <p style="margin:0 0 9px;font-size:23px;font-weight:800;color:#FFFFFF;line-height:1.25;letter-spacing:-0.02em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Meeting startet in 1 Stunde</p>
-              <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.60);line-height:1.55;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">{{ $('leadId').first().json.termin_datum || $('leadId').first().json["Termin Datum"] || $('leadId').first().json.body?.termin_datum || $('TrigaS-ChatBot-Lead').first().json.body?.termin_datum || '' }} &nbsp;·&nbsp; {{ $('leadId').first().json.termin_uhrzeit || $('leadId').first().json["Termin Uhrzeit"] || $('leadId').first().json.body?.termin_uhrzeit || $('TrigaS-ChatBot-Lead').first().json.body?.termin_uhrzeit || '' }} Uhr</p>
-            </td>
-            <td class="hm" style="width:220px;vertical-align:top;padding:0;text-align:right;">
-              <img src="https://www.afa-ai.com/triga-s-email/trigas-lines.png" width="220" alt="" style="display:block;border:0;outline:none;text-decoration:none;width:220px;max-width:220px;height:auto;opacity:0.28;">
-            </td>
-          </tr>
-        </table>
+      <td style="padding:0;margin:0;line-height:0;font-size:0;">
+        <img src="https://www.afa-ai.com/triga-s-email/headers/termin-erinnerung-1h-intern.png" width="680" alt="TRIGA-S" style="display:block;width:680px;max-width:680px;height:auto;border:0;outline:none;text-decoration:none;">
       </td>
     </tr>
-
-    <!-- YELLOW ACCENT LINE -->
-    <tr><td style="height:3px;background-color:#FFD84A;font-size:1px;line-height:3px;mso-line-height-rule:exactly;"></td></tr>
 
     <!-- CONTENT -->
     <tr>
       <td class="ep" style="background-color:#FFFFFF;padding:36px 40px 32px;">
 
-        <!-- URGENT CTA -->
-        <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
-          <tr>
-            <td align="center" style="background-color:#003B70;border-radius:6px;">
-              <a href="{{ $('leadId').first().json.besprechungslink || $('leadId').first().json.Besprechungslink || $('leadId').first().json.body?.besprechungslink || $('TrigaS-ChatBot-Lead').first().json.body?.besprechungslink || '' }}" style="display:inline-block;padding:16px 40px;color:#FFD84A;font-size:15px;font-weight:800;text-decoration:none;letter-spacing:0.02em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Jetzt Meeting öffnen</a>
-            </td>
-          </tr>
-        </table>
-
+        <!-- SECTION: Kontakt -->
         <p style="margin:0 0 12px;font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:0.14em;padding-left:10px;border-left:2px solid #FFD84A;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Kontakt</p>
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8FAFE;border:1px solid #D9E3EF;border-top:2px solid #003B70;border-radius:8px;margin-bottom:26px;">
           <tr><td style="padding:4px 0;">
@@ -93,10 +70,20 @@
           </td></tr>
         </table>
 
+        <!-- MEETING BUTTON -->
+        <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+          <tr>
+            <td align="center" bgcolor="#005BAA" style="border-radius:7px;">
+              <a href="{{ $('leadId').first().json.besprechungslink || $('leadId').first().json.Besprechungslink || $('leadId').first().json.body?.besprechungslink || $('TrigaS-ChatBot-Lead').first().json.body?.besprechungslink || '' }}" target="_blank" style="display:inline-block;padding:14px 36px;color:#FFFFFF;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.02em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Meeting-Link öffnen &rarr;</a>
+            </td>
+          </tr>
+        </table>
+
+        <!-- ACTION CALLOUT -->
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#002B54;border-radius:8px;">
           <tr><td style="padding:17px 24px;">
-            <p style="margin:0 0 3px;font-size:14px;font-weight:700;color:#FFD84A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Meeting-Link oben öffnen – das Gespräch beginnt in 60 Minuten.</p>
-            <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.55);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Automatische Benachrichtigung des TRIGA-S Assistenzsystems.</p>
+            <p style="margin:0 0 3px;font-size:14px;font-weight:700;color:#FFD84A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Meeting startet in 1 Stunde.</p>
+            <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.55);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Automatische 1h-Erinnerung des TRIGA-S Assistenzsystems.</p>
           </td></tr>
         </table>
 
