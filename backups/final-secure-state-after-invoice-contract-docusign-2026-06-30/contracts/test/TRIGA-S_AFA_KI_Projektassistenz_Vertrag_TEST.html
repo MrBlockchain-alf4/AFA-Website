@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[TESTVERSION] Vertrag – TRIGA-S KI-Projektassistenz – AFA</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
+
+    :root {
+      --navy: #001B3D;
+      --navy-mid: #002B5C;
+      --blue: #005BAA;
+      --blue-light: #0070CC;
+      --accent: #FFD84A;
+      --text: #1A1A2E;
+      --text-muted: #4A5568;
+      --border: #CBD5E0;
+      --border-light: #E8EDF5;
+      --bg-subtle: #F7F9FC;
+      --white: #FFFFFF;
+      --test-red: #DC2626;
+      --test-red-bg: #FEF2F2;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.72;
+      color: var(--text);
+      background: #D1D5DB;
+    }
+
+    /* ===== TEST WATERMARK on every page ===== */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 24px;
+      background: var(--white);
+      box-shadow: 0 4px 40px rgba(0,0,0,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page::after {
+      content: 'TESTVERSION – NICHT RECHTSVERBINDLICH';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-32deg);
+      font-size: 30px;
+      font-weight: 900;
+      color: rgba(220, 38, 38, 0.07);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 0;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Ensure content sits above watermark */
+    .cover, .page-header, .page-content, .page-footer, .test-banner { position: relative; z-index: 1; }
+
+    /* ===== TEST BANNER (content pages) ===== */
+    .test-banner {
+      background: var(--test-red);
+      color: var(--white);
+      text-align: center;
+      padding: 7px 20px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    /* ===== COVER ===== */
+    .cover {
+      background: linear-gradient(155deg, #001020 0%, #001B3D 45%, #002B5C 100%);
+      min-height: 297mm;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(0,91,170,0.20) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: 60px; left: -60px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,216,74,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ===== TEST NOTICE on COVER ===== */
+    .cover-test-notice {
+      background: var(--test-red);
+      border-radius: 8px;
+      padding: 16px 22px;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cover-test-notice-title {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .cover-test-notice-body {
+      font-size: 10px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.6;
+    }
+
+    .cover-header {
+      padding: 44px 52px 36px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative; z-index: 2;
+    }
+
+    .cover-logo img {
+      height: 44px;
+      filter: brightness(0) invert(1);
+      opacity: 0.95;
+    }
+
+    .cover-logo-fallback {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+    }
+    .cover-logo-fallback span { color: var(--accent); }
+
+    .cover-badge-test {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--test-red);
+      background: rgba(220,38,38,0.18);
+      border: 1px solid rgba(220,38,38,0.40);
+      border-radius: 4px;
+      padding: 4px 12px;
+    }
+
+    .cover-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 52px;
+      position: relative; z-index: 2;
+    }
+
+    .cover-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .cover-title {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 28pt;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
+      max-width: 440px;
+    }
+
+    .cover-divider {
+      width: 56px;
+      height: 3px;
+      background: var(--accent);
+      margin-bottom: 28px;
+    }
+
+    .cover-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 32px;
+      margin-bottom: 52px;
+    }
+
+    .cover-meta-item {
+      border-left: 2px solid rgba(255,216,74,0.40);
+      padding-left: 14px;
+    }
+
+    .cover-meta-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.40);
+      margin-bottom: 4px;
+    }
+
+    .cover-meta-value {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--white);
+      line-height: 1.4;
+    }
+
+    .cover-footer {
+      padding: 28px 52px;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative; z-index: 2;
+    }
+
+    .cover-footer-text {
+      font-size: 9px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .cover-doc-ref-test {
+      font-size: 9px;
+      color: var(--test-red);
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      opacity: 0.80;
+    }
+
+    /* ===== CONTENT PAGES ===== */
+    .content-page { padding: 0; }
+
+    .page-header {
+      background: var(--navy);
+      padding: 18px 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .page-header-logo img {
+      height: 26px;
+      filter: brightness(0) invert(1);
+      opacity: 0.85;
+    }
+    .page-header-logo-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.90);
+      letter-spacing: -0.02em;
+    }
+
+    .page-header-ref-test {
+      font-size: 8.5px;
+      color: var(--test-red);
+      letter-spacing: 0.08em;
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      opacity: 0.85;
+    }
+
+    .page-content { padding: 36px 52px 52px; }
+
+    .page-footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border-light);
+      padding: 10px 52px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8px;
+      color: var(--text-muted);
+    }
+
+    .page-footer-brand { font-weight: 600; color: var(--navy); }
+    .page-footer-test { color: var(--test-red); font-weight: 700; font-size: 7.5px; letter-spacing: 0.08em; }
+
+    /* ===== TOC ===== */
+    .toc-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20pt;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--navy);
+    }
+    .toc-subtitle {
+      font-size: 9px; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--blue); margin-bottom: 32px;
+    }
+    .toc-entry {
+      display: flex; align-items: baseline;
+      padding: 7px 0; border-bottom: 1px solid var(--border-light);
+    }
+    .toc-num { font-size: 9.5px; font-weight: 700; color: var(--blue); width: 32px; flex-shrink: 0; }
+    .toc-name { font-size: 10px; font-weight: 500; color: var(--text); flex: 1; }
+    .toc-dots { flex: 1; border-bottom: 1px dotted var(--border); margin: 0 10px; position: relative; top: -3px; }
+    .toc-page { font-size: 9.5px; color: var(--text-muted); font-weight: 600; width: 30px; text-align: right; }
+
+    /* ===== SECTIONS ===== */
+    .section { margin-bottom: 38px; }
+    .section-header {
+      display: flex; align-items: flex-start; gap: 16px;
+      margin-bottom: 16px; padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-light);
+    }
+    .section-num {
+      width: 38px; height: 38px; background: var(--navy);
+      color: var(--white); font-size: 12px; font-weight: 800;
+      border-radius: 8px; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+    }
+    .section-title { font-size: 14pt; font-weight: 700; color: var(--navy); line-height: 1.2; }
+    .section-subtitle { font-size: 8.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); margin-top: 3px; }
+
+    p { margin-bottom: 10px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ===== PARTIES ===== */
+    .parties-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+    .party-card {
+      border: 1px solid var(--border); border-top: 3px solid var(--navy);
+      border-radius: 8px; padding: 22px 22px 18px; background: var(--bg-subtle);
+    }
+    .party-card.auftragnehmer { border-top-color: var(--blue); }
+    .party-card.auftraggeber { border-top-color: var(--navy); }
+    .party-role { font-size: 8px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+    .party-name { font-size: 12px; font-weight: 800; color: var(--navy); line-height: 1.3; margin-bottom: 12px; }
+    .party-detail { font-size: 9.5px; color: var(--text-muted); line-height: 1.75; }
+    .party-detail strong { color: var(--text); font-weight: 600; }
+
+    /* ===== LISTS ===== */
+    ul.contract-list, ol.contract-list { padding-left: 0; list-style: none; margin: 10px 0 14px; }
+    ul.contract-list li { padding: 5px 0 5px 22px; position: relative; font-size: 10.5pt; border-bottom: 1px solid var(--border-light); }
+    ul.contract-list li:last-child { border-bottom: none; }
+    ul.contract-list li::before { content: ''; position: absolute; left: 6px; top: 14px; width: 5px; height: 5px; background: var(--blue); border-radius: 50%; }
+    ol.contract-list { counter-reset: item; }
+    ol.contract-list li { padding: 5px 0 5px 28px; position: relative; counter-increment: item; font-size: 10.5pt; border-bottom: 1px solid var(--border-light); }
+    ol.contract-list li:last-child { border-bottom: none; }
+    ol.contract-list li::before { content: counter(item) "."; position: absolute; left: 0; color: var(--blue); font-weight: 700; font-size: 9.5px; top: 6px; }
+    ul.exclusion-list { list-style: none; padding: 0; margin: 10px 0; }
+    ul.exclusion-list li { padding: 5px 0 5px 22px; position: relative; font-size: 10pt; border-bottom: 1px solid var(--border-light); color: var(--text-muted); }
+    ul.exclusion-list li:last-child { border-bottom: none; }
+    ul.exclusion-list li::before { content: '✕'; position: absolute; left: 2px; color: #CBD5E0; font-size: 10px; top: 6px; font-weight: 700; }
+
+    /* ===== PRICE TABLE ===== */
+    .price-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 10.5pt; }
+    .price-table th { background: var(--navy); color: var(--white); padding: 11px 18px; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-align: left; }
+    .price-table td { padding: 11px 18px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+    .price-table tr:nth-child(even) td { background: var(--bg-subtle); }
+    .price-table td.amount { text-align: right; font-weight: 700; color: var(--navy); white-space: nowrap; }
+    .price-table tr.total-row td { background: var(--navy); color: var(--white); font-weight: 700; font-size: 11pt; border-bottom: none; }
+    .price-table tr.total-row td.amount { color: var(--accent); font-size: 12pt; }
+
+    /* ===== INFO TABLE ===== */
+    .info-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10pt; }
+    .info-table td { padding: 9px 16px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+    .info-table td:first-child { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.10em; color: var(--text-muted); width: 38%; }
+    .info-table td:last-child { font-weight: 600; color: var(--navy); font-family: 'Courier New', monospace; font-size: 10pt; }
+    .info-table tr:last-child td { border-bottom: none; }
+
+    /* ===== CALLOUTS ===== */
+    .callout { border-radius: 8px; padding: 16px 20px; margin: 14px 0; font-size: 10pt; }
+    .callout-info { background: #EEF5FF; border-left: 3px solid var(--blue); }
+    .callout-warning { background: #FFFBEB; border-left: 3px solid var(--accent); }
+    .callout-navy { background: var(--navy); color: var(--white); border-left: 3px solid var(--accent); }
+    .callout-navy p { color: rgba(255,255,255,0.85); }
+    .callout-navy strong { color: var(--accent); }
+    .callout-label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 6px; }
+    .callout-info .callout-label { color: var(--blue); }
+    .callout-warning .callout-label { color: #B7791F; }
+    .callout-navy .callout-label { color: var(--accent); }
+
+    /* ===== PHASE TABLE ===== */
+    .phase-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .phase-table td { padding: 10px 16px; border-bottom: 1px solid var(--border-light); vertical-align: top; font-size: 10pt; }
+    .phase-table td.phase-num { width: 38px; font-weight: 800; color: var(--blue); font-size: 14px; }
+    .phase-table td.phase-name { font-weight: 700; color: var(--navy); width: 38%; }
+    .phase-table td.phase-desc { color: var(--text-muted); }
+    .phase-table tr:last-child td { border-bottom: none; }
+
+    /* ===== SIGNATURES ===== */
+    .sig-section-title { font-family: 'Playfair Display', serif; font-size: 18pt; font-weight: 700; color: var(--navy); margin-bottom: 8px; padding-bottom: 12px; border-bottom: 2px solid var(--navy); }
+    .sig-section-sub { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--blue); margin-bottom: 28px; }
+    .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 24px; }
+    .sig-card { border: 1px solid var(--border); border-top: 3px solid var(--navy); border-radius: 8px; padding: 24px 24px 28px; background: var(--bg-subtle); }
+    .sig-party-role { font-size: 8px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
+    .sig-party-name { font-size: 12px; font-weight: 800; color: var(--navy); margin-bottom: 20px; line-height: 1.3; }
+    .sig-field { margin-bottom: 18px; }
+    .sig-field-label { font-size: 8px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .sig-field-line { height: 44px; border: none; border-bottom: 1.5px solid var(--border); background: var(--white); border-radius: 4px 4px 0 0; display: flex; align-items: flex-end; padding: 0 8px 4px; }
+    .sig-docusign-placeholder { display: inline-block; background: #FFF9E6; border: 1.5px dashed #E6B800; border-radius: 4px; padding: 4px 12px; font-size: 8.5px; color: #8A6900; font-weight: 700; letter-spacing: 0.08em; margin-top: 4px; font-family: 'Courier New', monospace; }
+    .sig-docusign-note { font-size: 8px; color: #94A3B8; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-light); font-style: italic; }
+
+    /* ===== ANNEX ===== */
+    .annex-block { border: 1px solid var(--border); border-left: 4px solid var(--blue); border-radius: 0 8px 8px 0; padding: 18px 20px; margin-bottom: 16px; background: var(--bg-subtle); }
+    .annex-title { font-weight: 800; color: var(--navy); font-size: 11pt; margin-bottom: 4px; }
+    .annex-desc { font-size: 9.5pt; color: var(--text-muted); line-height: 1.6; }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; }
+      .page { width: 100%; margin: 0; box-shadow: none; page-break-after: always; }
+      .page:last-child { page-break-after: avoid; }
+      .page-footer { position: fixed; bottom: 0; left: 0; right: 0; }
+      @page { size: A4; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PAGE 1: COVER -->
+<div class="page">
+  <div class="cover">
+
+    <div class="cover-header">
+      <div class="cover-logo">
+        <img src="../../../brand_assets/AFA Final Full Logo.png" alt="AFA" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="cover-logo-fallback" style="display:none;">AFA<span>.</span></div>
+      </div>
+      <div class="cover-badge-test">⚠ TESTVERSION &nbsp;|&nbsp; NICHT RECHTSVERBINDLICH</div>
+    </div>
+
+    <div class="cover-body">
+      <div class="cover-label">Vertragsangebot</div>
+      <div class="cover-title">Vertrag über die Entwicklung, Einrichtung und laufende Betreuung einer digitalen TRIGA-S KI-Projektassistenz</div>
+      <div class="cover-divider"></div>
+
+      <!-- TEST NOTICE -->
+      <div class="cover-test-notice">
+        <div class="cover-test-notice-title">⚠ Testversion – Nicht rechtsverbindlich</div>
+        <div class="cover-test-notice-body">
+          Dies ist ausschließlich eine technische Testversion für DocuSign.<br>
+          Diese Testversion stellt kein verbindliches Vertragsangebot dar.
+        </div>
+      </div>
+
+      <div class="cover-meta-grid">
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">Auftraggeber</div>
+          <div class="cover-meta-value">TRIGA-S GmbH<br>Mühltal 5, 82392 Habach</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">Auftragnehmer</div>
+          <div class="cover-meta-value">Ibrahim Ahmitti El Goul<br>AFA – Agentur für Automatisierung</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">Vertragsgegenstand</div>
+          <div class="cover-meta-value">Digitale KI-Projektassistenz<br>Premium Website-Chatbot</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">Gesamtvertragswert</div>
+          <div class="cover-meta-value">34.000,00 EUR<br>inkl. 12 Monate Betreuung</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">Vertragsdatum</div>
+          <div class="cover-meta-value">30.06.2026</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">Dokumentnummer</div>
+          <div class="cover-meta-value">AFA-TRIGA-S-2026-001-TEST</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-footer">
+      <div class="cover-footer-text">AFA – Agentur für Automatisierung &nbsp;·&nbsp; www.afa-ai.com &nbsp;·&nbsp; info@afa-ai.com</div>
+      <div class="cover-doc-ref-test">⚠ TESTVERSION · NICHT RECHTSVERBINDLICH</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PAGE 2: INHALTSVERZEICHNIS -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-logo">
+      <img src="../../../brand_assets/AFA Final Full Logo.png" alt="AFA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="page-header-logo-text" style="display:none;">AFA</span>
+    </div>
+    <div class="page-header-ref-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</div>
+  </div>
+  <div class="test-banner">⚠ &nbsp; TESTVERSION – NICHT RECHTSVERBINDLICH – NUR FÜR DOCUSIGN-TESTS &nbsp; ⚠</div>
+
+  <div class="page-content" style="padding-bottom: 80px;">
+    <div class="toc-title">Inhaltsverzeichnis</div>
+    <div class="toc-subtitle">Vertrag – Digitale KI-Projektassistenz TRIGA-S</div>
+    <div class="toc-entry"><span class="toc-num">§ 1</span><span class="toc-name">Vertragsparteien</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 2</span><span class="toc-name">Präambel</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 3</span><span class="toc-name">Vertragsgegenstand</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 4</span><span class="toc-name">Leistungsumfang</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 5</span><span class="toc-name">Nicht im Leistungsumfang enthalten</span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 6</span><span class="toc-name">Projektablauf</span><span class="toc-dots"></span><span class="toc-page">6</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 7</span><span class="toc-name">Mitwirkungspflichten des Auftraggebers</span><span class="toc-dots"></span><span class="toc-page">6</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 8</span><span class="toc-name">Vergütung und Zahlungsbedingungen</span><span class="toc-dots"></span><span class="toc-page">7</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 9</span><span class="toc-name">Vertragslaufzeit und Kündigung</span><span class="toc-dots"></span><span class="toc-page">8</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 10</span><span class="toc-name">Abnahme</span><span class="toc-dots"></span><span class="toc-page">8</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 11</span><span class="toc-name">Laufende Betreuung und Support</span><span class="toc-dots"></span><span class="toc-page">9</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 12</span><span class="toc-name">Change Requests – Leistungsänderungen</span><span class="toc-dots"></span><span class="toc-page">9</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 13</span><span class="toc-name">Drittanbieter und technische Systeme</span><span class="toc-dots"></span><span class="toc-page">9</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 14</span><span class="toc-name">Datenschutz und DSGVO</span><span class="toc-dots"></span><span class="toc-page">10</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 15</span><span class="toc-name">Vertraulichkeit</span><span class="toc-dots"></span><span class="toc-page">10</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 16</span><span class="toc-name">Nutzungsrechte und geistiges Eigentum</span><span class="toc-dots"></span><span class="toc-page">11</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 17</span><span class="toc-name">Haftung</span><span class="toc-dots"></span><span class="toc-page">11</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 18</span><span class="toc-name">Referenznennung</span><span class="toc-dots"></span><span class="toc-page">12</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 19</span><span class="toc-name">Schlussbestimmungen</span><span class="toc-dots"></span><span class="toc-page">12</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 20</span><span class="toc-name">Anlagen</span><span class="toc-dots"></span><span class="toc-page">13</span></div>
+    <div class="toc-entry"><span class="toc-num">§ 21</span><span class="toc-name">Unterschriften</span><span class="toc-dots"></span><span class="toc-page">13</span></div>
+  </div>
+  <div class="page-footer">
+    <span class="page-footer-brand">AFA – Agentur für Automatisierung</span>
+    <span class="page-footer-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</span>
+    <span>Seite 2</span>
+  </div>
+</div>
+
+<!-- PAGE 3: §§ 1–2 -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-logo">
+      <img src="../../../brand_assets/AFA Final Full Logo.png" alt="AFA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="page-header-logo-text" style="display:none;">AFA</span>
+    </div>
+    <div class="page-header-ref-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</div>
+  </div>
+  <div class="test-banner">⚠ &nbsp; TESTVERSION – NICHT RECHTSVERBINDLICH – NUR FÜR DOCUSIGN-TESTS &nbsp; ⚠</div>
+
+  <div class="page-content" style="padding-bottom: 80px;">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-title-block">
+          <div class="section-title">Vertragsparteien</div>
+          <div class="section-subtitle">Auftragnehmer &amp; Auftraggeber</div>
+        </div>
+      </div>
+      <div class="parties-grid">
+        <div class="party-card auftragnehmer">
+          <div class="party-role">Auftragnehmer</div>
+          <div class="party-name">Ibrahim Ahmitti El Goul<br>handelnd unter<br>AFA – Agentur für Automatisierung</div>
+          <div class="party-detail">
+            <strong>Unternehmensform:</strong><br>Einzelunternehmen<br><br>
+            <strong>Adresse:</strong><br>Haldener Str. 21<br>58095 Hagen<br>Deutschland<br><br>
+            <strong>E-Mail:</strong> info@afa-ai.com<br>
+            <strong>Website:</strong> www.afa-ai.com<br><br>
+            <strong>Umsatzsteuer:</strong><br>Kleinunternehmer gemäß § 19 UStG<br><br>
+            <strong>Steuernummer / USt-IdNr.:</strong><br>Wird nach Zuteilung durch das Finanzamt nachgereicht.
+          </div>
+        </div>
+        <div class="party-card auftraggeber">
+          <div class="party-role">Auftraggeber</div>
+          <div class="party-name">TRIGA-S GmbH</div>
+          <div class="party-detail">
+            <strong>Adresse:</strong><br>Mühltal 5<br>82392 Habach<br>Deutschland<br><br>
+            <strong>Registergericht:</strong><br>Amtsgericht München<br>
+            <strong>Registernummer:</strong> HRB 280570<br>
+            <strong>USt-IdNr.:</strong> DE357456345<br><br>
+            <strong>Vertretungsberechtigte:</strong><br>Sabine Radiske<br>Dr. Andreas Franke<br><br>
+            <strong>E-Mail:</strong> info@triga-s.de<br>
+            <strong>Website:</strong> www.triga-s.de
+          </div>
+        </div>
+      </div>
+      <p>Auftragnehmer und Auftraggeber werden nachfolgend gemeinsam als „<strong>Parteien</strong>" und einzeln als „<strong>Partei</strong>" bezeichnet.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-title-block">
+          <div class="section-title">Präambel</div>
+          <div class="section-subtitle">Kontext und Zielsetzung</div>
+        </div>
+      </div>
+      <p>TRIGA-S GmbH (nachfolgend „TRIGA-S") ist ein Unternehmen im Bereich wissenschaftlicher Studienservices, CDx-/Pharma-Projekte, Probenmanagement, Biostatistik und Serviceleistungen im Life-Science-Umfeld. TRIGA-S beabsichtigt, die digitale Kommunikation und den Erstkontakt mit Interessenten und potenziellen Projektkunden durch den Einsatz einer modernen, individuellen digitalen Assistenzlösung auf der eigenen Website zu optimieren.</p>
+      <p>AFA – Agentur für Automatisierung (nachfolgend „AFA"), handelnd durch Ibrahim Ahmitti El Goul, entwickelt und betreibt individuelle digitale KI-Lösungen, Automatisierungssysteme und Website-Assistenten für Unternehmen im B2B-Bereich.</p>
+      <div class="callout callout-navy">
+        <div class="callout-label">Zielsetzung</div>
+        <p>Ziel der digitalen KI-Projektassistenz ist es, eingehende Anfragen strukturiert zu erfassen, Interessenten und Projektkontakte gezielt zu qualifizieren, Terminprozesse zu vereinfachen und das TRIGA-S Team im digitalen Erstkontakt zu entlasten.</p>
+      </div>
+      <p>Auf dieser Grundlage schließen die Parteien den nachfolgenden Vertrag.</p>
+    </div>
+  </div>
+  <div class="page-footer">
+    <span class="page-footer-brand">AFA – Agentur für Automatisierung</span>
+    <span class="page-footer-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</span>
+    <span>Seite 3</span>
+  </div>
+</div>
+
+<!-- PAGE 4: §§ 3–4 -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-logo">
+      <img src="../../../brand_assets/AFA Final Full Logo.png" alt="AFA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="page-header-logo-text" style="display:none;">AFA</span>
+    </div>
+    <div class="page-header-ref-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</div>
+  </div>
+  <div class="test-banner">⚠ &nbsp; TESTVERSION – NICHT RECHTSVERBINDLICH – NUR FÜR DOCUSIGN-TESTS &nbsp; ⚠</div>
+  <div class="page-content" style="padding-bottom: 80px;">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-title-block">
+          <div class="section-title">Vertragsgegenstand</div>
+          <div class="section-subtitle">Beschreibung der beauftragten Leistung</div>
+        </div>
+      </div>
+      <p>Gegenstand dieses Vertrages ist die Entwicklung, technische Einrichtung, Integration und laufende technische Betreuung einer individuellen digitalen KI-Projektassistenz für TRIGA-S (nachfolgend „das System" oder „die digitale Projektassistenz").</p>
+      <p>Bei der digitalen KI-Projektassistenz handelt es sich um einen maßgeschneiderten, im TRIGA-S Corporate Branding gestalteten Website-Chatbot, der auf der TRIGA-S Website betrieben wird. Das System dient als digitale Erstanlaufstelle für Interessenten, Projektkontakte und potenzielle Kunden und ist ausschließlich auf den spezifischen Bedarf von TRIGA-S zugeschnitten.</p>
+      <div class="callout callout-info">
+        <div class="callout-label">Klarstellung des Vertragsgegenstands</div>
+        <p>Dieser Vertrag umfasst ausschließlich die digitale KI-Projektassistenz (Chatbot / digitaler Assistent). Er umfasst ausdrücklich <strong>nicht</strong> einen vollständigen Website-Relaunch, einen Sprachassistenten (Call-Assistant), medizinische, rechtliche oder regulatorische Beratung.</p>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-title-block">
+          <div class="section-title">Leistungsumfang</div>
+          <div class="section-subtitle">Vereinbarte Leistungen von AFA</div>
+        </div>
+      </div>
+      <p>AFA erbringt im Rahmen dieses Vertrages die folgenden Leistungen:</p>
+      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.1 &nbsp;Entwicklung und Design</p>
+      <ul class="contract-list">
+        <li>Individueller Premium-Website-Chatbot im TRIGA-S Corporate Branding (Farben, Typografie, Logos, CI)</li>
+        <li>Design und Umsetzung eines angepassten Chat-Launchers, Teaser-Bubbles und Chat-Panel-UI</li>
+        <li>Responsives, browserkompatibles Frontend (JavaScript, HTML, CSS)</li>
+        <li>Technische Einbindungsunterstützung auf der TRIGA-S Website</li>
+      </ul>
+      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.2 &nbsp;Dialogstruktur und Anfrageroutings</p>
+      <ul class="contract-list">
+        <li>Strukturierte Dialogführung für IVD-Studien-Anfragen</li>
+        <li>Strukturierte Dialogführung für CDx-/Pharma-Projekte</li>
+        <li>Strukturierte Dialogführung für Probenmanagement</li>
+        <li>Strukturierte Dialogführung für Biostatistik</li>
+        <li>Strukturierte Dialogführung für Service-Beratung</li>
+        <li>Allgemeines Anfrage-Routing und Lead-Erfassung</li>
+        <li>Erkennung natürlicher Nutzerintentionen (Termin buchen, verschieben, stornieren)</li>
+        <li>Formular- und Kontaktdatenvalidierung (E-Mail, Telefon)</li>
+      </ul>
+      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.3 &nbsp;Terminverwaltung</p>
+      <ul class="contract-list">
+        <li>Terminbuchungsflow mit Kalenderauswahl und Uhrzeitauswahl</li>
+        <li>Terminverschiebungsflow mit Lookup und Neubuchung</li>
+        <li>Terminstornierungsflow mit Bestätigung</li>
+        <li>Terminübersicht und Buchungsbestätigung im Chat</li>
+      </ul>
+      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.4 &nbsp;Automatisierungen und Integrationen</p>
+      <ul class="contract-list">
+        <li>n8n Automatisierungs-Workflows für Buchung, Verschiebung, Stornierung, Lead-Erfassung</li>
+        <li>Google Calendar Integration für Terminprüfung und -eintragung</li>
+        <li>Google Sheets / CRM-Basisstruktur zur Datenspeicherung</li>
+        <li>E-Mail-Bestätigungssystem (Termin-Bestätigung, Erinnerungen, Stornierung) für Kunden und intern</li>
+        <li>SMS-Bestätigungslogik, sofern eine Telefonnummer angegeben wird</li>
+      </ul>
+      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.5 &nbsp;Tests, Übergabe und Betreuung</p>
+      <ul class="contract-list">
+        <li>Technische Tests aller Flows und Integrationen</li>
+        <li>Korrekturschleifen und Fehlerbehebung bis zur Abnahme</li>
+        <li>Go-live Vorbereitung und Einbindungsunterstützung</li>
+        <li>Technische Übergabe und Dokumentation</li>
+        <li>Laufende technische Betreuung während der gesamten Vertragslaufzeit</li>
+      </ul>
+    </div>
+  </div>
+  <div class="page-footer">
+    <span class="page-footer-brand">AFA – Agentur für Automatisierung</span>
+    <span class="page-footer-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</span>
+    <span>Seite 4</span>
+  </div>
+</div>
+
+<!-- PAGES 5–9: §§ 5–19 (condensed for test — all clauses preserved) -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-logo">
+      <img src="../../../brand_assets/AFA Final Full Logo.png" alt="AFA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="page-header-logo-text" style="display:none;">AFA</span>
+    </div>
+    <div class="page-header-ref-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</div>
+  </div>
+  <div class="test-banner">⚠ &nbsp; TESTVERSION – NICHT RECHTSVERBINDLICH – NUR FÜR DOCUSIGN-TESTS &nbsp; ⚠</div>
+  <div class="page-content" style="padding-bottom: 80px;">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-title-block">
+          <div class="section-title">Nicht im Leistungsumfang enthalten</div>
+          <div class="section-subtitle">Ausdrückliche Ausschlüsse</div>
+        </div>
+      </div>
+      <p>Folgende Leistungen sind ausdrücklich <strong>nicht</strong> Bestandteil dieses Vertrages, sofern nicht eine gesonderte schriftliche Vereinbarung getroffen wird:</p>
+      <ul class="exclusion-list">
+        <li>Vollständiger Relaunch oder Neuentwicklung der TRIGA-S Website</li>
+        <li>Entwicklung einer neuen oder überarbeiteten TRIGA-S Unternehmenswebsite</li>
+        <li>Rechtsberatung jeglicher Art</li>
+        <li>Steuerberatung jeglicher Art</li>
+        <li>Medizinische Beratung oder Empfehlungen</li>
+        <li>Regulatorische oder behördliche Beratung (inkl. IVDR, MDR, GMP, GCP)</li>
+        <li>Klinische Bewertung oder Studienplanung</li>
+        <li>Erstellung rechtlicher Datenschutztexte, Impressum oder Nutzungsbedingungen für TRIGA-S</li>
+        <li>Bezahlte Gebühren von Drittanbietern (Google Workspace, n8n Cloud, Twilio, Hosting, DocuSign oder vergleichbare Dienste), sofern nicht gesondert schriftlich vereinbart</li>
+        <li>Komplexe CRM-API-Integrationen, sofern nicht schriftlich vereinbart</li>
+        <li>Ersatz oder Migration interner TRIGA-S Systeme</li>
+        <li>Sprachassistenz / Call-Center-Automatisierung / Telefon-Bot</li>
+        <li>WhatsApp-Automatisierung oder Social-Media-Bots, sofern nicht gesondert vereinbart</li>
+        <li>Garantierte Anzahl von Leads, Terminen, Projektanfragen, Umsatz oder Geschäftserfolg</li>
+        <li>24/7 Notfall-SLA, sofern nicht gesondert vereinbart</li>
+        <li>Erfassung oder Verarbeitung sensibler medizinischer Patientendaten, sofern nicht gesondert schriftlich vereinbart und rechtlich geprüft</li>
+      </ul>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <div class="section-title-block">
+          <div class="section-title">Projektablauf</div>
+          <div class="section-subtitle">Phasen der Umsetzung</div>
+        </div>
+      </div>
+      <p>Die Umsetzung des Projekts erfolgt in folgenden Phasen. Die genaue Zeitplanung wird nach Vertragsunterzeichnung gemeinsam mit TRIGA-S abgestimmt.</p>
+      <table class="phase-table">
+        <tr><td class="phase-num">1</td><td class="phase-name">Kick-off und Abstimmung</td><td class="phase-desc">Projektbriefing, Klärung aller Anforderungen, Bereitstellung von Markenmaterialien durch TRIGA-S.</td></tr>
+        <tr><td class="phase-num">2</td><td class="phase-name">Konzeption der Dialoglogik</td><td class="phase-desc">Entwicklung der Gesprächsführungsstruktur und Routing-Logik.</td></tr>
+        <tr><td class="phase-num">3</td><td class="phase-name">Technische Umsetzung</td><td class="phase-desc">Entwicklung des Frontend-Chatbot-Systems im TRIGA-S Branding.</td></tr>
+        <tr><td class="phase-num">4</td><td class="phase-name">Automatisierungen</td><td class="phase-desc">Einrichtung der n8n Workflows, Google Calendar, E-Mail-Templates und SMS-Logik.</td></tr>
+        <tr><td class="phase-num">5</td><td class="phase-name">Testing</td><td class="phase-desc">Vollständige funktionale Tests aller Flows und Integrationen.</td></tr>
+        <tr><td class="phase-num">6</td><td class="phase-name">Korrekturschleife</td><td class="phase-desc">Bearbeitung von Feedback und Korrekturen vor Abnahme.</td></tr>
+        <tr><td class="phase-num">7</td><td class="phase-name">Go-live Vorbereitung</td><td class="phase-desc">Vorbereitung der technischen Einbindung auf der TRIGA-S Website.</td></tr>
+        <tr><td class="phase-num">8</td><td class="phase-name">Übergabe</td><td class="phase-desc">Abnahme, technische Dokumentation und Einweisung.</td></tr>
+        <tr><td class="phase-num">9</td><td class="phase-name">Laufende Betreuung</td><td class="phase-desc">Technische Betreuung, Monitoring und Support während der Vertragslaufzeit.</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="page-footer">
+    <span class="page-footer-brand">AFA – Agentur für Automatisierung</span>
+    <span class="page-footer-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</span>
+    <span>Seite 5</span>
+  </div>
+</div>
+
+<!-- PAGE 6: §§ 7–8 -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-logo">
+      <img src="../../../brand_assets/AFA Final Full Logo.png" alt="AFA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="page-header-logo-text" style="display:none;">AFA</span>
+    </div>
+    <div class="page-header-ref-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</div>
+  </div>
+  <div class="test-banner">⚠ &nbsp; TESTVERSION – NICHT RECHTSVERBINDLICH – NUR FÜR DOCUSIGN-TESTS &nbsp; ⚠</div>
+  <div class="page-content" style="padding-bottom: 80px;">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <div class="section-title-block">
+          <div class="section-title">Mitwirkungspflichten des Auftraggebers</div>
+          <div class="section-subtitle">Beistellpflichten von TRIGA-S</div>
+        </div>
+      </div>
+      <p>TRIGA-S ist verpflichtet, AFA die für die Erbringung der vereinbarten Leistungen notwendigen Informationen, Materialien und Zugriffe rechtzeitig und vollständig zur Verfügung zu stellen. Im Einzelnen umfasst dies:</p>
+      <ul class="contract-list">
+        <li>Bereitstellung von Logo, Markenmaterialien und CI-Richtlinien</li>
+        <li>Inhaltliche Korrekturen und Freigaben zu Dialogtexten und E-Mail-Templates</li>
+        <li>Bereitstellung von Test-E-Mail-Adressen und Testzugängen für Funktionsprüfungen</li>
+        <li>Bereitstellung von Kalenderregeln, verfügbaren Zeitfenstern und Buchungslogik</li>
+        <li>Zugang zu erforderlichen Systemen (z. B. Google Calendar, Domain-Einstellungen)</li>
+        <li>Benennung eines oder mehrerer fixer Ansprechpartner während der Projektlaufzeit</li>
+        <li>Zeitnahes Feedback auf Entwürfe, Testlinks und Freigabeanfragen</li>
+        <li>Freigabe der Chatbot-Formulierungen und E-Mail-Vorlagen vor dem Go-live</li>
+        <li>Eigenverantwortliche rechtliche Prüfung der Datenschutzerklärung auf der eigenen Website</li>
+      </ul>
+      <div class="callout callout-warning">
+        <div class="callout-label">Hinweis</div>
+        <p>Verzögerungen durch verspätete oder unvollständige Mitwirkung von TRIGA-S gehen nicht zu Lasten von AFA.</p>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <div class="section-title-block">
+          <div class="section-title">Vergütung und Zahlungsbedingungen</div>
+          <div class="section-subtitle">Preise, Fälligkeit und Bankverbindung</div>
+        </div>
+      </div>
+      <p style="font-weight:700; color:var(--navy); margin-bottom:8px;">8.1 &nbsp;Vergütungsstruktur</p>
+      <table class="price-table">
+        <thead><tr><th>Leistungsposition</th><th>Beschreibung</th><th style="text-align:right;">Betrag (EUR)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Einmalige Einrichtungsgebühr</strong></td><td>Entwicklung, Einrichtung, Integration, Tests und Übergabe</td><td class="amount">10.000,00 €</td></tr>
+          <tr><td><strong>Monatliche Betreuungsgebühr</strong></td><td>Laufende technische Betreuung, Monitoring, Support und Minor-Updates</td><td class="amount">2.000,00 € / Monat</td></tr>
+          <tr><td><strong>Mindestlaufzeit</strong></td><td>12 Monate monatliche Betreuung</td><td class="amount">24.000,00 €</td></tr>
+          <tr class="total-row"><td colspan="2"><strong>Gesamtvertragswert (12 Monate)</strong><br><span style="font-size:9px;font-weight:400;color:rgba(255,255,255,0.6);">Einmalige Gebühr + 12 Monate Betreuung</span></td><td class="amount">34.000,00 €</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-info" style="margin-top:14px;">
+        <div class="callout-label">Umsatzsteuerhinweis – § 19 UStG Kleinunternehmer</div>
+        <p>Der Auftragnehmer ist derzeit Kleinunternehmer im Sinne des § 19 UStG. Daher wird keine Umsatzsteuer berechnet und nicht ausgewiesen.</p>
+        <p style="margin-top:6px;"><strong>Schutzklausel:</strong> Sollte während der Vertragslaufzeit eine Umsatzsteuerpflicht entstehen, verstehen sich die vereinbarten Vergütungen ab diesem Zeitpunkt als Nettobeträge zuzüglich der gesetzlich geltenden Umsatzsteuer.</p>
+      </div>
+      <p style="font-weight:700; color:var(--navy); margin-top:14px; margin-bottom:6px;">8.3 &nbsp;Bankverbindung</p>
+      <table class="info-table" style="border:1px solid var(--border); border-radius:8px; overflow:hidden;">
+        <tr><td>Zahlungsempfänger</td><td>Ibrahim Ahmitti El Goul</td></tr>
+        <tr><td>IBAN</td><td>LT09 3250 0387 0908 1516</td></tr>
+        <tr><td>BIC</td><td>REVOLT21</td></tr>
+        <tr><td>Währung</td><td>EUR</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="page-footer">
+    <span class="page-footer-brand">AFA – Agentur für Automatisierung</span>
+    <span class="page-footer-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</span>
+    <span>Seite 6</span>
+  </div>
+</div>
+
+<!-- PAGE 7: §§ 9–13 -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-logo">
+      <img src="../../../brand_assets/AFA Final Full Logo.png" alt="AFA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="page-header-logo-text" style="display:none;">AFA</span>
+    </div>
+    <div class="page-header-ref-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</div>
+  </div>
+  <div class="test-banner">⚠ &nbsp; TESTVERSION – NICHT RECHTSVERBINDLICH – NUR FÜR DOCUSIGN-TESTS &nbsp; ⚠</div>
+  <div class="page-content" style="padding-bottom: 80px;">
+    <div class="section">
+      <div class="section-header"><div class="section-num">9</div><div class="section-title-block"><div class="section-title">Vertragslaufzeit und Kündigung</div><div class="section-subtitle">Mindestlaufzeit, Verlängerung und Kündigungsregeln</div></div></div>
+      <p><strong>9.1</strong> Dieser Vertrag tritt mit der Unterzeichnung durch beide Parteien in Kraft.</p>
+      <p><strong>9.2</strong> Die Mindestvertragslaufzeit beträgt <strong>12 Monate</strong>. Eine ordentliche Kündigung während der Mindestlaufzeit ist ausgeschlossen.</p>
+      <p><strong>9.3</strong> Kündigung zum Ende der Mindestlaufzeit mit einer Frist von <strong>3 Monaten</strong> schriftlich möglich.</p>
+      <p><strong>9.4</strong> Nach Ablauf der Mindestlaufzeit verlängert sich der Vertrag auf unbestimmte Zeit und kann mit einer Frist von <strong>30 Tagen zum Monatsende</strong> gekündigt werden.</p>
+      <p><strong>9.5</strong> Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt.</p>
+    </div>
+    <div class="section">
+      <div class="section-header"><div class="section-num">10</div><div class="section-title-block"><div class="section-title">Abnahme</div><div class="section-subtitle">Abnahmeregeln und Abnahmefiktion</div></div></div>
+      <p><strong>10.1</strong> AFA stellt das fertiggestellte System nach Abschluss der Umsetzungsphase zur Abnahme bereit.</p>
+      <p><strong>10.2</strong> TRIGA-S hat eine Prüffrist von <strong>7 Werktagen</strong>, um wesentliche Mängel in Textform zu rügen.</p>
+      <p><strong>10.3</strong> Werden keine wesentlichen Mängel gerügt, gilt das System als abgenommen.</p>
+      <p><strong>10.4</strong> Geringfügige visuelle Anpassungswünsche stellen keine wesentlichen Mängel dar und berechtigen nicht zur Abnahmeverweigerung.</p>
+    </div>
+    <div class="section">
+      <div class="section-header"><div class="section-num">11</div><div class="section-title-block"><div class="section-title">Laufende Betreuung und Support</div></div></div>
+      <p>Die monatliche Betreuungsgebühr umfasst technisches Monitoring, Fehlerbehebung, kleinere Textanpassungen, Workflow-Prüfungen und Erreichbarkeit an Werktagen (Best-Effort-Basis). Kein garantierter 24/7-Notfall-SLA ohne gesonderte Vereinbarung.</p>
+    </div>
+    <div class="section">
+      <div class="section-header"><div class="section-num">12</div><div class="section-title-block"><div class="section-title">Change Requests – Leistungsänderungen</div></div></div>
+      <p>Leistungen außerhalb von § 4 bedürfen einer gesonderten schriftlichen Vereinbarung. Change Requests umfassen u. a. Mehrsprachigkeit, komplexe CRM-Integrationen, Telefon-/Call-Assistent, WhatsApp-Automatisierung, grundlegende UI-Neugestaltung nach Abnahme.</p>
+    </div>
+    <div class="section">
+      <div class="section-header"><div class="section-num">13</div><div class="section-title-block"><div class="section-title">Drittanbieter und technische Systeme</div></div></div>
+      <p>AFA setzt u. a. n8n, Google Calendar, Google Sheets, E-Mail-Dienste, SMS-Provider (z. B. Twilio) und das TRIGA-S Website-Hosting ein. AFA haftet nicht für Ausfälle, API-Änderungen oder Preisänderungen dieser Drittanbieter. Drittanbieter-Gebühren werden von TRIGA-S direkt abgerechnet, sofern nicht anders vereinbart.</p>
+    </div>
+  </div>
+  <div class="page-footer">
+    <span class="page-footer-brand">AFA – Agentur für Automatisierung</span>
+    <span class="page-footer-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</span>
+    <span>Seite 7</span>
+  </div>
+</div>
+
+<!-- PAGE 8: §§ 14–19 -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-logo">
+      <img src="../../../brand_assets/AFA Final Full Logo.png" alt="AFA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="page-header-logo-text" style="display:none;">AFA</span>
+    </div>
+    <div class="page-header-ref-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</div>
+  </div>
+  <div class="test-banner">⚠ &nbsp; TESTVERSION – NICHT RECHTSVERBINDLICH – NUR FÜR DOCUSIGN-TESTS &nbsp; ⚠</div>
+  <div class="page-content" style="padding-bottom: 80px;">
+    <div class="section">
+      <div class="section-header"><div class="section-num">14</div><div class="section-title-block"><div class="section-title">Datenschutz und DSGVO</div></div></div>
+      <p><strong>14.1</strong> Beide Parteien halten die DSGVO/GDPR ein. <strong>14.2</strong> Das System kann Vorname, Nachname, E-Mail, Telefon, Unternehmensname, Termindetails und Gesprächsinhalte verarbeiten. <strong>14.3</strong> TRIGA-S bleibt datenschutzrechtlich Verantwortliche. <strong>14.4</strong> AFA erbringt keine Rechtsberatung im Bereich Datenschutz. <strong>14.5</strong> Sofern rechtlich erforderlich, schließen die Parteien einen AVV gemäß Art. 28 DSGVO. <strong>14.6</strong> Keine Erfassung sensibler medizinischer Patientendaten ohne gesonderte schriftliche Vereinbarung.</p>
+    </div>
+    <div class="section">
+      <div class="section-header"><div class="section-num">15</div><div class="section-title-block"><div class="section-title">Vertraulichkeit</div></div></div>
+      <p>Beide Parteien behandeln alle im Rahmen dieses Vertrages bekannt gewordenen vertraulichen Informationen streng vertraulich. Die Vertraulichkeitspflicht gilt für die Dauer des Vertrages und <strong>3 Jahre</strong> nach dessen Beendigung.</p>
+    </div>
+    <div class="section">
+      <div class="section-header"><div class="section-num">16</div><div class="section-title-block"><div class="section-title">Nutzungsrechte und geistiges Eigentum</div></div></div>
+      <p>TRIGA-S erhält ein einfaches, nicht übertragbares Nutzungsrecht für die Dauer des aktiven Vertragsverhältnisses. TRIGA-S-Marken bleiben Eigentum von TRIGA-S. AFA behält alle Rechte an wiederverwendbaren Komponenten, Frameworks, Methoden und vorbestehenden Assets. Weiterverwertung durch TRIGA-S an Dritte bedarf schriftlicher Zustimmung von AFA.</p>
+    </div>
+    <div class="section">
+      <div class="section-header"><div class="section-num">17</div><div class="section-title-block"><div class="section-title">Haftung</div></div></div>
+      <p><strong>17.1</strong> Unbeschränkte Haftung für Vorsatz, grobe Fahrlässigkeit sowie Schäden aus Verletzung von Leben, Körper oder Gesundheit. <strong>17.2</strong> Bei einfacher Fahrlässigkeit nur bei Verletzung wesentlicher Vertragspflichten (Kardinalpflicht), begrenzt auf vorhersehbaren, vertragstypischen Schaden. <strong>17.3</strong> Keine Haftung für entgangenen Gewinn, Drittanbieter-Ausfälle, nicht erzielte Leads/Umsätze oder datenschutzrechtliche Verstöße auf Seiten von TRIGA-S.</p>
+    </div>
+    <div class="section">
+      <div class="section-header"><div class="section-num">18</div><div class="section-title-block"><div class="section-title">Referenznennung</div></div></div>
+      <p>AFA darf TRIGA-S nur mit vorheriger schriftlicher Genehmigung als Referenzkunden nennen.</p>
+    </div>
+    <div class="section">
+      <div class="section-header"><div class="section-num">19</div><div class="section-title-block"><div class="section-title">Schlussbestimmungen</div></div></div>
+      <p><strong>19.1</strong> Deutsches Recht (ohne CISG). <strong>19.2</strong> Gerichtsstand: Hagen (Sitz des Auftragnehmers), soweit gesetzlich zulässig. <strong>19.3</strong> Änderungen bedürfen der Textform. <strong>19.4</strong> Salvatorische Klausel: Unwirksame Bestimmungen werden durch wirksame mit gleichem wirtschaftlichen Zweck ersetzt. <strong>19.5</strong> Dieser Vertrag ersetzt alle vorangegangenen Absprachen zu seinem Gegenstand.</p>
+    </div>
+  </div>
+  <div class="page-footer">
+    <span class="page-footer-brand">AFA – Agentur für Automatisierung</span>
+    <span class="page-footer-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</span>
+    <span>Seite 8</span>
+  </div>
+</div>
+
+<!-- PAGE 9: §§ 20–21 SIGNATURES -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-logo">
+      <img src="../../../brand_assets/AFA Final Full Logo.png" alt="AFA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="page-header-logo-text" style="display:none;">AFA</span>
+    </div>
+    <div class="page-header-ref-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</div>
+  </div>
+  <div class="test-banner">⚠ &nbsp; TESTVERSION – NICHT RECHTSVERBINDLICH – NUR FÜR DOCUSIGN-TESTS &nbsp; ⚠</div>
+  <div class="page-content" style="padding-bottom: 80px;">
+
+    <div class="section">
+      <div class="section-header"><div class="section-num">20</div><div class="section-title-block"><div class="section-title">Anlagen</div><div class="section-subtitle">Bestandteile des Vertrages</div></div></div>
+      <div class="annex-block"><div class="annex-title">Anlage 1 – Leistungsbeschreibung</div><div class="annex-desc">Detaillierte Beschreibung des vereinbarten Leistungsumfangs der digitalen KI-Projektassistenz.</div></div>
+      <div class="annex-block"><div class="annex-title">Anlage 2 – Vergütungsübersicht</div><div class="annex-desc">Tabellarische Aufstellung aller vereinbarten Vergütungen, Fälligkeiten und Zahlungsbedingungen.</div></div>
+      <div class="annex-block"><div class="annex-title">Anlage 3 – Drittanbieter und technische Systeme</div><div class="annex-desc">Liste der eingesetzten Drittanbieter und Systeme inkl. Haftungsabgrenzungen.</div></div>
+      <div class="annex-block"><div class="annex-title">Anlage 4 – Datenschutz / AVV-Hinweis</div><div class="annex-desc">Auftragsverarbeitungsvertrag (AVV) gemäß Art. 28 DSGVO. Wird bei Bedarf gesondert abgeschlossen.</div></div>
+    </div>
+
+    <div class="section">
+      <div class="sig-section-title">§ 21 – Unterschriften</div>
+      <div class="sig-section-sub">Vertragsunterzeichnung – DocuSign Test</div>
+      <p>Durch die nachfolgenden Unterschriften erklären beide Parteien ihr Einverständnis mit dem Inhalt dieses Vertrages. <strong>Achtung: Dies ist eine Testversion. Die Unterzeichnung ist nicht rechtsverbindlich.</strong></p>
+
+      <div class="sig-grid">
+        <!-- AUFTRAGNEHMER -->
+        <div class="sig-card">
+          <div class="sig-party-role">Auftragnehmer</div>
+          <div class="sig-party-name">Ibrahim Ahmitti El Goul<br>AFA – Agentur für Automatisierung<br>Einzelunternehmen</div>
+          <div class="sig-field">
+            <div class="sig-field-label">Ort, Datum</div>
+            <div class="sig-field-line">Hagen, 30.06.2026</div>
+          </div>
+          <div class="sig-field">
+            <div class="sig-field-label">Name (Druckbuchstaben)</div>
+            <div class="sig-field-line"></div>
+          </div>
+          <div class="sig-field">
+            <div class="sig-field-label">Funktion</div>
+            <div class="sig-field-line">Inhaber / Auftragnehmer</div>
+          </div>
+          <div class="sig-field">
+            <div class="sig-field-label">Unterschrift</div>
+            <div class="sig-field-line" style="height:58px;"></div>
+          </div>
+          <div>
+            <div class="sig-docusign-placeholder">[signature|req|signer1]</div>
+            <br>
+            <div class="sig-docusign-placeholder">[fullname|req|signer1]</div>
+          </div>
+          <div class="sig-docusign-note">DocuSign Signer 1: Ibrahim Ahmitti El Goul (AFA) · TESTVERSION</div>
+        </div>
+
+        <!-- AUFTRAGGEBER -->
+        <div class="sig-card">
+          <div class="sig-party-role">Auftraggeber</div>
+          <div class="sig-party-name">TRIGA-S GmbH<br>Mühltal 5, 82392 Habach</div>
+          <div class="sig-field">
+            <div class="sig-field-label">Ort, Datum</div>
+            <div class="sig-field-line">Habach, 30.06.2026</div>
+          </div>
+          <div class="sig-field">
+            <div class="sig-field-label">Name (Druckbuchstaben)</div>
+            <div class="sig-field-line"></div>
+          </div>
+          <div class="sig-field">
+            <div class="sig-field-label">Funktion</div>
+            <div class="sig-field-line">Geschäftsführung (Sabine Radiske / Dr. Andreas Franke)</div>
+          </div>
+          <div class="sig-field">
+            <div class="sig-field-label">Unterschrift</div>
+            <div class="sig-field-line" style="height:58px;"></div>
+          </div>
+          <div>
+            <div class="sig-docusign-placeholder">[signature|req|signer2]</div>
+            <br>
+            <div class="sig-docusign-placeholder">[fullname|req|signer2]</div>
+          </div>
+          <div class="sig-docusign-note">DocuSign Signer 2: TRIGA-S GmbH (Geschäftsführung) · TESTVERSION</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="page-footer">
+    <span class="page-footer-brand">AFA – Agentur für Automatisierung</span>
+    <span class="page-footer-test">⚠ TESTVERSION – NICHT RECHTSVERBINDLICH</span>
+    <span>Seite 9</span>
+  </div>
+</div>
+
+</body>
+</html>

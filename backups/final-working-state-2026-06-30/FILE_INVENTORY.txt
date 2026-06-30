@@ -1,0 +1,103 @@
+﻿FILE INVENTORY — TRIGA-S Project Backup
+Backup date: 2026-06-30
+Generated:   2026-06-30 01:10:10
+============================================================
+
+[Chatbot JS]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\triga-s-chatbot-demo\triga-s-chatbot.js
+  Size:      91961 bytes
+  Modified:  2026-06-29 18:05:39
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\chatbot\triga-s-chatbot.js
+  Size:      91961 bytes  ✓ MATCH
+
+[Chatbot index.html]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\triga-s-chatbot-demo\index.html
+  Size:      15415 bytes
+  Modified:  2026-06-20 14:07:48
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\chatbot\index.html
+  Size:      15415 bytes  ✓ MATCH
+
+[Chatbot styles.css]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\triga-s-chatbot-demo\styles.css
+  Size:      18473 bytes
+  Modified:  2026-06-20 14:09:00
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\chatbot\styles.css
+  Size:      18473 bytes  ✓ MATCH
+
+[Chatbot README.md]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\triga-s-chatbot-demo\README.md
+  Size:      4775 bytes
+  Modified:  2026-06-20 14:12:42
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\chatbot\README.md
+  Size:      4775 bytes  ✓ MATCH
+
+[serve-demo.mjs]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\triga-s-chatbot-demo\serve-demo.mjs
+  Size:      2252 bytes
+  Modified:  2026-06-21 12:34:49
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\chatbot\serve-demo.mjs
+  Size:      2252 bytes  ✓ MATCH
+
+[Chatbot Assets (triga-s-chatbot-demo/assets/)]
+  lineas-header.png  (981708 bytes)  ✓
+  lineas-triga-s.png  (138694 bytes)  ✓
+  logo-color.b64  (27676 bytes)  ✓
+  logo-white.b64  (17272 bytes)  ✓
+  triga-s-full-logo-color.png  (385712 bytes)  ✓
+  triga-s-full-logo-white.png  (45374 bytes)  ✓
+  triga-s-logo-color.png  (226391 bytes)  ✓
+  triga-s-logo-white.png  (331374 bytes)  ✓
+  triga-s-logo.png  (729414 bytes)  ✓
+  triga-s-mark-color.png  (226391 bytes)  ✓
+  triga-s-mark-white.png  (410233 bytes)  ✓
+
+[Real Contract HTML]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\contracts\triga-s\TRIGA-S_AFA_KI_Projektassistenz_Vertrag.html
+  Size:      77437 bytes
+  Modified:  2026-06-30 00:22:06
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\contracts\real\TRIGA-S_AFA_KI_Projektassistenz_Vertrag.html
+  Size:      77437 bytes  ✓ MATCH
+
+[Real Contract PDF]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\contracts\triga-s\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_DocuSign.pdf  (NOT FOUND)
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\contracts\real\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_DocuSign.pdf  (NOT FOUND)
+
+[README_CONTRACT.txt]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\contracts\triga-s\README_CONTRACT.txt
+  Size:      7822 bytes
+  Modified:  2026-06-30 00:02:45
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\contracts\real\README_CONTRACT.txt
+  Size:      7822 bytes  ✓ MATCH
+
+[Test Contract HTML]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\contracts\triga-s\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST.html
+  Size:      58177 bytes
+  Modified:  2026-06-30 00:37:19
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\contracts\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST.html
+  Size:      58177 bytes  ✓ MATCH
+
+[Test Contract PDF]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\contracts\triga-s\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST_DocuSign.pdf  (NOT FOUND)
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\contracts\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST_DocuSign.pdf  (NOT FOUND)
+
+[README-LAST-WORKING-VERSION.txt]
+  Original:  c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\triga-s-chatbot-demo\backups\README-LAST-WORKING-VERSION.txt
+  Size:      9506 bytes
+  Modified:  2026-06-29 22:05:48
+  Backup:    c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\docs\README-LAST-WORKING-VERSION.txt
+  Size:      9506 bytes  ✓ MATCH
+
+[Brand Assets (brand_assets/)]
+  AFA Final Full Logo.png  (83694 bytes)  ✓
+  AFA Final Logo.png  (41735 bytes)  ✓
+  Lineas triga S.png  (981708 bytes)  ✓
+  LOGO FAVICON.png  (92234 bytes)  ✓
+  Logo Triga S Blanco.png  (410233 bytes)  ✓
+  Triga s full logo white.png  (45374 bytes)  ✓
+  Triga S Full Logo.png  (385712 bytes)  ✓
+  Triga S Logo.png  (226391 bytes)  ✓
+
+[Backup Meta Files]
+  checks/SHA256_CHECKS.txt  ✓
+  BACKUP_REPORT.md          (writing now)
+  FILE_INVENTORY.txt        (this file)

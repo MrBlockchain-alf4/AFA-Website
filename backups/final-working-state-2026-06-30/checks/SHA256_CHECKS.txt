@@ -1,0 +1,28 @@
+﻿SHA256 INTEGRITY CHECK — TRIGA-S Project Backup
+Backup date: 2026-06-30
+Generated: 2026-06-30 01:09:52
+
+Real contract HTML (original)
+  Path:   c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\contracts\triga-s\TRIGA-S_AFA_KI_Projektassistenz_Vertrag.html
+  SHA256: 4C4BB25B2D8CE70DDE1E12136376ADE345B77B12E9A523DA68A5E340A4E0A68A
+
+Real contract HTML (backup)
+  Path:   c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\contracts\real\TRIGA-S_AFA_KI_Projektassistenz_Vertrag.html
+  SHA256: 4C4BB25B2D8CE70DDE1E12136376ADE345B77B12E9A523DA68A5E340A4E0A68A
+
+Test contract HTML (original)
+  Path:   c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\contracts\triga-s\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST.html
+  SHA256: BD12A4284B858240A7D16D5A79F6C8083FCFEDA0C374F1E7EEA5CD9FABC54F72
+
+Test contract HTML (backup)
+  Path:   c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\contracts\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST.html
+  SHA256: BD12A4284B858240A7D16D5A79F6C8083FCFEDA0C374F1E7EEA5CD9FABC54F72
+
+triga-s-chatbot.js (backup)
+  Path:   c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\backups\final-working-state-2026-06-30\chatbot\triga-s-chatbot.js
+  SHA256: 36CEBA048DC3C6DFD095D021FC4EFE3A7253D3620CD4B5CFD8D09A2217C6B16F
+
+triga-s-chatbot.js (original)
+  Path:   c:\Users\ghost\OneDrive\Desktop\Claude Web Design\AFA Website\triga-s-chatbot-demo\triga-s-chatbot.js
+  SHA256: 36CEBA048DC3C6DFD095D021FC4EFE3A7253D3620CD4B5CFD8D09A2217C6B16F
+

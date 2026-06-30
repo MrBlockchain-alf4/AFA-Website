@@ -1,0 +1,121 @@
+﻿FILE INVENTORY
+Backup: final-secure-state-after-invoice-contract-docusign-2026-06-30
+Generated: 2026-06-30
+================================================================================
+
+ORIGINAL : triga-s-chatbot-demo\triga-s-chatbot.js
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\triga-s-chatbot.js
+SIZE     : 95728 bytes
+MODIFIED : 2026-06-30 09:34:59
+
+ORIGINAL : triga-s-chatbot-demo\index.html
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\index.html
+SIZE     : 15415 bytes
+MODIFIED : 2026-06-20 14:07:48
+
+ORIGINAL : triga-s-chatbot-demo\styles.css
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\styles.css
+SIZE     : 18473 bytes
+MODIFIED : 2026-06-20 14:09:00
+
+ORIGINAL : triga-s-chatbot-demo\README.md
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\README.md
+SIZE     : 4775 bytes
+MODIFIED : 2026-06-20 14:12:42
+
+ORIGINAL : triga-s-chatbot-demo\serve-demo.mjs
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\serve-demo.mjs
+SIZE     : 2252 bytes
+MODIFIED : 2026-06-21 12:34:49
+
+ORIGINAL : triga-s-chatbot-demo\assets\lineas-header.png
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\lineas-header.png
+SIZE     : 981708 bytes
+MODIFIED : 2026-06-27 22:43:28
+
+ORIGINAL : triga-s-chatbot-demo\assets\lineas-triga-s.png
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\lineas-triga-s.png
+SIZE     : 138694 bytes
+MODIFIED : 2026-06-23 00:20:23
+
+ORIGINAL : triga-s-chatbot-demo\assets\logo-color.b64
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\logo-color.b64
+SIZE     : 27676 bytes
+MODIFIED : 2026-06-22 21:24:35
+
+ORIGINAL : triga-s-chatbot-demo\assets\logo-white.b64
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\logo-white.b64
+SIZE     : 17272 bytes
+MODIFIED : 2026-06-22 21:24:35
+
+ORIGINAL : triga-s-chatbot-demo\assets\triga-s-full-logo-color.png
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\triga-s-full-logo-color.png
+SIZE     : 385712 bytes
+MODIFIED : 2026-06-24 14:29:39
+
+ORIGINAL : triga-s-chatbot-demo\assets\triga-s-full-logo-white.png
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\triga-s-full-logo-white.png
+SIZE     : 45374 bytes
+MODIFIED : 2026-06-24 16:10:14
+
+ORIGINAL : triga-s-chatbot-demo\assets\triga-s-logo-color.png
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\triga-s-logo-color.png
+SIZE     : 226391 bytes
+MODIFIED : 2026-06-23 19:38:22
+
+ORIGINAL : triga-s-chatbot-demo\assets\triga-s-logo-white.png
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\triga-s-logo-white.png
+SIZE     : 331374 bytes
+MODIFIED : 2026-06-22 21:14:17
+
+ORIGINAL : triga-s-chatbot-demo\assets\triga-s-logo.png
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\triga-s-logo.png
+SIZE     : 729414 bytes
+MODIFIED : 2026-06-22 21:14:17
+
+ORIGINAL : triga-s-chatbot-demo\assets\triga-s-mark-color.png
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\triga-s-mark-color.png
+SIZE     : 226391 bytes
+MODIFIED : 2026-06-27 23:51:40
+
+ORIGINAL : triga-s-chatbot-demo\assets\triga-s-mark-white.png
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\assets\triga-s-mark-white.png
+SIZE     : 410233 bytes
+MODIFIED : 2026-06-27 23:51:40
+
+ORIGINAL : contracts\triga-s\TRIGA-S_AFA_KI_Projektassistenz_Vertrag.html
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\contracts\real\TRIGA-S_AFA_KI_Projektassistenz_Vertrag.html
+SIZE     : 76668 bytes
+MODIFIED : 2026-06-30 10:13:52
+
+ORIGINAL : contracts\triga-s\README_CONTRACT.txt
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\contracts\real\README_CONTRACT.txt
+SIZE     : 7822 bytes
+MODIFIED : 2026-06-30 00:02:45
+
+ORIGINAL : contracts\triga-s\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST.html
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\contracts\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST.html
+SIZE     : 58177 bytes
+MODIFIED : 2026-06-30 00:37:19
+
+ORIGINAL : invoices\triga-s\AFA_RE-2026-001_TRIGA-S_Einrichtungsgebuehr.html
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\invoices\AFA_RE-2026-001_TRIGA-S_Einrichtungsgebuehr.html
+SIZE     : 17522 bytes
+MODIFIED : 2026-06-30 09:58:09
+
+ORIGINAL : invoices\triga-s\README_INVOICE.txt
+BACKUP   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\invoices\README_INVOICE.txt
+SIZE     : 5000 bytes
+MODIFIED : 2026-06-30 09:58:42
+
+================================================================================
+MISSING (PDF exports pending):
+  [PDF MISSING] contracts\triga-s\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_DocuSign.pdf
+                PDF not found — manual Chrome export still pending.
+  [PDF MISSING] contracts\triga-s\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST_DocuSign.pdf
+                PDF not found — manual Chrome export still pending.
+  [PDF MISSING] invoices\triga-s\AFA_RE-2026-001_TRIGA-S_Einrichtungsgebuehr.pdf
+                PDF not found — manual Chrome export still pending.
+
+================================================================================
+Total files backed up: 21

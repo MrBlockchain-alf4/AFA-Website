@@ -1,0 +1,47 @@
+﻿SHA256 INTEGRITY CHECKS
+Backup: final-secure-state-after-invoice-contract-docusign-2026-06-30
+Generated: 2026-06-30
+======================================================================
+
+[Chatbot JS]
+  Original : triga-s-chatbot-demo\triga-s-chatbot.js
+  SHA256   : 53E5B70A3050A6FA37B25BA07D1789EDEBEC4AE8F1BC39D96648E954B2594E0C
+  Backup   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\chatbot\triga-s-chatbot.js
+  SHA256   : 53E5B70A3050A6FA37B25BA07D1789EDEBEC4AE8F1BC39D96648E954B2594E0C
+  Status   : ✓ MATCH
+
+[Real Contract HTML]
+  Original : contracts\triga-s\TRIGA-S_AFA_KI_Projektassistenz_Vertrag.html
+  SHA256   : 4D65017F972890F510C23346116205A56FCEE7DDA6B52F67CAE9833E07B9AD9B
+  Backup   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\contracts\real\TRIGA-S_AFA_KI_Projektassistenz_Vertrag.html
+  SHA256   : 4D65017F972890F510C23346116205A56FCEE7DDA6B52F67CAE9833E07B9AD9B
+  Status   : ✓ MATCH
+
+[Test Contract HTML]
+  Original : contracts\triga-s\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST.html
+  SHA256   : BD12A4284B858240A7D16D5A79F6C8083FCFEDA0C374F1E7EEA5CD9FABC54F72
+  Backup   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\contracts\test\TRIGA-S_AFA_KI_Projektassistenz_Vertrag_TEST.html
+  SHA256   : BD12A4284B858240A7D16D5A79F6C8083FCFEDA0C374F1E7EEA5CD9FABC54F72
+  Status   : ✓ MATCH
+
+[Invoice HTML]
+  Original : invoices\triga-s\AFA_RE-2026-001_TRIGA-S_Einrichtungsgebuehr.html
+  SHA256   : FACEC5BD929481D9841579CC6D7997C8705EA8A521A0758E0DDB64F289E89948
+  Backup   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\invoices\AFA_RE-2026-001_TRIGA-S_Einrichtungsgebuehr.html
+  SHA256   : FACEC5BD929481D9841579CC6D7997C8705EA8A521A0758E0DDB64F289E89948
+  Status   : ✓ MATCH
+
+[README_CONTRACT]
+  Original : contracts\triga-s\README_CONTRACT.txt
+  SHA256   : 5D941DB77ABE1B5658FBF7581835621DF087C7C1E272EFC6A5E2E92A71157F26
+  Backup   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\contracts\real\README_CONTRACT.txt
+  SHA256   : 5D941DB77ABE1B5658FBF7581835621DF087C7C1E272EFC6A5E2E92A71157F26
+  Status   : ✓ MATCH
+
+[README_INVOICE]
+  Original : invoices\triga-s\README_INVOICE.txt
+  SHA256   : A161AB270E609EF7649C7A3B7594A2BA6F4DE879B1CBD64D053C11FD16C0B8DE
+  Backup   : backups\final-secure-state-after-invoice-contract-docusign-2026-06-30\invoices\README_INVOICE.txt
+  SHA256   : A161AB270E609EF7649C7A3B7594A2BA6F4DE879B1CBD64D053C11FD16C0B8DE
+  Status   : ✓ MATCH
+
