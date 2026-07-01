@@ -1,0 +1,52 @@
+﻿FILE INVENTORY
+==============
+
+Backup Folder  : backups\final-secure-state-before-pc-shutdown-2026-07-01-1031
+Generated      : 2026-07-01 10:31
+Total Files    : 155
+
+FOLDERS
+-------
+  [DIR]  lib  (1 files)
+  [DIR]  invoices  (2 files)
+  [DIR]  triga-s-chatbot-demo  (38 files)
+  [DIR]  public  (25 files)
+  [DIR]  email-templates  (51 files)
+  [DIR]  brand_assets  (8 files)
+  [DIR]  app  (4 files)
+  [DIR]  contracts  (3 files)
+  [DIR]  components  (3 files)
+
+ROOT-LEVEL FILES
+----------------
+  package.json  (0.8 KB)
+  postcss.config.mjs  (0.2 KB)
+  package-lock.json  (234.1 KB)
+  next.config.mjs  (0.2 KB)
+  next.config.ts  (0.3 KB)
+  tailwind.config.ts  (1.6 KB)
+  tsconfig.json  (0.5 KB)
+  serve.mjs  (1.2 KB)
+  screenshot-mobile.mjs  (1.6 KB)
+  screenshot.mjs  (2.8 KB)
+  booking-calendar-extension.js  (33.5 KB)
+  booking-calendar-preview.html  (4.7 KB)
+  BACKUP_README.txt  (2.1 KB)
+  .gitignore  (0.1 KB)
+  analyze-logo.mjs  (2 KB)
+  index.html  (54.6 KB)
+  next-env.d.ts  (0.2 KB)
+  generate-favicons.mjs  (2 KB)
+  booking-calendar.html  (35.5 KB)
+  CLAUDE.md  (3.8 KB)
+
+KEY FILES (full relative paths)
+-------------------------------
+  [OK]  email-templates\triga-s\trigas_angebot_ki_projektassistenz.html
+  [OK]  email-templates\triga-s\trigas_angebot_ki_projektassistenz.backup-before-card-alignment-fix.html
+  [OK]  email-templates\triga-s\trigas_angebot_ki_projektassistenz.backup-before-pure-ai-chatbot-focus.html
+  [OK]  contracts\triga-s\TRIGA-S_AFA_KI_Projektassistenz_Vertrag.html
+  [OK]  invoices\triga-s\AFA_RE-2026-001_TRIGA-S_Einrichtungsgebuehr.html
+  [OK]  triga-s-chatbot-demo\triga-s-chatbot.js
+  [OK]  package.json
+  [OK]  CLAUDE.md
