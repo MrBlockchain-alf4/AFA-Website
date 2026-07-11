@@ -20,6 +20,7 @@
     RESCHEDULE: 'https://afa-team.app.n8n.cloud/webhook/TrigaS-termin-verschieben-auto',
     CANCEL:     'https://afa-team.app.n8n.cloud/webhook/TrigaS-termin-cancel',
     SMS:        'https://afa-team.app.n8n.cloud/webhook/send_sms_confirmation_trigas',
+    CHAT:       'https://afa-team.app.n8n.cloud/webhook/triga-chat',
   };
 
   /* ── PRIVACY / DATENSCHUTZ ───────────────────────────────────── */
@@ -995,7 +996,7 @@
 <div id="tgs-body"></div>
 <div id="tgs-inp-area">
   <div class="tgs-inp-row">
-    <input id="tgs-inp" type="text" autocomplete="off" placeholder="Wie können wir Sie unterstützen?" aria-label="Nachricht an TRIGA-S schreiben">
+    <input id="tgs-inp" type="text" autocomplete="off" placeholder="Wie kann ich Ihnen helfen?" aria-label="Nachricht an TRIGA-S schreiben">
     <button id="tgs-snd" aria-label="Senden">
       <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="pointer-events:none;display:block;flex-shrink:0">
         <path fill="#005BAA" d="M22 2L2 9L11 13Z"/>
@@ -1133,7 +1134,7 @@
 
   function hideInp(){
     $inp.value='';
-    $inp.placeholder='Wie können wir Sie unterstützen?';
+    $inp.placeholder='Wie kann ich Ihnen helfen?';
     $snd.onclick=null; $inp.onkeydown=null;
   }
 
@@ -1250,9 +1251,44 @@
   function enterIdleMode(){
     S.flow=null;
     $inp.disabled=false; $inp.value='';
-    $inp.placeholder='Wie können wir Sie unterstützen?';
+    $inp.placeholder='Wie kann ich Ihnen helfen?';
     $snd.onclick=idleHandler;
     $inp.onkeydown=e=>{ if(e.key==='Enter') idleHandler(); };
+    focusInput();
+  }
+
+  async function chatSend(){
+    if(S.busy) return;
+    const v=$inp.value.trim(); if(!v) return;
+    usr(v);
+    if(!S.privacyAccepted){ requirePrivacyConsent(()=>_chatDispatch(v)); return; }
+    _chatDispatch(v);
+  }
+  const _FOLLOW_UPS=[
+    'Haben Sie noch weitere Fragen?',
+    'Kann ich Ihnen sonst noch helfen?',
+    'Gibt es noch etwas, das ich für Sie klären kann?',
+    'Womit kann ich Ihnen noch weiterhelfen?',
+    'Darf ich Ihnen noch bei einer anderen Frage weiterhelfen?',
+  ];
+  async function _chatDispatch(v){
+    busy(true); showTyping();
+    try{
+      const res=await apiPost(WH.CHAT,{message:v});
+      hideTyping(); busy(false);
+      bot(res.reply||'Ich habe Ihre Anfrage erhalten.');
+      setTimeout(()=>bot(_FOLLOW_UPS[Math.floor(Math.random()*_FOLLOW_UPS.length)]), 400);
+    }catch(e){
+      hideTyping(); busy(false); console.error('[TGS Chat]',e);
+      bot('Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.');
+    }
+    enterChatMode();
+  }
+  function enterChatMode(){
+    S.flow=null; $inp.disabled=false; $inp.value='';
+    $inp.placeholder='Wie kann ich Ihnen helfen?';
+    $snd.onclick=chatSend;
+    $inp.onkeydown=e=>{ if(e.key==='Enter') chatSend(); };
     focusInput();
   }
 
@@ -1263,7 +1299,7 @@
     showTyping();
     setTimeout(()=>{
       hideTyping();
-      bot('Bevor wir Ihre Angaben aufnehmen oder eine Anfrage weiterverarbeiten, benötigen wir Ihre Bestätigung zum Datenschutz. Ihre Angaben werden zur Bearbeitung Ihrer Anfrage, Terminverwaltung und Kontaktaufnahme durch TRIGA-S verarbeitet. Weitere Informationen finden Sie in der <a href="'+PRIVACY_URL+'" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a>.', true);
+      bot('Bevor wir Ihre Fragen beantworten, benötigen wir Ihre Bestätigung zum Datenschutz. Ihre Eingaben werden zur Beantwortung Ihrer Fragen über TRIGA-S verarbeitet. Weitere Informationen finden Sie in der <a href="'+PRIVACY_URL+'" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a>.', true);
       acts([
         {label:'Datenschutz akzeptieren', cls:'a', fn:()=>privacyAccept()},
         {label:'Ablehnen',                cls:'g', fn:()=>privacyDeclined()},
@@ -1299,17 +1335,8 @@
     showTyping();
     setTimeout(()=>{
       hideTyping();
-      bot('Willkommen bei TRIGA-S. Ich unterstütze Sie bei IVD-Studien, CDx-/Pharma-Projekten, Probenmanagement, Biostatistik und Projektanfragen. Wie kann ich Ihnen helfen?');
-      enterIdleMode();
-      acts([
-        {label:'IVD-Studie',        fn:()=>leadStart('Projektberatung','Leistungsstudien (IVDR)')},
-        {label:'CDx / Pharma',      fn:()=>leadStart('Projektberatung','CDx / Pharma Services')},
-        {label:'Probenmanagement',  fn:()=>leadStart('Projektberatung','Probenmanagement')},
-        {label:'Biostatistik',      fn:()=>leadStart('Projektberatung','Biostatistik & Evidenz')},
-        {label:'Service-Beratung',  fn:()=>serviceBeratungMenu()},
-        {label:'Allgemeine Frage',  fn:()=>leadStart('Frage')},
-        {label:'Termin verwalten',  fn:()=>terminVerwaltenMenu()},
-      ]);
+      bot('Willkommen bei TRIGA-S. Ich beantworte Ihre Fragen zu IVD-Studien, CDx-/Pharma-Projekten, Probenmanagement, Biostatistik und Projektanfragen.');
+      enterChatMode();
     }, 1300);
   }
 
