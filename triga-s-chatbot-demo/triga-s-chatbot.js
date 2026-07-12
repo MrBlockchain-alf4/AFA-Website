@@ -686,6 +686,26 @@
   .tgs-chips{padding-left:0;}
   .tgs-row.bot .tgs-bbl{max-width:calc(100vw - 120px);}
 }
+@media(max-width:480px){
+  #tgs-panel{
+    width:calc(100vw - 16px)!important;
+    height:min(520px,calc(100vh - 160px))!important;
+    right:8px!important;bottom:74px!important;}
+  #tgs-launcher{
+    width:52px!important;height:52px!important;
+    right:10px!important;bottom:12px!important;}
+  #tgs-launcher .tgs-li-wrap{width:34px!important;height:34px!important;}
+  #tgs-teaser{
+    right:10px!important;bottom:76px!important;
+    max-width:calc(100vw - 20px)!important;}
+  .tgs-row.bot .tgs-bbl,.tgs-row.usr .tgs-bbl{
+    max-width:calc(100vw - 88px)!important;}
+  #tgs-inp{font-size:16px!important;}
+  #tgs-inp-area{padding-bottom:6px!important;}
+  #tgs-footer{padding-top:3px!important;padding-bottom:7px!important;}
+  #tgs-hd-name{font-size:15px!important;}
+  #tgs-hd-sub,#tgs-hd-label{font-size:11px!important;}
+}
 `;
 
   /* ── MONTHS / DAYS ───────────────────────────────────────────── */
@@ -1276,7 +1296,7 @@
     try{
       const res=await apiPost(WH.CHAT,{message:v});
       hideTyping(); busy(false);
-      bot(res.reply||'Ich habe Ihre Anfrage erhalten.');
+      bot(esc(res.reply||'Ich habe Ihre Anfrage erhalten.').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'), true);
       setTimeout(()=>bot(_FOLLOW_UPS[Math.floor(Math.random()*_FOLLOW_UPS.length)]), 400);
     }catch(e){
       hideTyping(); busy(false); console.error('[TGS Chat]',e);
