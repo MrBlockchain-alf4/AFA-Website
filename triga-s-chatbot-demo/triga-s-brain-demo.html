@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRIGA-S · KI Live Demo</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000a14; }
+    canvas#brain { display: block; position: fixed; inset: 0; }
+
+    /* Top-left branding */
+    .tg-brand {
+      position: fixed; top: 30px; left: 36px; z-index: 20;
+      pointer-events: none; user-select: none;
+    }
+    .tg-logo-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .tg-live-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,210,63,0.1);
+      border: 1px solid rgba(255,210,63,0.28);
+      border-radius: 999px; padding: 3px 10px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #FFD23F;
+    }
+    .tg-live-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #FFD23F;
+      animation: livePulse 1.6s ease-in-out infinite;
+    }
+    @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.7);} }
+
+    .tg-brand-name {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 22px; font-weight: 700; letter-spacing: -0.02em;
+      color: rgba(255,255,255,0.92);
+      margin-top: 14px;
+    }
+    .tg-brand-sub {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 12px; letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.28);
+      margin-top: 4px;
+    }
+
+    /* Top-right state badge */
+    .tg-state {
+      position: fixed; top: 30px; right: 130px; z-index: 20;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 999px; padding: 7px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+      pointer-events: none; user-select: none;
+      transition: border-color 0.4s;
+    }
+    .tg-state-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #22C55E; flex-shrink: 0;
+      transition: background 0.35s, box-shadow 0.35s;
+      animation: sdPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes sdPulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
+    /* Bottom footnote */
+    .tg-hint {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.14);
+      pointer-events: none; user-select: none; white-space: nowrap;
+    }
+
+    /* Subtle center glow — ambient backdrop for the widget */
+    .tg-center-glow {
+      position: fixed; inset: 0; z-index: 1;
+      background: radial-gradient(
+        ellipse 55% 60% at 78% 88%,
+        rgba(0,91,170,0.13) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="brain"></canvas>
+  <div class="tg-center-glow"></div>
+
+  <!-- Branding overlay -->
+  <div class="tg-brand">
+    <div class="tg-logo-row">
+      <div class="tg-live-chip">
+        <div class="tg-live-dot"></div>
+        KI Live Demo
+      </div>
+    </div>
+    <div class="tg-brand-name">TRIGA-S</div>
+    <div class="tg-brand-sub">Neural Reasoning · Wissensassistent</div>
+  </div>
+
+  <!-- State indicator -->
+  <div class="tg-state">
+    <div class="tg-state-dot" id="sdot"></div>
+    <span id="slabel">Bereit</span>
+  </div>
+
+  <div class="tg-hint">Stellen Sie eine Frage im Chat — die KI visualisiert ihren Denkprozess</div>
+
+  <!-- ══════════════════════════════════════════════════
+       BRAIN ANIMATION  (full canvas neural network)
+       ══════════════════════════════════════════════════ -->
+  <script>
+  const BrainAnim = (() => {
+    'use strict';
+
+    const canvas = document.getElementById('brain');
+    const ctx    = canvas.getContext('2d');
+
+    const BG_COLOR = '#000a14';
+    const BLUE = [0,   91, 170];
+    const CYAN = [0,  187, 253];
+    const GOLD = [255,210,  63];
+
+    const NUM_NODES = 98;
+    const DAMPING   = 0.981;
+    const MAX_SPEED = 1.9;
+    const DRIFT     = 0.055;
+    const MOUSE_R   = 135;
+    const MOUSE_F   = 0.52;
+
+    let W = 0, H = 0, connR = 0;
+    let mx = -9999, my = -9999;
+    let animState = 'idle';
+    let animAge   = 0;
+    let thinkTick = 0;
+    let nodes     = [];
+
+    function mkNode() {
+      return {
+        x:  Math.random() * W,
+        y:  Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.7,
+        vy: (Math.random() - 0.5) * 0.7,
+        r:  2 + Math.random() * 2.4,
+        ph: Math.random() * Math.PI * 2,
+        phSpd: 0.012 + Math.random() * 0.022,
+        act:  0,
+        actC: 0,
+      };
+    }
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      connR = Math.min(W, H) * 0.165;
+    }
+
+    function init() { resize(); nodes = Array.from({ length: NUM_NODES }, mkNode); }
+
+    const rgba = (c, a) => `rgba(${c[0]|0},${c[1]|0},${c[2]|0},${a.toFixed(3)})`;
+    function lerp3(a, b, t) {
+      return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t];
+    }
+
+    const STATE_META = {
+      idle:     { dot: '#22C55E', label: 'Bereit' },
+      send:     { dot: '#FFD23F', label: 'Nachricht gesendet …' },
+      thinking: { dot: '#00bbfd', label: 'KI verarbeitet …' },
+      reply:    { dot: '#64dc78', label: 'Antwort erhalten' },
+    };
+
+    function setStateUI(s) {
+      const m = STATE_META[s] || STATE_META.idle;
+      const dot = document.getElementById('sdot');
+      const lbl = document.getElementById('slabel');
+      if (dot) { dot.style.background = m.dot; dot.style.boxShadow = `0 0 8px ${m.dot}88`; }
+      if (lbl) lbl.textContent = m.label;
+    }
+
+    function trigger(ev) {
+      animState = ev;
+      animAge   = 0;
+      thinkTick = 0;
+      setStateUI(ev);
+
+      if (ev === 'send') {
+        const cx = W / 2, cy = H / 2;
+        const diag = Math.hypot(W, H) / 2;
+        nodes.forEach(n => {
+          const d = Math.hypot(n.x - cx, n.y - cy);
+          setTimeout(() => {
+            n.act = 0.85 + Math.random() * 0.15;
+            const ang = Math.atan2(n.y - cy, n.x - cx);
+            n.vx += Math.cos(ang) * 2.8;
+            n.vy += Math.sin(ang) * 2.8;
+          }, (d / diag) * 820);
+        });
+      }
+
+      if (ev === 'reply') {
+        const sorted = [...nodes].sort((a, b) => a.x - b.x);
+        sorted.forEach((n, i) => {
+          setTimeout(() => {
+            n.actC = 1;
+            n.vx += (Math.random() - 0.5) * 2.2;
+            n.vy += (Math.random() - 0.5) * 2.2;
+          }, i * 11);
+          setTimeout(() => { n.act = 0.45 + Math.random() * 0.3; }, i * 11 + 700);
+        });
+      }
+    }
+
+    function update() {
+      animAge++;
+
+      if (animState === 'send'  && animAge > 130) { animState = 'idle'; setStateUI('idle'); }
+      if (animState === 'reply' && animAge > 160) { animState = 'idle'; setStateUI('idle'); }
+
+      if (animState === 'thinking') {
+        thinkTick++;
+        if (thinkTick % 20 === 0) {
+          const seed = nodes[Math.floor(Math.random() * nodes.length)];
+          seed.act = 0.7 + Math.random() * 0.3;
+          nodes.forEach(nb => {
+            if (nb !== seed && Math.hypot(seed.x - nb.x, seed.y - nb.y) < connR * 0.65) {
+              setTimeout(() => { nb.act = 0.2 + Math.random() * 0.45; }, 60 + Math.random() * 130);
+            }
+          });
+        }
+      }
+
+      if (animState === 'idle' && Math.random() < 0.005) {
+        nodes[Math.floor(Math.random() * nodes.length)].act = 0.2 + Math.random() * 0.25;
+      }
+
+      nodes.forEach(n => {
+        n.ph += n.phSpd;
+        n.act  *= 0.953;
+        n.actC *= 0.962;
+
+        const dx = n.x - mx, dy = n.y - my;
+        const dm = Math.hypot(dx, dy);
+        if (dm > 0 && dm < MOUSE_R) {
+          const f = ((MOUSE_R - dm) / MOUSE_R) * MOUSE_F;
+          n.vx += (dx / dm) * f;
+          n.vy += (dy / dm) * f;
+        }
+
+        n.vx += (Math.random() - 0.5) * DRIFT;
+        n.vy += (Math.random() - 0.5) * DRIFT;
+        n.vx *= DAMPING;
+        n.vy *= DAMPING;
+
+        const spd = Math.hypot(n.vx, n.vy);
+        if (spd > MAX_SPEED) { n.vx = n.vx/spd*MAX_SPEED; n.vy = n.vy/spd*MAX_SPEED; }
+
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < 24)     n.vx += 0.4;
+        if (n.x > W - 24) n.vx -= 0.4;
+        if (n.y < 24)     n.vy += 0.4;
+        if (n.y > H - 24) n.vy -= 0.4;
+      });
+    }
+
+    function draw() {
+      ctx.fillStyle = BG_COLOR;
+      ctx.fillRect(0, 0, W, H);
+
+      const vig = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)*0.74);
+      vig.addColorStop(0, 'rgba(0,0,0,0)');
+      vig.addColorStop(1, 'rgba(0,0,0,0.65)');
+      ctx.fillStyle = vig;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.save();
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dist = Math.hypot(a.x - b.x, a.y - b.y);
+          if (dist >= connR) continue;
+
+          const t    = 1 - dist / connR;
+          const act  = Math.max(a.act,  b.act);
+          const actC = Math.max(a.actC, b.actC);
+
+          let col, alpha;
+          if (actC > 0.05) {
+            col   = lerp3(BLUE, CYAN, Math.min(actC, 1));
+            alpha = t * 0.22 + actC * 0.58;
+          } else if (act > 0.05) {
+            col   = lerp3(BLUE, GOLD, Math.min(act, 1));
+            alpha = t * 0.18 + act * 0.52;
+          } else {
+            col   = BLUE;
+            alpha = t * 0.17;
+          }
+
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = rgba(col, Math.min(alpha, 1));
+          ctx.lineWidth   = t * (act > 0.1 || actC > 0.1 ? 1.5 : 0.75);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+
+      nodes.forEach(n => {
+        const pulse  = (Math.sin(n.ph) + 1) * 0.5;
+        const act    = Math.min(n.act,  1);
+        const actC   = Math.min(n.actC, 1);
+        const anyAct = Math.max(act, actC);
+
+        let col;
+        if      (actC > 0.05) col = lerp3(BLUE, CYAN, actC);
+        else if (act  > 0.05) col = lerp3(BLUE, GOLD, act);
+        else                   col = lerp3(BLUE, [80, 160, 240], pulse * 0.35);
+
+        const bright = 0.42 + pulse * 0.28 + anyAct * 0.3;
+        const nr     = n.r * (1 + anyAct * 0.85);
+        const glowR  = nr * (3.5 + anyAct * 4.5);
+
+        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR);
+        g.addColorStop(0,   rgba(col, anyAct * 0.45 + pulse * 0.07));
+        g.addColorStop(0.4, rgba(col, anyAct * 0.12));
+        g.addColorStop(1,   rgba(col, 0));
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, glowR, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, nr, 0, Math.PI * 2);
+        ctx.fillStyle = rgba(col, bright);
+        ctx.fill();
+      });
+    }
+
+    function loop() { update(); draw(); requestAnimationFrame(loop); }
+
+    window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    window.addEventListener('mouseleave', () => { mx = -9999; my = -9999; });
+    window.addEventListener('resize', resize);
+
+    init();
+    loop();
+
+    return { trigger };
+  })();
+  </script>
+
+  <!-- ══════════════════════════════════════════════════
+       TRIGA-S CHATBOT WIDGET  (unmodified)
+       ══════════════════════════════════════════════════ -->
+  <script src="triga-s-chatbot.js"></script>
+
+  <!-- ══════════════════════════════════════════════════
+       BRIDGE: MutationObserver connects chatbot → BrainAnim
+       NO changes to triga-s-chatbot.js — purely additive listener
+       ══════════════════════════════════════════════════ -->
+  <script>
+  (function () {
+    'use strict';
+
+    // Waits for a DOM element to exist, then calls cb(el)
+    function waitFor(selector, cb) {
+      const el = document.querySelector(selector);
+      if (el) { cb(el); return; }
+      const mo = new MutationObserver(() => {
+        const found = document.querySelector(selector);
+        if (found) { mo.disconnect(); cb(found); }
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // Watch chatbot message container for new bubbles
+    waitFor('#tgs-body', function (bodyEl) {
+      new MutationObserver(function (mutations) {
+        for (const m of mutations) {
+          for (const node of m.addedNodes) {
+            if (!(node instanceof Element)) continue;
+
+            // Typing indicator added → bot is thinking
+            if (node.querySelector && node.querySelector('.tgs-typing-bubble')) {
+              BrainAnim.trigger('thinking');
+            }
+            // Bot reply bubble added → reply received
+            else if (
+              node.classList && node.classList.contains('tgs-row') &&
+              node.classList.contains('bot') &&
+              node.querySelector && node.querySelector('.tgs-bbl')
+            ) {
+              BrainAnim.trigger('reply');
+            }
+          }
+        }
+      }).observe(bodyEl, { childList: true });
+    });
+
+    // Send button click → user sent a message
+    waitFor('#tgs-snd', function (btn) {
+      btn.addEventListener('click', function () {
+        BrainAnim.trigger('send');
+      });
+    });
+
+    // Enter key in input → same as clicking send
+    waitFor('#tgs-inp', function (inp) {
+      inp.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') BrainAnim.trigger('send');
+      });
+    });
+
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRIGA-S BotCore</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #000a14;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    canvas { display: block; position: fixed; inset: 0; }
+
+    /* ── Top bar ── */
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 26px;
+      background: linear-gradient(to bottom, rgba(0,10,20,0.9) 0%, transparent 100%);
+    }
+    .app-title {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(255,255,255,0.65);
+      user-select: none;
+    }
+    .app-title em { color: #FFD23F; font-style: normal; }
+
+    .state-badge {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px; padding: 5px 14px;
+      font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+      transition: border-color 0.5s;
+      user-select: none;
+    }
+    .state-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22C55E; flex-shrink: 0;
+      transition: background 0.4s, box-shadow 0.4s;
+      animation: blink 2.4s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.28;} }
+
+    /* ── Orb label (positioned by JS) ── */
+    .orb-label {
+      position: fixed; left: 50%; transform: translateX(-50%);
+      text-align: center; pointer-events: none; user-select: none;
+    }
+    .orb-label-title {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.22em;
+      text-transform: uppercase; color: rgba(255,255,255,0.18);
+    }
+    .orb-label-sub {
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.09); margin-top: 4px;
+    }
+
+    /* ── Bottom bar ── */
+    .bot-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 42px; z-index: 10;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 0 22px;
+      background: linear-gradient(to top, rgba(0,10,20,0.75) 0%, transparent 100%);
+    }
+    .ws-row {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2); user-select: none;
+    }
+    .ws-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #444; flex-shrink: 0;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .ws-dot.ok   { background: #22C55E; box-shadow: 0 0 6px #22C55E88; }
+    .ws-dot.wait { background: #FFD23F; animation: blink 1s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <div class="top-bar">
+    <div class="app-title"><em>TRIGA-S</em> &nbsp;BotCore</div>
+    <div class="state-badge">
+      <div class="state-dot" id="sdot"></div>
+      <span id="slabel">Bereit</span>
+    </div>
+  </div>
+
+  <div class="orb-label" id="orb-label">
+    <div class="orb-label-title">TRIGA-S BotCore</div>
+    <div class="orb-label-sub">Neural Reasoning Core</div>
+  </div>
+
+  <div class="bot-bar">
+    <div class="ws-row">
+      <div class="ws-dot wait" id="wsdot"></div>
+      <span id="wslabel">Verbinde …</span>
+    </div>
+  </div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   TRIGA-S BotCore — 3-D Particle Orb
+   Public API: window.BrainAnim.trigger('send'|'thinking'|'reply')
+   ═══════════════════════════════════════════════════════════════ */
+const BrainAnim = (() => {
+  'use strict';
+
+  const canvas = document.getElementById('c');
+  const ctx    = canvas.getContext('2d');
+
+  // ── Palette ────────────────────────────────────────────────
+  const BG   = '#000a14';
+  const BLUE = [0,   91, 170];   // #005BAA — base orb colour
+  const CYAN = [0,  187, 253];   // thinking state
+  const GOLD = [255,210,  63];   // #FFD23F — send / reply bloom
+
+  // ── Config ─────────────────────────────────────────────────
+  const N        = 480;    // particle count
+  const CONN_DOT = 0.966;  // cos(≈15°) — connection angular threshold
+  const PERSP    = 0.24;   // perspective depth strength (0 = orthographic)
+  const AUTO_Y   = 0.0022; // auto-rotation speed (rad/frame)
+  const TILT_LRP = 0.030;  // mouse-tilt smoothing factor
+  const TILT_MX  = 0.55;   // max X-tilt from mouse (rad)
+  const TILT_MY  = 0.65;   // max Y-tilt from mouse (rad)
+
+  // ── Runtime state ──────────────────────────────────────────
+  let W, H, cx, cy, R;
+  let mx = -9999, my = -9999;
+  let autoY = 0, tiltX = 0, tiltY = 0, targX = 0, targY = 0;
+  let animState = 'idle', animAge = 0, thinkPhase = 0;
+  let particles, connections;
+
+  // ── Helpers ────────────────────────────────────────────────
+  const lerp  = (a, b, t) => a + (b - a) * t;
+  const clamp = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
+  const lerp3 = (a, b, t) => [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t];
+  const rgba  = (c, a)     => `rgba(${c[0]|0},${c[1]|0},${c[2]|0},${a.toFixed(3)})`;
+
+  // ── Fibonacci sphere — uniform point distribution ──────────
+  function buildParticles() {
+    const golden = Math.PI * (3 - Math.sqrt(5)); // ≈ 2.399 rad (golden angle)
+    return Array.from({ length: N }, (_, i) => {
+      const y  = 1 - (i / (N - 1)) * 2;          // 1 (north) → -1 (south)
+      const r  = Math.sqrt(1 - y * y);
+      const th = golden * i;
+      return {
+        bx: Math.cos(th) * r, by: y, bz: Math.sin(th) * r, // base unit-sphere position
+        rx: 0, ry: 0, rz: 0,                                  // rotated position (updated/frame)
+        sx: 0, sy: 0, depth: 0,                               // screen projection + depth [0-1]
+        ph:    Math.random() * Math.PI * 2,                   // idle shimmer phase
+        phSpd: 0.008 + Math.random() * 0.012,
+        act:  0,   // gold activation [0–1]
+        actC: 0,   // cyan activation [0–1]
+      };
+    });
+  }
+
+  // Precompute connections once from static base positions (avoids O(n²) every frame)
+  function buildConnections(pts) {
+    const list = [];
+    for (let i = 0; i < N; i++) {
+      for (let j = i + 1; j < N; j++) {
+        const a = pts[i], b = pts[j];
+        if (a.bx*b.bx + a.by*b.by + a.bz*b.bz > CONN_DOT) list.push([i, j]);
+      }
+    }
+    return list;
+  }
+
+  // ── Resize + label placement ───────────────────────────────
+  function resize() {
+    W  = canvas.width  = window.innerWidth;
+    H  = canvas.height = window.innerHeight;
+    cx = W / 2;  cy = H / 2;
+    R  = Math.min(W, H) * 0.295;
+    const lbl = document.getElementById('orb-label');
+    if (lbl) lbl.style.top = (cy + R + 22) + 'px';
+  }
+
+  function init() {
+    resize();
+    particles   = buildParticles();
+    connections = buildConnections(particles);
+  }
+
+  // ── Project one particle — YX Euler rotation then soft perspective ─────────
+  function project(p, sX, cX, sY, cY) {
+    // Rotate around Y axis
+    const x1 =  p.bx * cY + p.bz * sY;
+    const y1 =  p.by;
+    const z1 = -p.bx * sY + p.bz * cY;
+    // Rotate around X axis
+    p.rx =  x1;
+    p.ry =  y1 * cX - z1 * sX;
+    p.rz =  y1 * sX + z1 * cX;
+    // Soft perspective: front particles project slightly larger
+    const sc = 1 + p.rz * PERSP;
+    p.sx    = cx + p.rx * R * sc;
+    p.sy    = cy + p.ry * R * sc;
+    p.depth = (p.rz + 1) * 0.5; // 0 = back, 1 = front
+  }
+
+  // ── State badge UI ─────────────────────────────────────────
+  const META = {
+    idle:     { dot: '#22C55E', label: 'Bereit' },
+    send:     { dot: '#FFD23F', label: 'Nachricht gesendet …' },
+    thinking: { dot: '#00bbfd', label: 'KI verarbeitet …' },
+    reply:    { dot: '#64dc78', label: 'Antwort erhalten' },
+  };
+  function setUI(s) {
+    const m = META[s] || META.idle;
+    const d = document.getElementById('sdot');
+    const l = document.getElementById('slabel');
+    if (d) { d.style.background = m.dot; d.style.boxShadow = `0 0 7px ${m.dot}99`; }
+    if (l) l.textContent = m.label;
+  }
+
+  // ── Public trigger ─────────────────────────────────────────
+  function trigger(ev) {
+    animState  = ev;
+    animAge    = 0;
+    thinkPhase = 0;
+    setUI(ev);
+
+    if (ev === 'send') {
+      // Ripple from front face outward — delay proportional to angular dist from front pole
+      particles.forEach(p => {
+        const delay = Math.round(Math.acos(clamp(p.rz, -1, 1)) / Math.PI * 720);
+        setTimeout(() => { p.act = 1; }, delay);
+      });
+    }
+
+    if (ev === 'reply') {
+      // North-to-south cascade by base Y, followed by a full gold bloom
+      const byY     = [...particles].sort((a, b) => b.by - a.by);
+      const cascEnd = byY.length * 1.6;
+      byY.forEach((p, i) => setTimeout(() => { p.actC = 1; }, i * 1.6));
+      setTimeout(() => particles.forEach(p => { p.act = 0.9; }), cascEnd + 100);
+    }
+    // 'thinking' is driven continuously in update()
+  }
+
+  // ── Per-frame update ───────────────────────────────────────
+  function update() {
+    animAge++;
+
+    // Auto-reset transient states
+    if (animState === 'send'  && animAge > 130) { animState = 'idle'; setUI('idle'); }
+    if (animState === 'reply' && animAge > 165) { animState = 'idle'; setUI('idle'); }
+
+    // Mouse tilt
+    targX = (mx > -999) ? ((my - cy) / H) * TILT_MX * 2 : 0;
+    targY = (mx > -999) ? ((mx - cx) / W) * TILT_MY * 2 : 0;
+    tiltX = lerp(tiltX, targX, TILT_LRP);
+    tiltY = lerp(tiltY, targY, TILT_LRP);
+    autoY += AUTO_Y;
+
+    const rotY = autoY + tiltY;
+    const sX = Math.sin(tiltX), cX = Math.cos(tiltX);
+    const sY = Math.sin(rotY),  cY = Math.cos(rotY);
+
+    if (animState === 'thinking') thinkPhase += 0.038;
+
+    // Idle: rare organic flicker
+    if (animState === 'idle' && Math.random() < 0.009) {
+      particles[Math.floor(Math.random() * N)].act = 0.12 + Math.random() * 0.18;
+    }
+
+    let maxAct = 0, maxActC = 0;
+
+    particles.forEach(p => {
+      project(p, sX, cX, sY, cY);
+      p.ph   += p.phSpd;
+      p.act  *= 0.945;
+      p.actC *= 0.950;
+
+      if (animState === 'thinking') {
+        // Two overlapping longitudinal waves — complex, organic oscillation
+        const theta = Math.atan2(p.bx, p.bz);
+        const lat   = 1 - Math.abs(p.by);       // 1 at equator, 0 at poles
+        const w1    = Math.sin(theta * 3 - thinkPhase);
+        const w2    = Math.sin(theta * 1.7 + thinkPhase * 0.5);
+        const wave  = Math.max(0, w1 * 0.7 + w2 * 0.3) * (0.25 + lat * 0.75);
+        if (wave > p.actC) p.actC = wave * 0.88;
+      }
+
+      if (p.act  > maxAct)  maxAct  = p.act;
+      if (p.actC > maxActC) maxActC = p.actC;
+    });
+
+    return { maxAct, maxActC };
+  }
+
+  // ── Draw frame ─────────────────────────────────────────────
+  function draw(maxAct, maxActC) {
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Central orb glow ──────────────────────────────────────
+    let glowCol;
+    if      (maxActC > maxAct && maxActC > 0.05) glowCol = lerp3(BLUE, CYAN, clamp(maxActC, 0, 1));
+    else if (maxAct  > 0.05)                      glowCol = lerp3(BLUE, GOLD, clamp(maxAct,  0, 1));
+    else                                           glowCol = BLUE;
+
+    const gs = 0.32 + maxAct * 0.55 + maxActC * 0.40;
+    const g0 = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 2.4);
+    g0.addColorStop(0,    rgba(glowCol, gs * 0.80));
+    g0.addColorStop(0.35, rgba(glowCol, gs * 0.22));
+    g0.addColorStop(0.72, rgba(glowCol, gs * 0.05));
+    g0.addColorStop(1,    rgba(glowCol, 0));
+    ctx.fillStyle = g0;
+    ctx.fillRect(0, 0, W, H);
+
+    // Extra pulsing overlay during thinking
+    if (animState === 'thinking') {
+      const pulse = (Math.sin(thinkPhase * 0.9) + 1) * 0.5;
+      const gp    = ctx.createRadialGradient(cx, cy, R * 0.4, cx, cy, R * 1.6);
+      gp.addColorStop(0,   rgba(CYAN, pulse * 0.18));
+      gp.addColorStop(0.5, rgba(CYAN, pulse * 0.05));
+      gp.addColorStop(1,   rgba(CYAN, 0));
+      ctx.fillStyle = gp;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // ── Sort particles back → front (painter's algorithm) ─────
+    const sorted = [...particles].sort((a, b) => a.rz - b.rz);
+
+    // ── Connections ───────────────────────────────────────────
+    ctx.save();
+
+    // Batch all dim connections in a single path (fast)
+    ctx.beginPath();
+    ctx.strokeStyle = rgba(BLUE, 0.16);
+    ctx.lineWidth   = 0.5;
+    for (const [i, j] of connections) {
+      const a = particles[i], b = particles[j];
+      if (Math.max(a.rz, b.rz) < -0.12) continue;           // both fully behind sphere
+      if (Math.max(a.act, b.act, a.actC, b.actC) > 0.06) continue; // active — drawn below
+      ctx.moveTo(a.sx, a.sy);
+      ctx.lineTo(b.sx, b.sy);
+    }
+    ctx.stroke();
+
+    // Active connections — individual draw with colour
+    for (const [i, j] of connections) {
+      const a = particles[i], b = particles[j];
+      if (Math.max(a.rz, b.rz) < -0.12) continue;
+      const act  = Math.max(a.act,  b.act);
+      const actC = Math.max(a.actC, b.actC);
+      const any  = Math.max(act, actC);
+      if (any <= 0.06) continue;
+      const col   = actC > act ? lerp3(BLUE, CYAN, clamp(actC, 0, 1))
+                                : lerp3(BLUE, GOLD, clamp(act,  0, 1));
+      const alpha = clamp(0.10 + any * 0.60, 0, 1);
+      ctx.beginPath();
+      ctx.moveTo(a.sx, a.sy);
+      ctx.lineTo(b.sx, b.sy);
+      ctx.strokeStyle = rgba(col, alpha);
+      ctx.lineWidth   = 0.55 + any * 1.1;
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // ── Particles — back to front ─────────────────────────────
+    for (const p of sorted) {
+      const pulse  = (Math.sin(p.ph) + 1) * 0.5;
+      const act    = clamp(p.act,  0, 1);
+      const actC   = clamp(p.actC, 0, 1);
+      const anyAct = Math.max(act, actC);
+      const depth  = p.depth;
+
+      let col;
+      if      (actC > act && actC > 0.04) col = lerp3(BLUE, CYAN, actC);
+      else if (act > 0.04)                 col = lerp3(BLUE, GOLD, act);
+      else                                  col = lerp3(BLUE, [72, 152, 228], pulse * 0.28);
+
+      const alpha = clamp(0.20 + depth * 0.68 + anyAct * 0.28, 0, 1);
+      const pSize = (0.7 + depth * 1.6) * (1 + anyAct * 1.0);
+
+      // Halo gradient — only rendered for active, front-facing particles
+      if (anyAct > 0.07 && depth > 0.18) {
+        const gr = pSize * (3.2 + anyAct * 5.5);
+        const gh = ctx.createRadialGradient(p.sx, p.sy, 0, p.sx, p.sy, gr);
+        gh.addColorStop(0,   rgba(col, anyAct * 0.42));
+        gh.addColorStop(0.5, rgba(col, anyAct * 0.10));
+        gh.addColorStop(1,   rgba(col, 0));
+        ctx.beginPath();
+        ctx.arc(p.sx, p.sy, gr, 0, Math.PI * 2);
+        ctx.fillStyle = gh;
+        ctx.fill();
+      }
+
+      // Core dot
+      ctx.beginPath();
+      ctx.arc(p.sx, p.sy, Math.max(0.3, pSize), 0, Math.PI * 2);
+      ctx.fillStyle = rgba(col, alpha);
+      ctx.fill();
+    }
+  }
+
+  // ── Animation loop ─────────────────────────────────────────
+  function loop() {
+    const { maxAct, maxActC } = update();
+    draw(maxAct, maxActC);
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  window.addEventListener('mouseleave', () => { mx = -9999; my = -9999; });
+  window.addEventListener('resize', resize);
+
+  init();
+  loop();
+
+  return { trigger };
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   WebSocket client — listens to the local relay at ws://.../bridge
+   Receives 'send' | 'thinking' | 'reply' → calls BrainAnim.trigger
+   Auto-reconnects with 3-second back-off
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  const WS_URL  = 'ws://localhost:5500/bridge';
+  const ALLOWED = new Set(['send', 'thinking', 'reply']);
+
+  function setWsUI(s) {
+    const dot = document.getElementById('wsdot');
+    const lbl = document.getElementById('wslabel');
+    const map = {
+      ok:   { cls: 'ws-dot ok',   txt: 'BotCore verbunden' },
+      wait: { cls: 'ws-dot wait', txt: 'Verbinde …' },
+      disc: { cls: 'ws-dot',      txt: 'Getrennt — Retry …' },
+    };
+    const m = map[s] || map.disc;
+    if (dot) dot.className = m.cls;
+    if (lbl) lbl.textContent = m.txt;
+  }
+
+  function connect() {
+    setWsUI('wait');
+    let ws;
+    try { ws = new WebSocket(WS_URL); } catch (_) { setTimeout(connect, 3000); return; }
+    ws.onopen    = () => setWsUI('ok');
+    ws.onmessage = e => { const m = (e.data || '').trim(); if (ALLOWED.has(m)) BrainAnim.trigger(m); };
+    ws.onclose   = () => { setWsUI('disc'); setTimeout(connect, 3000); };
+    ws.onerror   = () => ws.close();
+  }
+
+  connect();
+})();
+</script>
+</body>
+</html>

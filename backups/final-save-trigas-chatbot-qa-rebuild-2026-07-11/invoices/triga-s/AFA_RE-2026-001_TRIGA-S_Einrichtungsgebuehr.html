@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rechnung AFA-RE-2026-001 – TRIGA-S GmbH</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --navy:   #001B3D;
+      --blue:   #005BAA;
+      --accent: #FFD84A;
+      --text:   #0F1B29;
+      --muted:  #4A5C70;
+      --light:  #F4F7FA;
+      --border: #D8E3EE;
+      --white:  #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 1.65;
+      color: var(--text);
+      background: #CBD5E1;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 24px;
+      background: var(--white);
+      box-shadow: 0 4px 40px rgba(0,0,0,0.16);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── HEADER ── */
+    .inv-header {
+      background: linear-gradient(135deg, #000E1F 0%, #001B3D 55%, #002B5C 100%);
+      padding: 36px 52px 32px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 32px;
+      border-bottom: 3px solid var(--accent);
+      flex-shrink: 0;
+    }
+
+    .inv-header-logo img {
+      height: 40px;
+      filter: brightness(0) invert(1);
+      opacity: 0.95;
+      display: block;
+    }
+    .inv-header-logo-fallback {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+    }
+    .inv-header-logo-fallback span { color: var(--accent); }
+
+    .inv-header-right { text-align: right; }
+    .inv-type {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .inv-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .inv-number {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      margin-top: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── META STRIP ── */
+    .inv-meta-strip {
+      background: var(--light);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 52px;
+      display: flex;
+      gap: 40px;
+      flex-shrink: 0;
+    }
+    .inv-meta-item {}
+    .inv-meta-label {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .inv-meta-value {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy);
+      font-variant-numeric: tabular-nums;
+    }
+    .inv-meta-value.due {
+      color: var(--blue);
+    }
+
+    /* ── BODY ── */
+    .inv-body {
+      flex: 1;
+      padding: 36px 52px 140px;
+    }
+
+    /* ── PARTIES GRID ── */
+    .inv-parties {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 36px;
+    }
+    .inv-party {}
+    .inv-party-role {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--navy);
+    }
+    .inv-party-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+    .inv-party-detail {
+      font-size: 9.5px;
+      color: var(--muted);
+      line-height: 1.80;
+    }
+    .inv-party-detail strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── DIVIDER ── */
+    .inv-divider {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 28px 0;
+    }
+
+    /* ── SUBJECT LINE ── */
+    .inv-subject {
+      background: var(--light);
+      border-left: 3px solid var(--navy);
+      border-radius: 0 6px 6px 0;
+      padding: 12px 18px;
+      margin-bottom: 28px;
+    }
+    .inv-subject-label {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .inv-subject-text {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.5;
+    }
+
+    /* ── POSITION TABLE ── */
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 0;
+      font-size: 10pt;
+    }
+    .inv-table thead tr {
+      background: var(--navy);
+    }
+    .inv-table thead th {
+      padding: 10px 14px;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-align: left;
+    }
+    .inv-table thead th.right { text-align: right; }
+    .inv-table thead th.center { text-align: center; }
+    .inv-table tbody tr {
+      border-bottom: 1px solid var(--border);
+    }
+    .inv-table tbody tr:nth-child(even) td { background: #FAFCFF; }
+    .inv-table tbody td {
+      padding: 14px 14px;
+      vertical-align: top;
+      font-size: 10pt;
+      color: var(--text);
+    }
+    .inv-table tbody td.pos-num {
+      font-weight: 700;
+      color: var(--blue);
+      font-size: 11px;
+      width: 36px;
+      white-space: nowrap;
+    }
+    .inv-table tbody td.pos-desc strong {
+      display: block;
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+    .inv-table tbody td.pos-desc span {
+      font-size: 9.5pt;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .inv-table tbody td.right {
+      text-align: right;
+      font-weight: 600;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .inv-table tbody td.center {
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── TOTALS ── */
+    .inv-totals-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0;
+    }
+    .inv-totals {
+      width: 320px;
+      border: 1px solid var(--border);
+      border-top: none;
+    }
+    .inv-totals-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10.5pt;
+    }
+    .inv-totals-row:last-child { border-bottom: none; }
+    .inv-totals-row .lbl { color: var(--muted); font-weight: 500; }
+    .inv-totals-row .val { font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; text-align: right; }
+    .inv-totals-row.vat .val { color: var(--muted); font-weight: 500; }
+    .inv-totals-row.total {
+      background: var(--navy);
+      padding: 13px 16px;
+    }
+    .inv-totals-row.total .lbl {
+      font-weight: 800;
+      color: var(--white);
+      font-size: 12pt;
+    }
+    .inv-totals-row.total .val {
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 14pt;
+    }
+
+    /* ── NOTES ── */
+    .inv-notes { margin-top: 32px; }
+    .inv-note {
+      font-size: 9.5pt;
+      color: var(--muted);
+      line-height: 1.7;
+      padding: 12px 16px;
+      border-left: 2px solid var(--border);
+      margin-bottom: 10px;
+      background: #FAFCFF;
+    }
+    .inv-note strong { color: var(--text); }
+
+    /* ── PAYMENT ── */
+    .inv-payment {
+      margin-top: 28px;
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--blue);
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+    }
+    .inv-payment-header {
+      background: var(--light);
+      padding: 10px 18px;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--navy);
+      border-bottom: 1px solid var(--border);
+    }
+    .inv-payment-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .inv-payment-text {
+      padding: 16px 18px;
+      font-size: 9.5pt;
+      color: var(--text);
+      line-height: 1.7;
+      border-right: 1px solid var(--border);
+    }
+    .inv-payment-text strong { color: var(--navy); }
+    .inv-bank {
+      padding: 14px 18px;
+    }
+    .inv-bank-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 0;
+      font-size: 9.5pt;
+      border-bottom: 1px solid #EEF3F8;
+    }
+    .inv-bank-row:last-child { border-bottom: none; }
+    .inv-bank-row .lbl { color: var(--muted); font-weight: 500; font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .inv-bank-row .val { font-weight: 700; color: var(--navy); font-family: 'Courier New', monospace; font-size: 10pt; text-align: right; }
+    .inv-bank-row .val.normal { font-family: inherit; font-size: 9.5pt; }
+
+    /* ── FOOTER ── */
+    .inv-footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: var(--navy);
+      padding: 12px 52px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .inv-footer-left {
+      font-size: 8.5px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+    }
+    .inv-footer-right {
+      font-size: 8.5px;
+      color: rgba(255,255,255,0.35);
+      text-align: right;
+    }
+    .inv-footer-brand {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 2px;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: white; }
+      .page { width: 100%; margin: 0; box-shadow: none; min-height: 100vh; }
+      .inv-footer { position: fixed; bottom: 0; left: 0; right: 0; }
+      @page { size: A4; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="inv-header">
+    <div class="inv-header-logo">
+      <img src="../../brand_assets/AFA Final Full Logo.png" alt="AFA – Agentur für Automatisierung"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="inv-header-logo-fallback" style="display:none;">AFA<span>.</span></div>
+    </div>
+    <div class="inv-header-right">
+      <div class="inv-type">Rechnung</div>
+      <div class="inv-title">RECHNUNG</div>
+      <div class="inv-number">Nr. AFA-RE-2026-001</div>
+    </div>
+  </div>
+
+  <!-- META STRIP -->
+  <div class="inv-meta-strip">
+    <div class="inv-meta-item">
+      <div class="inv-meta-label">Rechnungsdatum</div>
+      <div class="inv-meta-value">30.06.2026</div>
+    </div>
+    <div class="inv-meta-item">
+      <div class="inv-meta-label">Leistungsdatum</div>
+      <div class="inv-meta-value">30.06.2026</div>
+    </div>
+    <div class="inv-meta-item">
+      <div class="inv-meta-label">Zahlungsziel</div>
+      <div class="inv-meta-value">14 Tage ohne Abzug</div>
+    </div>
+    <div class="inv-meta-item">
+      <div class="inv-meta-label">Fällig am</div>
+      <div class="inv-meta-value due">14.07.2026</div>
+    </div>
+    <div class="inv-meta-item">
+      <div class="inv-meta-label">Rechnungsbetrag</div>
+      <div class="inv-meta-value">10.000,00 €</div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="inv-body">
+
+    <!-- PARTIES -->
+    <div class="inv-parties">
+      <div class="inv-party">
+        <div class="inv-party-role">Rechnungssteller</div>
+        <div class="inv-party-name">Ibrahim Ahmitti El Goul<br>AFA – Agentur für Automatisierung</div>
+        <div class="inv-party-detail">
+          Einzelunternehmen<br>
+          Haldener Str. 21<br>
+          58095 Hagen<br>
+          Deutschland<br><br>
+          <strong>E-Mail:</strong> info@afa-ai.com<br>
+          <strong>Website:</strong> www.afa-ai.com<br><br>
+          <strong>Steuernummer / USt-IdNr.:</strong><br>
+          wird nach Zuteilung durch das<br>
+          Finanzamt nachgereicht<br><br>
+          <strong>Umsatzsteuer:</strong><br>
+          Kleinunternehmer gemäß § 19 UStG
+        </div>
+      </div>
+      <div class="inv-party">
+        <div class="inv-party-role">Rechnungsempfänger</div>
+        <div class="inv-party-name">TRIGA-S GmbH</div>
+        <div class="inv-party-detail">
+          Mühltal 5<br>
+          82392 Habach<br>
+          Deutschland<br><br>
+          <strong>Registergericht:</strong> Amtsgericht München<br>
+          <strong>Registernummer:</strong> HRB 280570<br>
+          <strong>USt-IdNr.:</strong> DE357456345<br><br>
+          <strong>Vertretungsberechtigte:</strong><br>
+          Sabine Radiske<br>
+          Dr. Andreas Franke<br><br>
+          <strong>E-Mail:</strong> sales@triga-s.de
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBJECT -->
+    <div class="inv-subject">
+      <div class="inv-subject-label">Betreff / Vertragsgrundlage</div>
+      <div class="inv-subject-text">Vertrag über die Entwicklung, Einrichtung und laufende Betreuung einer digitalen TRIGA-S KI-Projektassistenz vom 30.06.2026 &nbsp;·&nbsp; Rechnungsnummer AFA-RE-2026-001</div>
+    </div>
+
+    <!-- POSITION TABLE -->
+    <table class="inv-table">
+      <thead>
+        <tr>
+          <th style="width:36px;">Pos.</th>
+          <th>Leistungsbeschreibung</th>
+          <th class="center" style="width:60px;">Menge</th>
+          <th class="right" style="width:130px;">Einzelpreis</th>
+          <th class="right" style="width:130px;">Gesamtpreis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="pos-num">01</td>
+          <td class="pos-desc">
+            <strong>Einmalige Einrichtungsgebühr – Digitale TRIGA-S KI-Projektassistenz</strong>
+            <span>
+              Entwicklung, Einrichtung und Implementierung einer individuellen digitalen
+              KI-Projektassistenz / eines Premium Website-Chatbots im TRIGA-S Corporate Branding.
+              Inklusive: Dialogstruktur, Terminbuchungssystem, n8n-Automatisierungsworkflows,
+              Google Calendar Integration, E-Mail-Bestätigungssystem und technische Übergabe.
+              Gemäß Vertrag vom 30.06.2026 – einmalige Einrichtungsgebühr.
+            </span>
+          </td>
+          <td class="center">1</td>
+          <td class="right">10.000,00 €</td>
+          <td class="right">10.000,00 €</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- TOTALS -->
+    <div class="inv-totals-wrap">
+      <div class="inv-totals">
+        <div class="inv-totals-row">
+          <span class="lbl">Zwischensumme</span>
+          <span class="val">10.000,00 €</span>
+        </div>
+        <div class="inv-totals-row vat">
+          <span class="lbl">Umsatzsteuer (§ 19 UStG)</span>
+          <span class="val">0,00 €</span>
+        </div>
+        <div class="inv-totals-row total">
+          <span class="lbl">Rechnungsbetrag</span>
+          <span class="val">10.000,00 €</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="inv-notes">
+      <div class="inv-note">
+        <strong>§ 19 UStG – Kleinunternehmer:</strong> Gemäß § 19 UStG wird keine Umsatzsteuer berechnet und nicht ausgewiesen. Alle genannten Beträge sind Endbeträge ohne gesonderten Umsatzsteuerausweis gemäß § 19 UStG.
+      </div>
+      <div class="inv-note">
+        <strong>Hinweis:</strong> Die monatliche Betreuungsgebühr gemäß Vertrag beträgt 2.000,00 € pro Monat und wird separat abgerechnet. Diese Rechnung betrifft ausschließlich die einmalige Einrichtungsgebühr.
+      </div>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="inv-payment">
+      <div class="inv-payment-header">Zahlungsinformationen</div>
+      <div class="inv-payment-body">
+        <div class="inv-payment-text">
+          Bitte überweisen Sie den Rechnungsbetrag in Höhe von <strong>10.000,00 €</strong> innerhalb von 14 Tagen ohne Abzug auf die unten angegebene Bankverbindung.<br><br>
+          Bei der Überweisung bitte die Rechnungsnummer als Verwendungszweck angeben:<br><br>
+          <strong>Verwendungszweck: AFA-RE-2026-001</strong><br><br>
+          Fälligkeitsdatum: <strong>14.07.2026</strong>
+        </div>
+        <div class="inv-bank">
+          <div class="inv-bank-row">
+            <span class="lbl">Zahlungsempfänger</span>
+            <span class="val normal">Ibrahim Ahmitti El Goul</span>
+          </div>
+          <div class="inv-bank-row">
+            <span class="lbl">IBAN</span>
+            <span class="val">LT09 3250 0387 0908 1516</span>
+          </div>
+          <div class="inv-bank-row">
+            <span class="lbl">BIC</span>
+            <span class="val">REVOLT21</span>
+          </div>
+          <div class="inv-bank-row">
+            <span class="lbl">Währung</span>
+            <span class="val normal">EUR</span>
+          </div>
+          <div class="inv-bank-row">
+            <span class="lbl">Verwendungszweck</span>
+            <span class="val">AFA-RE-2026-001</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /inv-body -->
+
+  <!-- FOOTER -->
+  <div class="inv-footer">
+    <div class="inv-footer-left">
+      <div class="inv-footer-brand">AFA – Agentur für Automatisierung</div>
+      Ibrahim Ahmitti El Goul &nbsp;·&nbsp; Haldener Str. 21, 58095 Hagen &nbsp;·&nbsp; info@afa-ai.com &nbsp;·&nbsp; www.afa-ai.com
+    </div>
+    <div class="inv-footer-right">
+      Rechnung Nr. AFA-RE-2026-001<br>
+      Datum: 30.06.2026
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>
