@@ -4,4 +4,5 @@
   Demo page : http://localhost:5500/
   Widget JS : http://localhost:5500/triga-s-chatbot.js
   Logo      : http://localhost:5500/assets/triga-s-logo.png
+  WS Bridge : ws://localhost:5500/bridge
 

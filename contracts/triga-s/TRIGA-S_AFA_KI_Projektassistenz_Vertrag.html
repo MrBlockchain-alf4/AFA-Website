@@ -779,11 +779,11 @@
         </div>
         <div class="cover-meta-item">
           <div class="cover-meta-label">Gesamtvertragswert</div>
-          <div class="cover-meta-value">34.000,00 EUR<br>inkl. 12 Monate Betreuung</div>
+          <div class="cover-meta-value">6.500,00 EUR Einrichtung<br>+ 1.000,00 EUR / Monat</div>
         </div>
         <div class="cover-meta-item">
           <div class="cover-meta-label">Vertragsdatum</div>
-          <div class="cover-meta-value">30.06.2026</div>
+          <div class="cover-meta-value">21.07.2026</div>
         </div>
         <div class="cover-meta-item">
           <div class="cover-meta-label">Dokumentnummer</div>
@@ -918,7 +918,7 @@
 
       <div class="callout callout-navy">
         <div class="callout-label">Zielsetzung</div>
-        <p>Ziel der digitalen KI-Projektassistenz ist es, eingehende Anfragen strukturiert zu erfassen, Interessenten und Projektkontakte gezielt zu qualifizieren, Terminprozesse zu vereinfachen und das TRIGA-S Team im digitalen Erstkontakt zu entlasten.</p>
+        <p>Ziel der digitalen KI-Projektassistenz ist es, eingehende Anfragen strukturiert zu erfassen, Interessenten und Projektkontakte gezielt zu qualifizieren sowie das TRIGA-S Team durch einen KI-gestützten Wissensassistenten im digitalen Erstkontakt zu entlasten.</p>
       </div>
 
       <p>Auf dieser Grundlage schließen die Parteien den nachfolgenden Vertrag.</p>
@@ -994,28 +994,20 @@
         <li>Strukturierte Dialogführung für Biostatistik</li>
         <li>Strukturierte Dialogführung für Service-Beratung</li>
         <li>Allgemeines Anfrage-Routing und Lead-Erfassung</li>
-        <li>Erkennung natürlicher Nutzerintentionen (Termin buchen, verschieben, stornieren)</li>
+        <li>Erkennung natürlicher Nutzerintentionen und freie Texteingabe (KI-gestützte Fragebearbeitung)</li>
         <li>Formular- und Kontaktdatenvalidierung (E-Mail, Telefon)</li>
       </ul>
 
-      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.3 &nbsp;Terminverwaltung</p>
+      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.3 &nbsp;Automatisierungen und Integrationen</p>
       <ul class="contract-list">
-        <li>Terminbuchungsflow mit Kalenderauswahl und Uhrzeitauswahl</li>
-        <li>Terminverschiebungsflow mit Lookup und Neubuchung</li>
-        <li>Terminstornierungsflow mit Bestätigung</li>
-        <li>Terminübersicht und Buchungsbestätigung im Chat</li>
+        <li>n8n Automatisierungsworkflow zur Verarbeitung eingehender Nutzeranfragen und Lead-Erfassung</li>
+        <li>Pinecone Vektordatenbank mit TRIGA-S-Wissensbasis (indexierte Inhalte von triga-s.de)</li>
+        <li>KI-Sprachmodell (GPT-4o-mini) zur kontextbasierten Antwortgenerierung auf Deutsch</li>
+        <li>Retrieval-Augmented Generation (RAG): Antworten ausschließlich auf Basis der hinterlegten TRIGA-S-Inhalte – keine erfundenen Antworten außerhalb der Wissensbasis</li>
+        <li>Themenbeschränkung: Der Assistent beantwortet ausschließlich Fragen zu IVD-Studien, CDx-/Pharma-Projekten, Probenmanagement, Biostatistik und TRIGA-S-Dienstleistungen</li>
       </ul>
 
-      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.4 &nbsp;Automatisierungen und Integrationen</p>
-      <ul class="contract-list">
-        <li>n8n Automatisierungs-Workflows für Buchung, Verschiebung, Stornierung, Lead-Erfassung</li>
-        <li>Google Calendar Integration für Terminprüfung und -eintragung</li>
-        <li>Google Sheets / CRM-Basisstruktur zur Datenspeicherung</li>
-        <li>E-Mail-Bestätigungssystem (Termin-Bestätigung, Erinnerungen, Stornierung) für Kunden und intern</li>
-        <li>SMS-Bestätigungslogik, sofern eine Telefonnummer angegeben wird</li>
-      </ul>
-
-      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.5 &nbsp;Tests, Übergabe und Betreuung</p>
+      <p style="font-weight:700; color:var(--navy); margin-top:12px; margin-bottom:6px;">4.4 &nbsp;Tests, Übergabe und Betreuung</p>
       <ul class="contract-list">
         <li>Technische Tests aller Flows und Integrationen</li>
         <li>Korrekturschleifen und Fehlerbehebung bis zur Abnahme</li>
@@ -1068,7 +1060,7 @@
         <li>Regulatorische oder behördliche Beratung (inkl. IVDR, MDR, GMP, GCP)</li>
         <li>Klinische Bewertung oder Studienplanung</li>
         <li>Erstellung rechtlicher Datenschutztexte, Impressum oder Nutzungsbedingungen für TRIGA-S</li>
-        <li>Bezahlte Gebühren von Drittanbietern (Google Workspace, n8n Cloud, Twilio, Hosting, DocuSign oder vergleichbare Dienste), sofern nicht gesondert schriftlich vereinbart</li>
+        <li>Bezahlte Gebühren von Drittanbietern (n8n Cloud, OpenAI API, Pinecone, Hosting, DocuSign oder vergleichbare Dienste), sofern nicht gesondert schriftlich vereinbart</li>
         <li>Komplexe CRM-API-Integrationen, sofern nicht schriftlich vereinbart</li>
         <li>Ersatz oder Migration interner TRIGA-S Systeme</li>
         <li>Sprachassistenz / Call-Center-Automatisierung / Telefon-Bot</li>
@@ -1110,12 +1102,12 @@
         <tr>
           <td class="phase-num">4</td>
           <td class="phase-name">Automatisierungen</td>
-          <td class="phase-desc">Einrichtung der n8n Workflows, Google Calendar Integration, CRM-Basisstruktur, E-Mail-Templates und SMS-Logik.</td>
+          <td class="phase-desc">Einrichtung des n8n Automatisierungsworkflows, Integration der Pinecone Vektordatenbank, Konfiguration des KI-Sprachmodells und Aufbau der TRIGA-S Wissensbasis.</td>
         </tr>
         <tr>
           <td class="phase-num">5</td>
           <td class="phase-name">Testing</td>
-          <td class="phase-desc">Vollständige funktionale Tests aller Buchungs-, Verschiebungs-, Stornierungsflows und E-Mail-Benachrichtigungen.</td>
+          <td class="phase-desc">Vollständige funktionale Tests des Wissensabruf-Systems, der Antwortqualität, der Lead-Erfassung und der thematischen Beschränkung des KI-Assistenten.</td>
         </tr>
         <tr>
           <td class="phase-num">6</td>
@@ -1176,10 +1168,10 @@
 
       <ul class="contract-list">
         <li>Bereitstellung von Logo, Markenmaterialien und CI-Richtlinien, sofern für das Chatbot-Design erforderlich</li>
-        <li>Inhaltliche Korrekturen und Freigaben zu Dialogtexten und E-Mail-Templates</li>
+        <li>Inhaltliche Korrekturen und Freigaben zu Dialogtexten</li>
         <li>Bereitstellung von Test-E-Mail-Adressen und Testzugängen für Funktionsprüfungen</li>
-        <li>Bereitstellung von Kalenderregeln, verfügbaren Zeitfenstern und Buchungslogik</li>
-        <li>Zugang zu erforderlichen Systemen (z. B. Google Calendar, Domain-Einstellungen), soweit technisch notwendig</li>
+        <li>Bereitstellung relevanter Inhalte und Informationen für die TRIGA-S Wissensbasis (z. B. FAQs, Servicebeschreibungen, ergänzende Texte), sofern über die öffentliche Website hinaus erforderlich</li>
+        <li>Zugang zu erforderlichen Systemen (z. B. Domain-Einstellungen für die Chatbot-Einbindung), soweit technisch notwendig</li>
         <li>Benennung eines oder mehrerer fixer Ansprechpartner während der Projektlaufzeit</li>
         <li>Zeitnahes Feedback auf Entwürfe, Testlinks und Freigabeanfragen (Reaktionszeit: in der Regel nicht länger als 5 Werktage, sofern nicht anders vereinbart)</li>
         <li>Freigabe der Chatbot-Formulierungen und E-Mail-Vorlagen vor dem Go-live</li>
@@ -1216,21 +1208,21 @@
           <tr>
             <td><strong>Einmalige Einrichtungsgebühr</strong></td>
             <td>Entwicklung, Einrichtung, Integration, Tests und Übergabe der digitalen KI-Projektassistenz</td>
-            <td class="amount">10.000,00 €</td>
+            <td class="amount">6.500,00 €</td>
           </tr>
           <tr>
             <td><strong>Monatliche Betreuungsgebühr</strong></td>
             <td>Laufende technische Betreuung, Monitoring, Support und Minor-Updates während der Vertragslaufzeit</td>
-            <td class="amount">2.000,00 € / Monat</td>
+            <td class="amount">1.000,00 € / Monat</td>
           </tr>
           <tr>
             <td><strong>Mindestlaufzeit</strong></td>
             <td>12 Monate monatliche Betreuung</td>
-            <td class="amount">24.000,00 €</td>
+            <td class="amount">12.000,00 €</td>
           </tr>
           <tr class="total-row">
             <td colspan="2"><strong>Gesamtvertragswert (12 Monate)</strong><br><span style="font-size:9px;font-weight:400;color:rgba(255,255,255,0.6);">Einmalige Gebühr + 12 Monate Betreuung</span></td>
-            <td class="amount">34.000,00 €</td>
+            <td class="amount">18.500,00 €</td>
           </tr>
         </tbody>
       </table>
@@ -1243,8 +1235,8 @@
 
       <p style="font-weight:700; color:var(--navy); margin-top:18px; margin-bottom:8px;">8.2 &nbsp;Zahlungsbedingungen</p>
       <ul class="contract-list">
-        <li>Die einmalige Einrichtungsgebühr in Höhe von 10.000,00 € wird unmittelbar nach Vertragsunterzeichnung durch beide Parteien fällig.</li>
-        <li>Die monatliche Betreuungsgebühr in Höhe von 2.000,00 € beginnt mit dem Projektstart, spätestens jedoch mit Beginn der technischen Umsetzungsphase, sofern nichts anderes schriftlich vereinbart wird.</li>
+        <li>Die einmalige Einrichtungsgebühr in Höhe von 6.500,00 € wird unmittelbar nach Vertragsunterzeichnung durch beide Parteien fällig.</li>
+        <li>Die monatliche Betreuungsgebühr in Höhe von 1.000,00 € beginnt mit dem Projektstart, spätestens jedoch mit Beginn der technischen Umsetzungsphase, sofern nichts anderes schriftlich vereinbart wird.</li>
         <li>Rechnungen sind innerhalb von <strong>7 Kalendertagen</strong> nach Rechnungserhalt ohne Abzug zahlbar.</li>
         <li>Zahlungen erfolgen ausschließlich auf die nachfolgend angegebene Bankverbindung.</li>
       </ul>
@@ -1416,10 +1408,9 @@
 
       <ul class="contract-list">
         <li><strong>n8n</strong> – Automatisierungsplattform für Workflows</li>
-        <li><strong>Google Calendar</strong> – Terminverwaltung und Kalenderintegration</li>
-        <li><strong>Google Sheets</strong> – Datenerfassung / CRM-Basisstruktur</li>
-        <li><strong>E-Mail-Dienste</strong> – Versand von Bestätigungs- und Erinnerungsemails</li>
-        <li><strong>SMS-Provider</strong> (z. B. Twilio oder vergleichbar) – SMS-Bestätigungslogik, sofern aktiviert</li>
+        <li><strong>Pinecone</strong> – Vektordatenbank für die TRIGA-S Wissensbasis (Retrieval-Augmented Generation)</li>
+        <li><strong>OpenAI</strong> – KI-Sprachmodell (GPT-4o-mini) zur Antwortgenerierung</li>
+        <li><strong>E-Mail-Dienste</strong> – Internes Benachrichtigungssystem für eingehende Kontakt- und Projektanfragen</li>
         <li><strong>Website-Hosting- und Browser-Umgebung</strong> von TRIGA-S – Integration des Chatbot-Scripts</li>
         <li><strong>DocuSign</strong> oder vergleichbare Signaturplattformen – sofern für den Vertragsabschluss genutzt</li>
       </ul>
@@ -1441,7 +1432,7 @@
 
       <p><strong>14.1</strong> Beide Parteien verpflichten sich zur Einhaltung der Bestimmungen der Datenschutz-Grundverordnung (DSGVO/GDPR) sowie aller weiteren anwendbaren datenschutzrechtlichen Vorschriften.</p>
 
-      <p><strong>14.2 Verarbeitete Datenkategorien.</strong> Über das System können folgende Personendaten verarbeitet werden: Vorname, Nachname, E-Mail-Adresse, Telefonnummer, Unternehmensname, Termindetails, Projektanfragen sowie Gesprächsinhalte.</p>
+      <p><strong>14.2 Verarbeitete Datenkategorien.</strong> Über das System können folgende Personendaten verarbeitet werden: Vorname, Nachname, E-Mail-Adresse, Telefonnummer, Unternehmensname, Projektanfragen sowie Gesprächsinhalte.</p>
 
       <p><strong>14.3 Verantwortlichkeit.</strong> TRIGA-S bleibt als Betreiber der Website und Auftraggeber die datenschutzrechtlich Verantwortliche im Sinne der DSGVO. TRIGA-S ist eigenverantwortlich verpflichtet, die Rechtsgrundlage der Datenverarbeitung zu prüfen, die Datenschutzerklärung auf der eigenen Website zu aktualisieren und Betroffenenrechte sicherzustellen.</p>
 
@@ -1532,7 +1523,7 @@
 
       <ul class="contract-list">
         <li>Entgangenen Gewinn oder mittelbare Schäden, soweit keine zwingende gesetzliche Haftung besteht</li>
-        <li>Ausfall oder Fehlfunktion von Drittanbieter-Diensten (n8n, Google, Twilio, Hosting, DocuSign o. ä.)</li>
+        <li>Ausfall oder Fehlfunktion von Drittanbieter-Diensten (n8n, OpenAI, Pinecone, Hosting, DocuSign o. ä.)</li>
         <li>Nicht erzielte Leads, Termine, Umsätze oder Geschäftserfolge</li>
         <li>Schäden aus missbräuchlicher oder zweckwidriger Nutzung des Systems</li>
         <li>Schäden aus fehlerhaften oder unvollständigen Inhalten oder Angaben, die von TRIGA-S bereitgestellt wurden</li>
@@ -1647,7 +1638,7 @@
 
           <div class="sig-field">
             <div class="sig-field-label">Ort, Datum</div>
-            <div class="sig-field-line">Hagen, 30.06.2026</div>
+            <div class="sig-field-line">Hagen, 21.07.2026</div>
           </div>
 
           <div class="sig-field">
@@ -1675,7 +1666,7 @@
 
           <div class="sig-field">
             <div class="sig-field-label">Ort, Datum</div>
-            <div class="sig-field-line">Habach, 30.06.2026</div>
+            <div class="sig-field-line">Habach, 21.07.2026</div>
           </div>
 
           <div class="sig-field">
@@ -1738,7 +1729,7 @@
       <p><strong>Auftragnehmer:</strong> Ibrahim Ahmitti El Goul, handelnd unter AFA – Agentur für Automatisierung, Haldener Str. 21, 58095 Hagen</p>
       <p style="margin-top:6px;"><strong>Auftraggeber:</strong> TRIGA-S GmbH, Mühltal 5, 82392 Habach, HRB 280570, Amtsgericht München</p>
       <p style="margin-top:6px;"><strong>Leistung:</strong> Digitale KI-Projektassistenz (Premium Website-Chatbot) im TRIGA-S Branding</p>
-      <p style="margin-top:6px;"><strong>Einrichtungsgebühr:</strong> 10.000,00 EUR &nbsp;·&nbsp; <strong>Monatlich:</strong> 2.000,00 EUR &nbsp;·&nbsp; <strong>Gesamtwert:</strong> 34.000,00 EUR</p>
+      <p style="margin-top:6px;"><strong>Einrichtungsgebühr:</strong> 6.500,00 EUR &nbsp;·&nbsp; <strong>Monatlich:</strong> 1.000,00 EUR &nbsp;·&nbsp; <strong>Gesamtwert:</strong> 18.500,00 EUR</p>
       <p style="margin-top:6px;"><strong>Umsatzsteuer:</strong> Nicht ausgewiesen – Kleinunternehmer § 19 UStG</p>
       <p style="margin-top:6px;"><strong>Mindestlaufzeit:</strong> 12 Monate ab Vertragsunterzeichnung</p>
     </div>
