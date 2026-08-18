@@ -208,13 +208,19 @@
     }
     .hero-bg {
       position: absolute; inset: 0;
-      background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1920&q=80');
-      background-size: cover;
-      background-position: center 55%;
-      transform: scale(1.06);
-      transition: transform 10s ease;
+      background: #1a1a1a;
+      display: flex; align-items: center; justify-content: center;
     }
-    .hero-bg.loaded { transform: scale(1); }
+    .hero-placeholder {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      z-index: 1; pointer-events: none;
+    }
+    .hero-placeholder svg { width: 64px; height: 64px; opacity: 0.22; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .hero-placeholder span {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.15);
+    }
     .hero-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(
@@ -1162,7 +1168,12 @@
 
   <!-- ── HERO ────────────────────────────────────────────────────── -->
   <section class="hero" id="top">
-    <div class="hero-bg" id="hero-bg" data-fw="home.hero.image" data-fw-bg></div>
+    <div class="hero-bg" id="hero-bg" data-fw="home.hero.image" data-fw-bg>
+      <div class="hero-placeholder">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="30" r="16"/><path d="M10 72 C10 50 70 50 70 72"/></svg>
+        <span>Insert Photo</span>
+      </div>
+    </div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <p class="hero-eyebrow">Lagree · Megaformer · Berlin</p>
