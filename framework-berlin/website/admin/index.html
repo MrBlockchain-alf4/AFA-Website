@@ -277,7 +277,7 @@ input[type=color]{height:36px;width:52px;border:1px solid #2a2a2a;border-radius:
             <button class="tb-btn btn-preview" onclick="window.open(document.getElementById('dash-prev-sel').value,'_blank')">Open in New Tab ↗</button>
           </div>
           <div class="dash-preview-outer" id="dash-prev-outer">
-            <iframe id="dash-prev-frame" class="dash-preview-iframe" src="/framework-berlin/website/index.html"></iframe>
+            <iframe id="dash-prev-frame" class="dash-preview-iframe" src="/framework-berlin/website/index.html" scrolling="no"></iframe>
           </div>
         </div>
       </div>
@@ -551,9 +551,9 @@ function switchPanel(id) {
     const w = outer.getBoundingClientRect().width;
     if (w < 10) return;
     const s = w / 1440;
-    iframe.style.width = '1440px'; iframe.style.height = '900px';
+    iframe.style.width = '1440px'; iframe.style.height = '2200px';
     iframe.style.transform = 'scale(' + s + ')'; iframe.style.transformOrigin = 'top left';
-    outer.style.height = Math.round(900 * s) + 'px';
+    outer.style.height = Math.round(2200 * s) + 'px';
   }, 0);
 }
 
@@ -845,7 +845,7 @@ function initDashPreview() {
   const iframe = document.getElementById('dash-prev-frame');
   const outer  = document.getElementById('dash-prev-outer');
   if (!iframe || !outer) return;
-  const SITE_W = 1440, IFRAME_H = 900;
+  const SITE_W = 1440, IFRAME_H = 2200;
 
   function applyScale() {
     const w = outer.getBoundingClientRect().width;
