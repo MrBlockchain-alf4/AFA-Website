@@ -241,6 +241,52 @@
     }
     .tm-bio-val.plain { font-style: normal; font-weight: 500; letter-spacing: 0.01em; }
 
+    /* ── TEAM ABOUT (replaces photo grid) ───────────────────── */
+    .team-about-section { background: #0a0a0a; padding: 100px 0 80px; }
+    .team-about-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 64px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: start;
+    }
+    .team-about-eyebrow {
+      font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.24em; text-transform: uppercase; color: rgba(255,255,255,0.3);
+      margin-bottom: 24px;
+    }
+    .team-about-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 800; color: #fff;
+      letter-spacing: -0.03em; line-height: 1.0;
+      margin-bottom: 36px;
+    }
+    .team-about-body {
+      font-family: 'Inter', sans-serif; font-size: 15px;
+      color: rgba(255,255,255,0.45); line-height: 1.85; margin-bottom: 20px;
+    }
+    .team-about-values {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+      padding-top: 8px;
+    }
+    .tav-item {
+      background: #111; border: 1px solid rgba(255,255,255,0.06);
+      padding: 28px 24px;
+    }
+    .tav-num {
+      font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 700;
+      color: #fff; letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px;
+    }
+    .tav-label {
+      font-family: 'Inter', sans-serif; font-size: 12px;
+      color: rgba(255,255,255,0.3); line-height: 1.5;
+    }
+    @media (max-width: 900px) {
+      .team-about-inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+    @media (max-width: 768px) {
+      .team-about-inner { padding: 0 24px; }
+      .team-about-section { padding: 72px 0 60px; }
+    }
+
     /* ── PHILOSOPHY ──────────────────────────────────────────── */
     .philosophy { background: #0a0a0a; padding: 120px 0; }
     .philosophy-inner {
@@ -343,8 +389,33 @@
     </div>
   </div>
 
-  <section class="team-section">
-    <div class="team-grid" id="team-grid"></div>
+  <section class="team-about-section">
+    <div class="team-about-inner">
+      <div class="team-about-block">
+        <p class="team-about-eyebrow">Our Instructors</p>
+        <h2 class="team-about-heading">Certified.<br>Experienced.<br>Dedicated.</h2>
+        <p class="team-about-body">Framework Berlin's instructor team is made up of fully Lagree™-certified movement specialists, each bringing their own background — from dance and sport science to physiotherapy and strength training.</p>
+        <p class="team-about-body">Every class is led by someone who practices the method themselves, which means the coaching you receive is grounded in real experience. Small class sizes mean your instructor knows your name and your goals.</p>
+      </div>
+      <div class="team-about-values">
+        <div class="tav-item">
+          <div class="tav-num">32+</div>
+          <div class="tav-label">Certified instructors &amp; specialists</div>
+        </div>
+        <div class="tav-item">
+          <div class="tav-num">2</div>
+          <div class="tav-label">Studio locations across Berlin</div>
+        </div>
+        <div class="tav-item">
+          <div class="tav-num">4.9★</div>
+          <div class="tav-label">Average class rating on ClassPass</div>
+        </div>
+        <div class="tav-item">
+          <div class="tav-num">Lagree™</div>
+          <div class="tav-label">Method certified — every single instructor</div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="philosophy">
