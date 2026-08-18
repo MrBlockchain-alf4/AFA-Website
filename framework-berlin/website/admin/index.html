@@ -543,6 +543,18 @@ function switchPanel(id) {
   document.querySelectorAll('.panel,#panel-visual-editor').forEach(p=>p.classList.remove('active'));
   const t = document.getElementById('panel-'+id);
   if (t) t.classList.add('active');
+  // Re-scale dashboard preview when returning to dashboard tab
+  if (id === 'dashboard') setTimeout(() => {
+    const outer = document.getElementById('dash-prev-outer');
+    const iframe = document.getElementById('dash-prev-frame');
+    if (!outer || !iframe) return;
+    const w = outer.getBoundingClientRect().width;
+    if (w < 10) return;
+    const s = w / 1440;
+    iframe.style.width = '1440px'; iframe.style.height = '900px';
+    iframe.style.transform = 'scale(' + s + ')'; iframe.style.transformOrigin = 'top left';
+    outer.style.height = Math.round(900 * s) + 'px';
+  }, 0);
 }
 
 /* ── POPULATE ALL ─────────────────────────────────────────── */
@@ -831,20 +843,28 @@ function applyThemeFields(){
 /* ── DASHBOARD PREVIEW SCALE ──────────────────────────────── */
 function initDashPreview() {
   const iframe = document.getElementById('dash-prev-frame');
-  if (!iframe) return;
+  const outer  = document.getElementById('dash-prev-outer');
+  if (!iframe || !outer) return;
   const SITE_W = 1440, IFRAME_H = 900;
+
   function applyScale() {
-    const w = iframe.parentElement.offsetWidth;
-    if (!w) return;
+    const w = outer.getBoundingClientRect().width;
+    if (w < 10) return;
     const s = w / SITE_W;
-    iframe.style.width  = SITE_W + 'px';
-    iframe.style.height = IFRAME_H + 'px';
-    iframe.style.transform = 'scale(' + s + ')';
+    iframe.style.width           = SITE_W + 'px';
+    iframe.style.height          = IFRAME_H + 'px';
+    iframe.style.transform       = 'scale(' + s + ')';
     iframe.style.transformOrigin = 'top left';
-    iframe.parentElement.style.height = Math.round(IFRAME_H * s) + 'px';
+    outer.style.height           = Math.round(IFRAME_H * s) + 'px';
   }
-  applyScale();
-  window.addEventListener('resize', applyScale);
+
+  // ResizeObserver fires when the container gains a real size (e.g. after #app
+  // transitions from display:none to display:flex — more reliable than offsetWidth
+  // read immediately after setting display which can still return 0).
+  new ResizeObserver(applyScale).observe(outer);
+
+  // Safety net: apply after layout is guaranteed stable
+  setTimeout(applyScale, 60);
 }
 
 /* ── VISUAL EDITOR ────────────────────────────────────────── */
