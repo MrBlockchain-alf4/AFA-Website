@@ -138,7 +138,10 @@
       specRoot.innerHTML = D.physio.specialists.map(sp => `
         <div class="physio-card">
           <div class="physio-img-wrap">
-            <img class="physio-img" src="${sp.img}" alt="${sp.name}" />
+            <div class="physio-img-placeholder">
+              <svg viewBox="0 0 80 80" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="30" r="16"/><path d="M10 72 C10 50 70 50 70 72"/></svg>
+              <span>Insert Photo</span>
+            </div>
             <div class="physio-img-tint"></div>
           </div>
           <div class="physio-body">
