@@ -138,6 +138,17 @@
     }
 
     /* ── HERO ─────────────────────────────────────────────────── */
+    .physio-hero-placeholder {
+      position: absolute; inset: 0;
+      background: #1a1a1a;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+    }
+    .physio-hero-placeholder svg { width: 64px; height: 64px; opacity: 0.22; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .physio-hero-placeholder span {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.15);
+    }
     .page-hero {
       position: relative;
       min-height: 72vh;
@@ -707,10 +718,10 @@
 
   <!-- HERO -->
   <section class="page-hero">
-    <img class="hero-img" data-fw="physio.hero.image"
-      src="https://images.unsplash.com/photo-1581009026-86f2b6e3c3de?auto=format&fit=crop&w=1440&q=80"
-      alt="Physiotherapy studio equipment"
-      onerror="this.src='https://placehold.co/1440x900/0a0a0a/333?text=Framework+Physiotherapy'" />
+    <div class="physio-hero-placeholder">
+      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="30" r="16"/><path d="M10 72 C10 50 70 50 70 72"/></svg>
+      <span>Insert Photo</span>
+    </div>
     <div class="hero-grad"></div>
     <div class="hero-inner">
       <p class="hero-eyebrow" data-fw="physio.hero.eyebrow">Personalized care</p>

@@ -492,6 +492,17 @@
       transition: transform 0.6s ease;
     }
     .about-img-wrap:hover img { transform: scale(1.03); }
+    .about-img-placeholder {
+      width: 100%; height: 680px;
+      background: #d6d1cb;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+    }
+    .about-img-placeholder svg { width: 56px; height: 56px; opacity: 0.28; stroke: #3a3530; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .about-img-placeholder span {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(40,35,30,0.28);
+    }
     .about-img-wrap::after {
       content: '';
       position: absolute; inset: 0;
@@ -632,6 +643,17 @@
       filter: brightness(0.92);
     }
     .loc-card:hover .loc-img { transform: scale(1.06); filter: brightness(1); }
+    .loc-img-placeholder {
+      width: 100%; height: 420px;
+      background: #1a1a1a;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+    }
+    .loc-img-placeholder svg { width: 52px; height: 52px; opacity: 0.2; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .loc-img-placeholder span {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.12);
+    }
     .loc-img-overlay {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -1236,10 +1258,10 @@
           </div>
         </div>
         <div class="about-img-wrap ao from-right" style="position:relative;">
-          <img
-            src="https://images.unsplash.com/photo-1603503364432-9b2a68eed4fe?auto=format&fit=crop&w=1200&q=80"
-            alt="Lagree Megaformer equipment"
-          />
+          <div class="about-img-placeholder">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="30" r="16"/><path d="M10 72 C10 50 70 50 70 72"/></svg>
+            <span>Insert Photo</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1322,7 +1344,10 @@
       <div id="fw-locations-root" class="locations-grid">
         <div class="loc-card ao d1">
           <div class="loc-img-wrap">
-            <img class="loc-img" src="/framework-berlin/website/public/studio/pberg.png" alt="Prenzlauer Berg studio entrance" style="object-position: center 55%;"/>
+            <div class="loc-img-placeholder">
+              <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="30" r="16"/><path d="M10 72 C10 50 70 50 70 72"/></svg>
+              <span>Insert Photo</span>
+            </div>
             <div class="loc-img-overlay">
               <p class="loc-neighborhood">Prenzlauer Berg</p>
               <h3 class="loc-name">P-Berg Studio</h3>
@@ -1336,7 +1361,10 @@
         </div>
         <div class="loc-card ao d2">
           <div class="loc-img-wrap">
-            <img class="loc-img" src="/framework-berlin/website/public/studio/xberg.png" alt="Kreuzberg studio entrance" style="object-position: center 38%;"/>
+            <div class="loc-img-placeholder">
+              <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="30" r="16"/><path d="M10 72 C10 50 70 50 70 72"/></svg>
+              <span>Insert Photo</span>
+            </div>
             <div class="loc-img-overlay">
               <p class="loc-neighborhood">Kreuzberg</p>
               <h3 class="loc-name">Kreuzberg Studio</h3>

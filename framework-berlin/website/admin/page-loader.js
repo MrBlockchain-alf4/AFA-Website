@@ -64,8 +64,10 @@
       locRoot.innerHTML = D.home.locations.map((loc, i) => `
         <div class="loc-card ao d${i + 1}">
           <div class="loc-img-wrap">
-            <img class="loc-img" src="${loc.image}" alt="${loc.name}"
-              style="object-position: ${loc.img_position || 'center'};" />
+            <div class="loc-img-placeholder">
+              <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="40" cy="30" r="16"/><path d="M10 72 C10 50 70 50 70 72"/></svg>
+              <span>Insert Photo</span>
+            </div>
             <div class="loc-img-overlay">
               <p class="loc-neighborhood">${loc.neighborhood}</p>
               <h3 class="loc-name">${loc.name}</h3>
