@@ -60,8 +60,8 @@ img{max-width:100%;display:block}
 .sb-divider{height:1px;background:#1e1e1e;margin:8px 0}
 
 /* CONTENT AREA */
-#content{flex:1;overflow-y:auto;background:#0e0e0e}
-.panel{display:none;padding:32px 40px;max-width:900px}
+#content{flex:1;overflow:hidden;background:#0e0e0e;display:flex;flex-direction:column}
+.panel{display:none;padding:32px 40px;max-width:900px;overflow-y:auto;flex:1;min-height:0}
 .panel.active{display:block}
 
 /* PANEL HEADINGS */
@@ -158,10 +158,14 @@ input[type=color]{height:36px;width:52px;border:1px solid #2a2a2a;border-radius:
 .dash-link svg{width:18px;height:18px;color:#5fa87a;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
 /* VISUAL EDITOR */
-#panel-visual-editor.active{display:flex;flex-direction:column;padding:0;max-width:none;height:100%}
+#panel-visual-editor.active{display:flex;flex-direction:column;padding:0;max-width:none;overflow:hidden}
 .ve-toolbar{display:flex;align-items:center;gap:12px;padding:12px 20px;background:#111;border-bottom:1px solid #1e1e1e;flex-shrink:0}
 .ve-page-sel{background:#1a1a1a;border:1px solid #2a2a2a;color:#e8e8e8;padding:7px 12px;border-radius:4px;outline:none;font-size:12px}
-.ve-iframe{flex:1;border:none;background:#fff}
+.ve-iframe{flex:1;min-height:0;border:none;background:#fff;display:block;width:100%}
+
+/* DASHBOARD PREVIEW */
+.dash-preview-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.dash-preview-iframe{width:100%;height:800px;border:1px solid #1e1e1e;border-radius:4px;background:#fff;display:block}
 </style>
 </head>
 <body>
@@ -258,6 +262,19 @@ input[type=color]{height:36px;width:52px;border:1px solid #2a2a2a;border-radius:
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="10"/></svg>
             <div><div class="dash-link-label">Theme &amp; Colors</div><div class="dash-link-sub">Brand colour, booking link</div></div>
           </div>
+        </div>
+        <div class="panel-section" style="max-width:100%;">
+          <div class="section-label">Live Preview</div>
+          <div class="dash-preview-bar">
+            <select class="ve-page-sel" id="dash-prev-sel" onchange="document.getElementById('dash-prev-frame').src=this.value">
+              <option value="/framework-berlin/website/index.html">Home</option>
+              <option value="/framework-berlin/website/team.html">Team</option>
+              <option value="/framework-berlin/website/physiotherapy.html">Physiotherapy</option>
+            </select>
+            <button class="tb-btn btn-signout" onclick="document.getElementById('dash-prev-frame').src=document.getElementById('dash-prev-frame').src" style="color:#888">↺ Refresh</button>
+            <button class="tb-btn btn-preview" onclick="window.open(document.getElementById('dash-prev-sel').value,'_blank')">Open in New Tab ↗</button>
+          </div>
+          <iframe id="dash-prev-frame" class="dash-preview-iframe" src="/framework-berlin/website/index.html"></iframe>
         </div>
       </div>
 
