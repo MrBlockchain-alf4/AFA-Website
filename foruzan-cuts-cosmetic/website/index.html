@@ -9,23 +9,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --gold:        #C8A260;
-      --gold-light:  #D6B47A;
-      --gold-dim:    rgba(200,162,96,0.15);
-      --gold-glow:   rgba(200,162,96,0.22);
-      --bg:          #0E0D0B;
-      --bg-card:     #141210;
-      --bg-elev:     #1B1914;
-      --border:      #2C2820;
-      --border-sub:  #211E18;
+      --pink:        #d94f7a;
+      --pink-light:  #e66d90;
+      --pink-dim:    rgba(217,79,122,0.15);
+      --pink-glow:   rgba(217,79,122,0.22);
+      --bg:          #2b2320;
+      --bg-card:     #221b19;
+      --bg-elev:     #342a26;
+      --border:      #3d3028;
+      --border-sub:  #312520;
       --text:        #EDE8DE;
-      --text-muted:  #8C8070;
-      --text-dim:    #554E42;
-      --light-bg:    #F6F1EA;
+      --text-muted:  #9a8880;
+      --text-dim:    #6b5a54;
+      --light-bg:    #F9F0F3;
       --light-card:  #FFFFFF;
-      --light-bdr:   #E2D4BE;
-      --dark-text:   #1A1410;
-      --dark-muted:  #6B5F4E;
+      --light-bdr:   #EED4DC;
+      --dark-text:   #2b2320;
+      --dark-muted:  #7a6058;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     html{scroll-behavior:smooth;}
@@ -43,7 +43,7 @@
       position:fixed;top:0;left:0;right:0;z-index:200;
       height:70px;display:flex;align-items:center;
       justify-content:space-between;padding:0 52px;
-      background:rgba(14,13,11,0.90);
+      background:rgba(43,35,32,0.90);
       backdrop-filter:blur(16px);
       border-bottom:1px solid var(--border);
       transition:background 300ms;
@@ -56,7 +56,7 @@
     }
     .nav-brand-sub{
       font-size:9px;font-weight:500;letter-spacing:0.22em;
-      text-transform:uppercase;color:var(--gold);margin-top:3px;
+      text-transform:uppercase;color:var(--pink);margin-top:3px;
     }
     .nav-links{
       display:flex;align-items:center;gap:36px;list-style:none;
@@ -68,13 +68,13 @@
     }
     .nav-links a:hover{color:var(--text);}
     .nav-cta{
-      padding:11px 24px;background:var(--gold);color:#0E0D0B;
+      padding:11px 24px;background:var(--pink);color:#ffffff;
       font-size:11px;font-weight:600;letter-spacing:0.1em;
       text-transform:uppercase;border-radius:4px;
       transition:background 200ms,transform 180ms,box-shadow 200ms;
-      box-shadow:0 2px 12px var(--gold-glow);
+      box-shadow:0 2px 12px var(--pink-glow);
     }
-    .nav-cta:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 6px 20px var(--gold-glow);}
+    .nav-cta:hover{background:var(--pink-light);transform:translateY(-1px);box-shadow:0 6px 20px var(--pink-glow);}
     .nav-cta:active{transform:translateY(0);}
 
     /* ─── HERO ───────────────────────────────────*/
@@ -85,8 +85,8 @@
     .hero-glow{
       position:absolute;inset:0;pointer-events:none;
       background:
-        radial-gradient(ellipse 55% 70% at 72% 50%, rgba(200,162,96,0.07) 0%, transparent 55%),
-        radial-gradient(ellipse 35% 50% at 18% 85%, rgba(200,162,96,0.04) 0%, transparent 50%);
+        radial-gradient(ellipse 55% 70% at 72% 50%, rgba(217,79,122,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 35% 50% at 18% 85%, rgba(217,79,122,0.04) 0%, transparent 50%);
     }
     .hero-inner{
       position:relative;z-index:1;
@@ -97,11 +97,11 @@
     .hero-eyebrow{
       display:inline-flex;align-items:center;gap:12px;
       font-size:10px;font-weight:600;letter-spacing:0.22em;
-      text-transform:uppercase;color:var(--gold);margin-bottom:30px;
+      text-transform:uppercase;color:var(--pink);margin-bottom:30px;
     }
     .hero-eyebrow::before{
       content:'';width:30px;height:1px;
-      background:var(--gold);opacity:0.55;
+      background:var(--pink);opacity:0.55;
     }
     .hero-h1{
       font-family:'Cormorant Garamond',serif;
@@ -110,7 +110,7 @@
       letter-spacing:-0.025em;color:var(--text);
       margin-bottom:26px;
     }
-    .hero-h1 em{font-style:italic;color:var(--gold);}
+    .hero-h1 em{font-style:italic;color:var(--pink);}
     .hero-sub{
       font-size:15px;font-weight:300;line-height:1.8;
       color:var(--text-muted);max-width:400px;
@@ -119,13 +119,13 @@
     .hero-actions{display:flex;gap:18px;align-items:center;flex-wrap:wrap;}
     .btn-primary{
       display:inline-block;padding:16px 34px;
-      background:var(--gold);color:#0E0D0B;
+      background:var(--pink);color:#ffffff;
       font-size:12px;font-weight:600;letter-spacing:0.08em;
       text-transform:uppercase;border-radius:4px;
-      box-shadow:0 4px 22px var(--gold-glow);
+      box-shadow:0 4px 22px var(--pink-glow);
       transition:background 200ms,transform 180ms,box-shadow 220ms;
     }
-    .btn-primary:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 8px 30px var(--gold-glow);}
+    .btn-primary:hover{background:var(--pink-light);transform:translateY(-2px);box-shadow:0 8px 30px var(--pink-glow);}
     .btn-primary:active{transform:translateY(0);}
     .btn-ghost{
       display:inline-flex;align-items:center;gap:6px;
@@ -144,7 +144,7 @@
     }
     .hero-img::before{
       content:'';position:absolute;inset:0;
-      background:linear-gradient(140deg,rgba(200,162,96,0.05) 0%,transparent 50%);
+      background:linear-gradient(140deg,rgba(217,79,122,0.05) 0%,transparent 50%);
     }
     .hero-img svg{width:52px;height:52px;opacity:0.3;position:relative;}
     .hero-img span{
@@ -157,7 +157,7 @@
     }
     .hero-stat-num{
       font-family:'Cormorant Garamond',serif;
-      font-size:28px;font-weight:400;color:var(--gold);line-height:1;
+      font-size:28px;font-weight:400;color:var(--pink);line-height:1;
     }
     .hero-stat-label{
       font-size:11px;color:var(--text-muted);margin-top:4px;letter-spacing:0.04em;
@@ -166,15 +166,15 @@
     /* ─── SECTION UTILITY ─────────────────────── */
     .sec-label{
       font-size:10px;font-weight:600;letter-spacing:0.22em;
-      text-transform:uppercase;color:var(--gold);
+      text-transform:uppercase;color:var(--pink);
       display:flex;align-items:center;gap:12px;margin-bottom:18px;
     }
     .sec-label::after{
-      content:'';height:1px;flex:1;background:var(--gold);opacity:0.25;
+      content:'';height:1px;flex:1;background:var(--pink);opacity:0.25;
     }
     .sec-label-light{
       font-size:10px;font-weight:600;letter-spacing:0.22em;
-      text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:block;
+      text-transform:uppercase;color:var(--pink);margin-bottom:14px;display:block;
     }
     .sec-h2{
       font-family:'Cormorant Garamond',serif;
@@ -202,7 +202,7 @@
     .about-feat{display:flex;align-items:flex-start;gap:14px;}
     .feat-dot{
       width:6px;height:6px;border-radius:50%;
-      background:var(--gold);flex-shrink:0;margin-top:6px;
+      background:var(--pink);flex-shrink:0;margin-top:6px;
     }
     .feat-text{font-size:14px;color:var(--text-muted);line-height:1.6;}
     .about-img{
@@ -233,15 +233,15 @@
     }
     .srv-card:hover{
       transform:translateY(-5px);
-      box-shadow:0 20px 48px rgba(0,0,0,0.09),0 0 0 1px rgba(200,162,96,0.22);
+      box-shadow:0 20px 48px rgba(0,0,0,0.09),0 0 0 1px rgba(217,79,122,0.22);
     }
     .srv-icon{
       width:50px;height:50px;border-radius:50%;
-      background:rgba(200,162,96,0.1);
+      background:rgba(217,79,122,0.1);
       display:flex;align-items:center;justify-content:center;
       margin-bottom:26px;
     }
-    .srv-icon svg{width:22px;height:22px;stroke:var(--gold);}
+    .srv-icon svg{width:22px;height:22px;stroke:var(--pink);}
     .srv-name{
       font-family:'Cormorant Garamond',serif;
       font-size:26px;font-weight:500;color:var(--dark-text);
@@ -253,9 +253,9 @@
     }
     .srv-price{
       display:inline-block;padding:7px 16px;
-      background:rgba(200,162,96,0.1);border-radius:20px;
+      background:rgba(217,79,122,0.1);border-radius:20px;
       font-size:11px;font-weight:600;letter-spacing:0.08em;
-      text-transform:uppercase;color:var(--gold);
+      text-transform:uppercase;color:var(--pink);
     }
 
     /* ─── INSTAGRAM STRIP ─────────────────────── */
@@ -267,16 +267,16 @@
       display:flex;align-items:center;justify-content:center;gap:14px;
       flex-wrap:wrap;
     }
-    .ig-strip svg{color:var(--gold);}
+    .ig-strip svg{color:var(--pink);}
     .ig-text{font-size:13px;color:var(--text-muted);}
     .ig-handle{
-      font-size:13px;font-weight:600;color:var(--gold);
+      font-size:13px;font-weight:600;color:var(--pink);
     }
     .ig-handle:hover{text-decoration:underline;}
     .ig-pill{
       display:inline-block;padding:4px 12px;
-      background:var(--gold-dim);border-radius:20px;
-      font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--gold);
+      background:var(--pink-dim);border-radius:20px;
+      font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--pink);
     }
 
     /* ─── LOCATION ────────────────────────────── */
@@ -294,10 +294,10 @@
     .info-block{margin-bottom:36px;}
     .info-lbl{
       font-size:10px;font-weight:600;letter-spacing:0.2em;
-      text-transform:uppercase;color:var(--gold);margin-bottom:10px;
+      text-transform:uppercase;color:var(--pink);margin-bottom:10px;
     }
     .info-val{font-size:15px;line-height:1.7;color:var(--text);}
-    .info-val a{color:var(--gold);}
+    .info-val a{color:var(--pink);}
     .info-val a:hover{text-decoration:underline;}
     .hours-row{
       display:flex;justify-content:space-between;
@@ -324,13 +324,13 @@
     .loc-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:40px;}
     .btn-primary-sm{
       display:inline-block;padding:14px 28px;
-      background:var(--gold);color:#0E0D0B;
+      background:var(--pink);color:#ffffff;
       font-size:12px;font-weight:600;letter-spacing:0.08em;
       text-transform:uppercase;border-radius:4px;
-      box-shadow:0 4px 18px var(--gold-glow);
+      box-shadow:0 4px 18px var(--pink-glow);
       transition:background 200ms,transform 180ms;
     }
-    .btn-primary-sm:hover{background:var(--gold-light);transform:translateY(-1px);}
+    .btn-primary-sm:hover{background:var(--pink-light);transform:translateY(-1px);}
     .btn-outline{
       display:inline-block;padding:13px 24px;
       border:1px solid var(--border);border-radius:4px;
@@ -338,7 +338,7 @@
       text-transform:uppercase;color:var(--text-muted);
       transition:border-color 200ms,color 200ms;
     }
-    .btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+    .btn-outline:hover{border-color:var(--pink);color:var(--pink);}
 
     /* ─── TESTIMONIALS ────────────────────────── */
     .testimonials{
@@ -358,7 +358,7 @@
       border-radius:8px;padding:32px 28px;
       display:flex;flex-direction:column;gap:18px;text-align:left;
     }
-    .t-stars{color:var(--gold);font-size:16px;letter-spacing:3px;}
+    .t-stars{color:var(--pink);font-size:16px;letter-spacing:3px;}
     .t-quote{
       font-size:14px;line-height:1.82;color:var(--dark-muted);
       font-style:italic;font-weight:300;opacity:0.65;
@@ -377,7 +377,7 @@
       color:var(--dark-muted);
       transition:border-color 200ms,color 200ms,background 200ms;
     }
-    .btn-outline-light:hover{border-color:var(--gold);color:var(--gold);background:rgba(200,162,96,0.04);}
+    .btn-outline-light:hover{border-color:var(--pink);color:var(--pink);background:rgba(217,79,122,0.04);}
 
     /* ─── FOOTER ──────────────────────────────── */
     .footer{
@@ -395,12 +395,12 @@
     }
     .footer-brand-sub{
       font-size:9px;letter-spacing:0.22em;text-transform:uppercase;
-      color:var(--gold);margin-bottom:20px;
+      color:var(--pink);margin-bottom:20px;
     }
     .footer-desc{font-size:13px;line-height:1.8;color:var(--text-muted);max-width:260px;}
     .footer-col-title{
       font-size:10px;font-weight:600;letter-spacing:0.2em;
-      text-transform:uppercase;color:var(--gold);margin-bottom:22px;
+      text-transform:uppercase;color:var(--pink);margin-bottom:22px;
     }
     .footer-links{list-style:none;display:flex;flex-direction:column;gap:12px;}
     .footer-links a{font-size:13px;color:var(--text-muted);transition:color 200ms;}
@@ -434,8 +434,7 @@
 <!-- ═══ NAV ═══════════════════════════════════════════════ -->
 <nav class="nav">
   <a href="#top" class="nav-brand">
-    <span class="nav-brand-main">Foruzan's</span>
-    <span class="nav-brand-sub">Cuts &amp; Kosmetik · Hagen</span>
+    <img src="/foruzan-cuts-cosmetic/website/public/images/foruzan_title_v7.png" alt="Foruzan's Cuts &amp; Kosmetik" style="height:44px;width:auto;display:block;">
   </a>
   <ul class="nav-links">
     <li><a href="#about">Über uns</a></li>
@@ -698,8 +697,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <div class="footer-brand-main">Foruzan's</div>
-      <div class="footer-brand-sub">Cuts &amp; Kosmetik · Hagen</div>
+      <img src="/foruzan-cuts-cosmetic/website/public/images/foruzan_title_v7.png" alt="Foruzan's Cuts &amp; Kosmetik" style="height:38px;width:auto;display:block;margin-bottom:16px;opacity:0.85;">
       <p class="footer-desc">
         Ihr Friseursalon in Hagen für professionelle Haarschnitte,
         Colorationen und Haarpflege.

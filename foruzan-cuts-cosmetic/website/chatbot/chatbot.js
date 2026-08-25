@@ -9,16 +9,16 @@
 
   /* ── PALETTE ── */
   const G = {
-    gold:      '#C8A260',
-    goldLight: '#D6B47A',
-    goldDim:   'rgba(200,162,96,0.12)',
-    goldGlow:  'rgba(200,162,96,0.24)',
-    dark:      '#0E0D0B',
-    card:      '#141210',
-    elev:      '#1B1914',
-    border:    '#2C2820',
+    gold:      '#d94f7a',
+    goldLight: '#e66d90',
+    goldDim:   'rgba(217,79,122,0.12)',
+    goldGlow:  'rgba(217,79,122,0.24)',
+    dark:      '#2b2320',
+    card:      '#221b19',
+    elev:      '#342a26',
+    border:    '#3d3028',
     text:      '#EDE8DE',
-    muted:     '#8C8070',
+    muted:     '#9a8880',
     green:     '#5A9E6F',
   };
 
