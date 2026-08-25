@@ -52,8 +52,16 @@
 
   /* ── STATE ── */
   let open = false;
-  let bState = null; // null | 'name' | 'service' | 'datetime' | 'contact' | 'done'
+  let bState = null; // null | 'treatment' | 'name' | 'phone' | 'email' | 'datetime' | 'done'
   let bData  = {};
+
+  const TREATMENTS = [
+    'Kariesbehandlung',
+    'Professionelle Zahnreinigung',
+    'Implantate',
+    'Bleaching',
+    'Zahnschmuck',
+  ];
 
   /* ── INTENT ── */
   function intent(raw) {
@@ -96,40 +104,39 @@
   /* ── RESPONSE BUILDER ── */
   function respond(raw) {
     /* booking flow */
+    if (bState === 'treatment') {
+      bData.treatment = raw.trim();
+      bState = 'name';
+      return addBot(`Danke! Sie interessieren sich für <strong>${bData.treatment}</strong>.<br>Wie heißen Sie?`);
+    }
     if (bState === 'name') {
       if (raw.trim().length < 2) return addBot('Bitte geben Sie Ihren vollständigen Namen ein.');
       bData.name = raw.trim();
-      bState = 'service';
-      return addBot(
-        `Schön, ${bData.name}! Für welche Leistung möchten Sie einen Termin?`,
-        BIZ.services.map(s => ({ label: s }))
-      );
+      bState = 'phone';
+      return addBot(`Schön, ${bData.name}! Ihre Telefonnummer?`);
     }
-    if (bState === 'service') {
-      bData.service = raw.trim();
+    if (bState === 'phone') {
+      bData.phone = raw.trim();
+      bState = 'email';
+      return addBot('Und Ihre E-Mail-Adresse?');
+    }
+    if (bState === 'email') {
+      bData.email = raw.trim();
       bState = 'datetime';
-      return addBot('Haben Sie einen Wunschtermin? Bitte nennen Sie uns Datum und Uhrzeit (oder schreiben Sie "flexibel").');
+      return addBot('Super! Wann hätten Sie einen bevorzugten Termin?');
     }
     if (bState === 'datetime') {
       bData.datetime = raw.trim();
-      bState = 'contact';
-      return addBot('Fast geschafft! Wie können wir Sie erreichen? Bitte geben Sie Ihre Telefonnummer oder E-Mail-Adresse an.');
-    }
-    if (bState === 'contact') {
-      bData.contact = raw.trim();
       bState = 'done';
-      addBot(
-        `✅ Vielen Dank, ${bData.name}!\n\nIhre Terminanfrage wurde übermittelt:\n• Leistung: ${bData.service}\n• Wunschtermin: ${bData.datetime}\n• Kontakt: ${bData.contact}\n\nWir melden uns schnellstmöglich bei Ihnen. Bei dringenden Anliegen erreichen Sie uns unter <a href="${BIZ.phoneHref}" style="color:${G.mintDeep};font-weight:600;">${BIZ.phone}</a>.`
-      );
-      return;
+      return addBot(`Danke! Wir kontaktieren Sie bald unter <strong>${bData.phone}</strong>. Bis dann! 😊`);
     }
 
     const i = intent(raw);
     switch (i) {
       case 'book':
-        bState = 'name';
+        bState = 'treatment';
         bData = {};
-        return addBot('Gerne helfe ich Ihnen bei der Terminanfrage! Wie lautet Ihr vollständiger Name?');
+        return addBot('Kein Problem! Welche Behandlung interessiert Sie?', TREATMENTS.map(t => ({ label: t })));
       case 'hours':
         return addBot(`Unsere Öffnungszeiten erfragen Sie bitte direkt telefonisch unter <a href="${BIZ.phoneHref}" style="color:${G.mintDeep};font-weight:600;">${BIZ.phone}</a> oder besuchen Sie <a href="${BIZ.website}" target="_blank" style="color:${G.mintDeep};">praxis-mueser.de</a>.`);
       case 'location':
@@ -359,22 +366,18 @@
     panel.style.display = open ? 'flex' : 'none';
     dot.style.display = open ? 'none' : 'block';
     if (open && msgs.children.length === 0) {
-      /* greeting */
+      bState = 'treatment';
+      bData = {};
       addBot(
-        `Herzlich willkommen bei der <strong>Praxis Müser</strong>! 😊<br><br>` +
-        `Ich helfe Ihnen gerne bei Terminanfragen, Fragen zu unseren Leistungen, Versicherung oder dem Weg zu uns.`,
-        [
-          { label: 'Termin anfragen' },
-          { label: 'Öffnungszeiten' },
-          { label: 'Leistungen' },
-          { label: 'Versicherung' },
-        ]
+        `Hallo! 👋 Welche Behandlung interessiert Sie?`,
+        TREATMENTS.map(t => ({ label: t }))
       );
     }
     if (open) setTimeout(() => inp.focus(), 120);
   }
 
   btn.onclick = toggle;
+  window.pmCbOpen = () => { if (!open) toggle(); };
 
   root.appendChild(panel);
   root.appendChild(btn);

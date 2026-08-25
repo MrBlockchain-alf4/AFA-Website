@@ -59,12 +59,12 @@
     }
     .nav-links a:hover{color:var(--navy);}
     .nav-cta{
-      padding:11px 26px;background:var(--mint-deep);color:#fff;
+      padding:11px 26px;background:var(--navy);color:#fff;
       font-size:13px;font-weight:600;border-radius:8px;
       transition:background 200ms,transform 160ms,box-shadow 200ms;
-      box-shadow:0 2px 12px rgba(90,158,142,0.28);
+      box-shadow:0 2px 12px rgba(13,27,46,0.18);cursor:pointer;
     }
-    .nav-cta:hover{background:var(--mint-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(90,158,142,0.35);}
+    .nav-cta:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 6px 20px rgba(13,27,46,0.28);}
     .nav-cta:active{transform:translateY(0);}
 
     /* ─── HERO ───────────────────────────────── */
@@ -428,7 +428,7 @@
     <li><a href="#about">Über uns</a></li>
     <li><a href="#services">Leistungen</a></li>
     <li><a href="#location">Standort</a></li>
-    <li><a href="#location" class="nav-cta">Termin anfragen</a></li>
+    <li><a href="javascript:void(0)" class="nav-cta" onclick="if(window.pmCbOpen)window.pmCbOpen()">Termin anfragen</a></li>
   </ul>
 </nav>
 <script>
@@ -453,7 +453,7 @@
         Dr. Dirk Müser und sein Team freuen sich auf Ihren Besuch.
       </p>
       <div class="hero-actions">
-        <a href="#location" class="btn-primary">Termin anfragen</a>
+        <a href="javascript:void(0)" class="btn-primary" onclick="if(window.pmCbOpen)window.pmCbOpen()">Termin anfragen</a>
         <a href="#services" class="btn-secondary">Unsere Leistungen →</a>
       </div>
     </div>
