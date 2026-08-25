@@ -270,6 +270,21 @@
     }
     .t-author{font-size:13px;font-weight:600;color:var(--navy);opacity:0.7;letter-spacing:0.06em;}
     .t-source{font-size:11px;color:var(--navy);opacity:0.45;margin-top:6px;letter-spacing:0.04em;}
+    /* ─── CAROUSEL ───────────────────────────── */
+    .t-carousel{position:relative;min-height:230px;}
+    .t-slide{position:absolute;top:0;left:0;right:0;opacity:0;transition:opacity 600ms ease;pointer-events:none;}
+    .t-slide.tc-on{opacity:1;pointer-events:auto;}
+    .t-dots{display:flex;gap:10px;justify-content:center;padding-top:260px;}
+    .t-dot{width:8px;height:8px;border-radius:50%;background:rgba(13,27,46,0.18);border:none;cursor:pointer;padding:0;transition:background 250ms ease;}
+    .t-dot.tc-dot-on{background:var(--mint-deep);}
+    /* ─── HOURS TODAY ────────────────────────── */
+    .hours-today{background:rgba(168,213,200,0.15);border-radius:6px;padding-left:8px;margin:0 -8px;}
+    .hours-today .hours-day{color:var(--mint-deep);font-weight:600;}
+    .hours-status{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px;border-radius:8px;margin-left:8px;vertical-align:middle;}
+    .hours-status.open{background:rgba(74,158,111,0.15);color:#2d8a5c;}
+    .hours-status.closed{background:rgba(220,38,38,0.10);color:#c53030;}
+    /* ─── FOOTER LOGO TEXT ───────────────────── */
+    .footer-logo-text{font-family:'DM Sans',sans-serif;font-size:36px;font-weight:800;letter-spacing:-0.04em;color:#fff;margin-bottom:10px;line-height:1;}
 
     /* ─── LOCATION ───────────────────────────── */
     .location{
@@ -431,7 +446,7 @@
     </div>
     <div class="hero-right">
       <div class="hero-img-wrap">
-        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=700&h=875&fit=crop&q=85" alt="Zahnarztpraxis – professionelle Behandlung">
+        <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=700&h=875&fit=crop&q=85" alt="Zahnarztpraxis – professionelle Behandlung">
         <div class="hero-img-overlay"></div>
       </div>
       <div class="hero-pills">
@@ -600,15 +615,64 @@
 <section class="testimonial">
   <div class="testimonial-inner">
     <div class="t-stars">★★★★★</div>
-    <span class="t-quote-mark">"</span>
-    <p class="t-quote">
-      Ich hatte einen abgebrochenen Schneidezahn und wurde dort sehr professionell
-      und einfühlsam behandelt. Das Team ist durchgängig freundlich und kompetent –
-      ich würde die Praxis Müser jederzeit weiterempfehlen.
-    </p>
-    <div class="t-author">— Hajo Gollnik</div>
-    <div class="t-source">Verifizierte Patientenbewertung · Sanego.de</div>
+    <div class="t-carousel" id="tc-wrap">
+      <div class="t-slide tc-on">
+        <span class="t-quote-mark">"</span>
+        <p class="t-quote">Ich bin sehr zufrieden mit dieser Zahnarztpraxis! Wenn ich ein Anliegen habe, bekomme ich immer schnell einen Termin – ganz ohne lange Wartezeiten.</p>
+        <div class="t-author">— Kubra</div>
+      </div>
+      <div class="t-slide">
+        <span class="t-quote-mark">"</span>
+        <p class="t-quote">Ich bin sehr zufrieden mit meiner Behandlung. Das gesamte Team ist freundlich, professionell und nimmt sich Zeit für die Patienten.</p>
+        <div class="t-author">— Aslan1905</div>
+      </div>
+      <div class="t-slide">
+        <span class="t-quote-mark">"</span>
+        <p class="t-quote">Ich war jetzt mehrmals bei Herrn Müser in Behandlung. Fazit: Sehr nettes und kompetentes Team mit einem hervorragenden Chef (Herr Müser).</p>
+        <div class="t-author">— Bartimarvus</div>
+      </div>
+      <div class="t-slide">
+        <span class="t-quote-mark">"</span>
+        <p class="t-quote">Herr Müser ist ein super Zahnarzt. Hier fühlt man sich wohl und gut aufgehoben. Er nimmt sich Zeit und behandelt immer sehr gründlich.</p>
+        <div class="t-author">— Tobias Fenner</div>
+      </div>
+      <div class="t-slide">
+        <span class="t-quote-mark">"</span>
+        <p class="t-quote">Ein hervorragender Arzt mit einem sehr freundlichen und aufmerksamen Team! Die Behandlungen sind immer auf sehr hohem Niveau.</p>
+        <div class="t-author">— Pietro Di Monaco</div>
+      </div>
+    </div>
+    <div class="t-dots" id="tc-dots">
+      <button class="t-dot tc-dot-on" aria-label="Review 1"></button>
+      <button class="t-dot" aria-label="Review 2"></button>
+      <button class="t-dot" aria-label="Review 3"></button>
+      <button class="t-dot" aria-label="Review 4"></button>
+      <button class="t-dot" aria-label="Review 5"></button>
+    </div>
+    <div class="t-source" style="margin-top:16px;">Google Bewertungen · Praxis Müser</div>
   </div>
+  <script>
+  (function(){
+    var slides=document.querySelectorAll('#tc-wrap .t-slide');
+    var dots=document.querySelectorAll('#tc-dots .t-dot');
+    var cur=0;
+    function go(n){
+      slides[cur].classList.remove('tc-on');
+      dots[cur].classList.remove('tc-dot-on');
+      cur=(n+slides.length)%slides.length;
+      slides[cur].classList.add('tc-on');
+      dots[cur].classList.add('tc-dot-on');
+    }
+    var timer=setInterval(function(){go(cur+1);},6000);
+    dots.forEach(function(d,i){
+      d.addEventListener('click',function(){
+        clearInterval(timer);
+        go(i);
+        timer=setInterval(function(){go(cur+1);},6000);
+      });
+    });
+  })();
+  </script>
 </section>
 
 <!-- ═══ LOCATION ═════════════════════════════════════════════ -->
@@ -638,13 +702,34 @@
 
       <div class="info-block">
         <div class="info-lbl">Öffnungszeiten</div>
-        <div class="hours-row"><span class="hours-day">Montag</span><span class="hours-time">8:00–12:00, 14:00–18:00</span></div>
-        <div class="hours-row"><span class="hours-day">Dienstag</span><span class="hours-time">8:00–12:00, 14:00–18:00</span></div>
-        <div class="hours-row"><span class="hours-day">Mittwoch</span><span class="hours-time">8:00–13:00</span></div>
-        <div class="hours-row"><span class="hours-day">Donnerstag</span><span class="hours-time">8:00–12:00, 14:00–19:00</span></div>
-        <div class="hours-row"><span class="hours-day">Freitag</span><span class="hours-time">8:00–13:00</span></div>
-        <div class="hours-row"><span class="hours-day">Samstag</span><span class="hours-closed">Geschlossen</span></div>
-        <div class="hours-row"><span class="hours-day">Sonntag</span><span class="hours-closed">Geschlossen</span></div>
+        <div id="pm-hours-grid"></div>
+        <script>
+        (function(){
+          var SCHED=[
+            {de:'Montag',    s:[[8,0,12,0],[14,0,18,0]]},
+            {de:'Dienstag',  s:[[8,0,12,0],[14,0,18,0]]},
+            {de:'Mittwoch',  s:[[8,0,13,0]]},
+            {de:'Donnerstag',s:[[8,0,12,0],[14,0,19,0]]},
+            {de:'Freitag',   s:[[8,0,13,0]]},
+            {de:'Samstag',   s:[]},
+            {de:'Sonntag',   s:[]}
+          ];
+          var now=new Date(), jsDay=now.getDay();
+          var todayIdx=jsDay===0?6:jsDay-1;
+          var nowMin=now.getHours()*60+now.getMinutes();
+          var isOpen=SCHED[todayIdx].s.some(function(r){return nowMin>=r[0]*60+r[1]&&nowMin<r[2]*60+r[3];});
+          var grid=document.getElementById('pm-hours-grid');
+          SCHED.forEach(function(h,i){
+            var isToday=i===todayIdx;
+            var timeStr=h.s.length?h.s.map(function(r){return r[0]+':'+(r[1]<10?'0':'')+r[1]+'–'+r[2]+':'+(r[3]<10?'0':'')+r[3];}).join(', '):'Geschlossen';
+            var row=document.createElement('div');
+            row.className='hours-row'+(isToday?' hours-today':'');
+            var badge=isToday?'<span class="hours-status '+(isOpen?'open':'closed')+'">'+(isOpen?'Geöffnet':'Geschlossen')+'</span>':'';
+            row.innerHTML='<span class="hours-day">'+h.de+badge+'</span><span class="'+(h.s.length?'hours-time':'hours-closed')+'">'+timeStr+'</span>';
+            grid.appendChild(row);
+          });
+        })();
+        </script>
       </div>
 
       <div class="info-block">
@@ -676,9 +761,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <div style="display:inline-block;background:rgba(255,255,255,0.10);border-radius:10px;padding:10px 18px;margin-bottom:18px;border:1px solid rgba(255,255,255,0.08);">
-        <img src="/praxis-mueser/website/public/images/muser-logo.png" alt="Praxis Müser" style="height:30px;width:auto;display:block;">
-      </div>
+      <div class="footer-logo-text">MÜSER</div>
       <div class="footer-brand-name">Praxis Müser</div>
       <div class="footer-brand-sub">Zahnärzte im Volksparkbogen</div>
       <p class="footer-desc">
