@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Praxis Müser – Zahnärzte im Volksparkbogen | Hagen</title>
+  <meta name="description" content="Zahnarztpraxis Müser in Hagen – professionelle Zahnmedizin für Kassen-, Privat- und Selbstzahler. Karl-Marx-Straße 10, 58095 Hagen." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mint:       #a8d5c8;
+      --mint-dark:  #7dbcad;
+      --mint-deep:  #5a9e8e;
+      --mint-light: #d4ede7;
+      --mint-dim:   rgba(168,213,200,0.18);
+      --mint-glow:  rgba(168,213,200,0.40);
+      --navy:       #0d1b2e;
+      --navy-mid:   #1e3a5f;
+      --navy-soft:  #2d4a6a;
+      --border:     #c8e5de;
+      --border-sub: #e5f3ef;
+      --text:       #1a2a3a;
+      --text-muted: #5a7080;
+      --text-dim:   #8a9aaa;
+      --bg:         #ffffff;
+      --bg-off:     #f2faf8;
+      --bg-mint:    #a8d5c8;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:'DM Sans',sans-serif;
+      background:var(--bg);color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    a{text-decoration:none;color:inherit;}
+    img{display:block;max-width:100%;}
+
+    /* ─── NAV ─────────────────────────────────── */
+    .nav{
+      position:fixed;top:0;left:0;right:0;z-index:200;
+      height:76px;display:flex;align-items:center;
+      justify-content:space-between;padding:0 52px;
+      background:rgba(255,255,255,0.95);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border-sub);
+      transition:box-shadow 300ms;
+    }
+    .nav.scrolled{box-shadow:0 2px 20px rgba(13,27,46,0.08);}
+    .nav-logo img{height:40px;width:auto;display:block;}
+    .nav-links{
+      display:flex;align-items:center;gap:36px;list-style:none;
+    }
+    .nav-links a{
+      font-size:13px;font-weight:500;letter-spacing:0.03em;
+      color:var(--text-muted);transition:color 200ms;
+    }
+    .nav-links a:hover{color:var(--navy);}
+    .nav-cta{
+      padding:11px 26px;background:var(--mint-deep);color:#fff;
+      font-size:13px;font-weight:600;border-radius:8px;
+      transition:background 200ms,transform 160ms,box-shadow 200ms;
+      box-shadow:0 2px 12px rgba(90,158,142,0.28);
+    }
+    .nav-cta:hover{background:var(--mint-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(90,158,142,0.35);}
+    .nav-cta:active{transform:translateY(0);}
+
+    /* ─── HERO ───────────────────────────────── */
+    .hero{
+      min-height:100vh;display:flex;align-items:center;
+      padding:100px 52px 80px;
+      background:var(--bg-mint);
+      position:relative;overflow:hidden;
+    }
+    .hero::before{
+      content:'';position:absolute;inset:0;pointer-events:none;
+      background:
+        radial-gradient(ellipse 60% 70% at 80% 50%, rgba(255,255,255,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 10% 90%, rgba(90,158,142,0.2) 0%, transparent 50%);
+    }
+    .hero-inner{
+      position:relative;z-index:1;
+      display:grid;grid-template-columns:1fr 1fr;
+      align-items:center;gap:80px;
+      max-width:1280px;margin:0 auto;width:100%;
+    }
+    .hero-eyebrow{
+      display:inline-flex;align-items:center;gap:10px;
+      font-size:11px;font-weight:600;letter-spacing:0.2em;
+      text-transform:uppercase;color:var(--navy);
+      opacity:0.65;margin-bottom:24px;
+    }
+    .hero-eyebrow::before{
+      content:'';width:24px;height:1px;background:var(--navy);opacity:0.5;
+    }
+    .hero-h1{
+      font-family:'DM Serif Display',serif;
+      font-size:clamp(46px,5.2vw,74px);
+      font-weight:400;line-height:1.06;
+      letter-spacing:-0.02em;color:var(--navy);
+      margin-bottom:10px;
+    }
+    .hero-h1 em{font-style:italic;color:var(--navy-mid);}
+    .hero-sub-title{
+      font-family:'DM Serif Display',serif;
+      font-size:clamp(18px,2vw,26px);font-weight:400;
+      font-style:italic;color:var(--navy-soft);
+      margin-bottom:28px;opacity:0.8;
+    }
+    .hero-p{
+      font-size:15px;font-weight:300;line-height:1.8;
+      color:var(--navy);opacity:0.7;
+      max-width:420px;margin-bottom:44px;
+    }
+    .hero-actions{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+    .btn-primary{
+      display:inline-block;padding:15px 32px;
+      background:var(--navy);color:#fff;
+      font-size:13px;font-weight:600;border-radius:8px;
+      box-shadow:0 4px 20px rgba(13,27,46,0.25);
+      transition:background 200ms,transform 160ms,box-shadow 200ms;
+    }
+    .btn-primary:hover{background:var(--navy-mid);transform:translateY(-2px);box-shadow:0 8px 28px rgba(13,27,46,0.30);}
+    .btn-primary:active{transform:translateY(0);}
+    .btn-secondary{
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:13px;font-weight:500;color:var(--navy);
+      border-bottom:1px solid rgba(13,27,46,0.3);padding-bottom:2px;
+      transition:border-color 200ms,color 200ms;
+    }
+    .btn-secondary:hover{border-color:var(--navy);}
+    .hero-right{
+      display:flex;flex-direction:column;align-items:center;gap:32px;
+    }
+    .hero-logo-wrap{
+      width:320px;max-width:100%;
+      background:rgba(255,255,255,0.72);
+      border-radius:20px;padding:44px 36px;
+      box-shadow:0 8px 40px rgba(13,27,46,0.10);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .hero-logo-wrap img{width:100%;height:auto;}
+    .hero-stat-row{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:1px;background:rgba(13,27,46,0.12);
+      border-radius:12px;overflow:hidden;
+      width:100%;max-width:360px;
+    }
+    .hero-stat{
+      background:rgba(255,255,255,0.65);
+      padding:18px 16px;text-align:center;
+    }
+    .hero-stat-val{
+      font-family:'DM Serif Display',serif;
+      font-size:17px;font-weight:400;color:var(--navy);line-height:1.2;
+    }
+    .hero-stat-lbl{
+      font-size:10px;color:var(--navy);opacity:0.55;
+      margin-top:4px;letter-spacing:0.06em;
+    }
+
+    /* ─── SECTION UTILS ──────────────────────── */
+    .sec-eyebrow{
+      font-size:10px;font-weight:600;letter-spacing:0.22em;
+      text-transform:uppercase;color:var(--mint-deep);
+      display:flex;align-items:center;gap:10px;margin-bottom:16px;
+    }
+    .sec-eyebrow::after{content:'';height:1px;flex:1;background:var(--mint-deep);opacity:0.3;}
+    .sec-eyebrow-light{
+      font-size:10px;font-weight:600;letter-spacing:0.22em;
+      text-transform:uppercase;color:var(--navy);opacity:0.5;
+      display:block;margin-bottom:14px;
+    }
+    .sec-h2{
+      font-family:'DM Serif Display',serif;
+      font-size:clamp(34px,3.8vw,52px);
+      font-weight:400;line-height:1.12;letter-spacing:-0.02em;
+    }
+
+    /* ─── ABOUT ──────────────────────────────── */
+    .about{
+      padding:120px 52px;background:var(--bg);
+      border-top:1px solid var(--border-sub);
+    }
+    .about-inner{
+      max-width:1280px;margin:0 auto;
+      display:grid;grid-template-columns:1fr 1fr;
+      gap:80px;align-items:center;
+    }
+    .about-h2{color:var(--navy);margin-bottom:28px;}
+    .about-p{
+      font-size:15px;font-weight:300;line-height:1.85;
+      color:var(--text-muted);margin-bottom:18px;
+    }
+    .about-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;}
+    .about-tag{
+      padding:7px 16px;border-radius:20px;
+      background:var(--mint-dim);border:1px solid var(--border);
+      font-size:12px;font-weight:500;color:var(--navy);letter-spacing:0.03em;
+    }
+    .about-img{
+      width:100%;aspect-ratio:3/4;border-radius:14px;
+      overflow:hidden;border:1px solid var(--border);
+      background:var(--bg-off);
+    }
+    .about-img img{width:100%;height:100%;object-fit:cover;display:block;}
+
+    /* ─── SERVICES ───────────────────────────── */
+    .services{
+      padding:120px 52px;
+      background:var(--bg-off);
+      border-top:1px solid var(--border-sub);
+    }
+    .services-inner{max-width:1280px;margin:0 auto;}
+    .services-head{text-align:center;margin-bottom:60px;}
+    .services-h2{color:var(--navy);}
+    .srv-grid{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+    }
+    .srv-card{
+      background:var(--bg);border:1px solid var(--border);
+      border-radius:12px;padding:32px 26px;
+      transition:transform 240ms ease,box-shadow 240ms ease,border-color 240ms;
+    }
+    .srv-card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 16px 40px rgba(13,27,46,0.08),0 0 0 1px rgba(90,158,142,0.25);
+      border-color:var(--mint);
+    }
+    .srv-icon{
+      width:48px;height:48px;border-radius:12px;
+      background:var(--mint-dim);border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:20px;
+    }
+    .srv-icon svg{width:22px;height:22px;stroke:var(--mint-deep);}
+    .srv-name{
+      font-family:'DM Serif Display',serif;
+      font-size:18px;font-weight:400;color:var(--navy);
+      margin-bottom:10px;line-height:1.25;
+    }
+    .srv-desc{
+      font-size:13px;line-height:1.75;color:var(--text-muted);font-weight:300;
+    }
+    .srv-brand{
+      display:inline-block;margin-top:10px;
+      padding:3px 10px;border-radius:10px;
+      background:var(--mint-dim);
+      font-size:10px;font-weight:600;letter-spacing:0.08em;
+      text-transform:uppercase;color:var(--mint-deep);
+    }
+
+    /* ─── TESTIMONIAL ────────────────────────── */
+    .testimonial{
+      padding:100px 52px;
+      background:var(--bg-mint);
+      border-top:1px solid rgba(13,27,46,0.1);
+    }
+    .testimonial-inner{
+      max-width:800px;margin:0 auto;text-align:center;
+    }
+    .t-stars{
+      font-size:22px;color:var(--navy);letter-spacing:4px;
+      margin-bottom:32px;opacity:0.8;
+    }
+    .t-quote-mark{
+      font-family:'DM Serif Display',serif;
+      font-size:80px;line-height:0.5;color:var(--navy);
+      opacity:0.15;display:block;margin-bottom:16px;
+    }
+    .t-quote{
+      font-family:'DM Serif Display',serif;
+      font-size:clamp(18px,2.2vw,24px);font-weight:400;
+      font-style:italic;color:var(--navy);line-height:1.55;
+      margin-bottom:32px;
+    }
+    .t-author{font-size:13px;font-weight:600;color:var(--navy);opacity:0.7;letter-spacing:0.06em;}
+    .t-source{font-size:11px;color:var(--navy);opacity:0.45;margin-top:6px;letter-spacing:0.04em;}
+
+    /* ─── LOCATION ───────────────────────────── */
+    .location{
+      padding:120px 52px;
+      background:var(--bg);
+      border-top:1px solid var(--border-sub);
+    }
+    .location-inner{
+      max-width:1280px;margin:0 auto;
+      display:grid;grid-template-columns:1fr 1fr;
+      gap:80px;align-items:start;
+    }
+    .location-h2{color:var(--navy);margin-bottom:44px;}
+    .info-block{margin-bottom:32px;}
+    .info-lbl{
+      font-size:10px;font-weight:600;letter-spacing:0.2em;
+      text-transform:uppercase;color:var(--mint-deep);margin-bottom:10px;
+    }
+    .info-val{font-size:15px;line-height:1.7;color:var(--text);}
+    .info-val a{color:var(--mint-deep);transition:color 200ms;}
+    .info-val a:hover{color:var(--mint-dark);}
+    .hours-row{
+      display:flex;justify-content:space-between;
+      padding:10px 0;border-bottom:1px solid var(--border-sub);
+      font-size:14px;
+    }
+    .hours-row:last-child{border-bottom:none;}
+    .hours-day{color:var(--text-muted);}
+    .hours-time{color:var(--text);font-weight:500;}
+    .hours-placeholder{
+      font-size:11px;font-weight:500;letter-spacing:0.06em;
+      text-transform:uppercase;color:var(--mint-deep);opacity:0.7;
+      background:var(--mint-dim);border:1px dashed var(--border);
+      border-radius:6px;padding:10px 14px;margin-top:8px;
+    }
+    .insurance-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+    .ins-badge{
+      padding:6px 14px;border-radius:20px;
+      background:var(--mint-dim);border:1px solid var(--border);
+      font-size:12px;font-weight:500;color:var(--navy);
+    }
+    .loc-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:36px;}
+    .btn-mint{
+      display:inline-block;padding:13px 26px;
+      background:var(--mint-deep);color:#fff;
+      font-size:12px;font-weight:600;border-radius:8px;
+      box-shadow:0 4px 16px rgba(90,158,142,0.28);
+      transition:background 200ms,transform 160ms;
+    }
+    .btn-mint:hover{background:var(--mint-dark);transform:translateY(-1px);}
+    .btn-outline{
+      display:inline-block;padding:12px 22px;
+      border:1px solid var(--border);border-radius:8px;
+      font-size:12px;font-weight:500;color:var(--text-muted);
+      transition:border-color 200ms,color 200ms;
+    }
+    .btn-outline:hover{border-color:var(--mint-deep);color:var(--mint-deep);}
+    .loc-map{
+      width:100%;aspect-ratio:1;border-radius:14px;
+      overflow:hidden;border:1px solid var(--border);
+    }
+    .loc-map iframe{width:100%;height:100%;display:block;border:0;}
+
+    /* ─── FOOTER ─────────────────────────────── */
+    .footer{
+      background:var(--navy);
+      border-top:1px solid rgba(255,255,255,0.06);
+      padding:72px 52px 36px;
+    }
+    .footer-inner{
+      max-width:1280px;margin:0 auto;
+      display:grid;grid-template-columns:2fr 1fr 1fr;
+      gap:64px;margin-bottom:60px;
+    }
+    .footer-brand-name{
+      font-family:'DM Serif Display',serif;
+      font-size:24px;font-weight:400;color:#fff;
+      letter-spacing:-0.01em;margin-bottom:6px;
+    }
+    .footer-brand-sub{
+      font-size:11px;font-weight:400;letter-spacing:0.12em;
+      text-transform:uppercase;color:var(--mint);opacity:0.6;margin-bottom:18px;
+    }
+    .footer-desc{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.4);max-width:260px;}
+    .footer-col-title{
+      font-size:10px;font-weight:600;letter-spacing:0.2em;
+      text-transform:uppercase;color:var(--mint);opacity:0.7;margin-bottom:20px;
+    }
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:11px;}
+    .footer-links a{font-size:13px;color:rgba(255,255,255,0.45);transition:color 200ms;}
+    .footer-links a:hover{color:rgba(255,255,255,0.85);}
+    .footer-bottom{
+      max-width:1280px;margin:0 auto;
+      border-top:1px solid rgba(255,255,255,0.08);padding-top:28px;
+      display:flex;justify-content:space-between;align-items:center;
+      font-size:12px;color:rgba(255,255,255,0.25);flex-wrap:wrap;gap:12px;
+    }
+    .footer-bottom a{color:rgba(255,255,255,0.25);transition:color 200ms;}
+    .footer-bottom a:hover{color:rgba(255,255,255,0.5);}
+    .footer-legal{display:flex;gap:20px;}
+
+    /* ─── MOBILE ─────────────────────────────── */
+    @media(max-width:1024px){
+      .srv-grid{grid-template-columns:repeat(2,1fr);}
+    }
+    @media(max-width:960px){
+      .nav{padding:0 24px;}
+      .nav-links{display:none;}
+      .hero,.about,.services,.testimonial,.location,.footer{padding-left:24px;padding-right:24px;}
+      .hero-inner,.about-inner,.location-inner{grid-template-columns:1fr;gap:48px;}
+      .hero-right{order:-1;}
+      .hero-logo-wrap{width:260px;}
+      .footer-inner{grid-template-columns:1fr;gap:36px;}
+    }
+    @media(max-width:600px){
+      .srv-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ════════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <a href="#top" class="nav-logo">
+    <img src="/praxis-mueser/website/public/images/muser-logo.png" alt="Praxis Müser">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Über uns</a></li>
+    <li><a href="#services">Leistungen</a></li>
+    <li><a href="#location">Standort</a></li>
+    <li><a href="#location" class="nav-cta">Termin anfragen</a></li>
+  </ul>
+</nav>
+<script>
+  window.addEventListener('scroll',function(){
+    document.getElementById('nav').classList.toggle('scrolled',window.scrollY>20);
+  });
+</script>
+
+<!-- ═══ HERO ════════════════════════════════════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Zahnarztpraxis in Hagen</div>
+      <h1 class="hero-h1">
+        Praxis<br>
+        <em>Müser</em>
+      </h1>
+      <p class="hero-sub-title">Zahnärzte im Volksparkbogen</p>
+      <p class="hero-p">
+        Professionelle Zahnmedizin für die ganze Familie –
+        persönlich, kompetent und mit Feingefühl.
+        Dr. Dirk Müser und sein Team freuen sich auf Ihren Besuch.
+      </p>
+      <div class="hero-actions">
+        <a href="#location" class="btn-primary">Termin anfragen</a>
+        <a href="#services" class="btn-secondary">Unsere Leistungen →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-logo-wrap">
+        <img src="/praxis-mueser/website/public/images/muser-logo.png" alt="Praxis Müser – Zahnärzte im Volksparkbogen">
+      </div>
+      <div class="hero-stat-row">
+        <div class="hero-stat">
+          <div class="hero-stat-val">Kasse</div>
+          <div class="hero-stat-lbl">& Privat</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">Hagen</div>
+          <div class="hero-stat-lbl">Karl-Marx-Str.</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">Labor</div>
+          <div class="hero-stat-lbl">im Haus</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ════════════════════════════════════════════════ -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div>
+      <div class="sec-eyebrow">Über uns</div>
+      <h2 class="sec-h2 about-h2">
+        Ihre Zahnarztpraxis<br>in Hagen
+      </h2>
+      <p class="about-p">
+        Praxis Müser – Zahnärzte im Volksparkbogen steht für moderne,
+        patientenorientierte Zahnmedizin in Hagen. Zahnarzt Dirk Müser
+        und sein Team begleiten Sie mit Erfahrung, Sorgfalt und einem
+        offenen Ohr für Ihre Anliegen.
+      </p>
+      <p class="about-p">
+        Ob routinemäßige Vorsorge, ästhetische Behandlungen oder
+        komplexere Eingriffe – wir nehmen uns die Zeit, die Sie
+        verdienen. Mit einem eigenen zahntechnischen Labor direkt
+        in der Praxis garantieren wir höchste Qualität und kurze Wartezeiten.
+      </p>
+      <p class="about-p">
+        Wir behandeln gesetzlich Versicherte, Privatpatienten und
+        Selbstzahler mit demselben hohen Standard.
+      </p>
+      <div class="about-tags">
+        <span class="about-tag">Kasse &amp; Privat</span>
+        <span class="about-tag">Eigenes Labor</span>
+        <span class="about-tag">Moderne Technik</span>
+        <span class="about-tag">Persönliche Beratung</span>
+        <span class="about-tag">Hagen seit Jahren</span>
+      </div>
+    </div>
+    <div class="about-img">
+      <img src="https://images.unsplash.com/photo-1588776814546-1ffbb172a33b?w=700&h=933&fit=crop&q=85" alt="Moderne Zahnarztpraxis">
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SERVICES ════════════════════════════════════════════ -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="services-head">
+      <span class="sec-eyebrow-light">Unsere Leistungen</span>
+      <h2 class="sec-h2 services-h2">Was wir für Sie tun</h2>
+    </div>
+    <div class="srv-grid">
+
+      <!-- Kariesbehandlung -->
+      <div class="srv-card">
+        <div class="srv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3C9.5 3 7 5 7 8c0 2 .5 3.5 1 5l1 5c.3 1.2 1 2 2 2h2c1 0 1.7-.8 2-2l1-5c.5-1.5 1-3 1-5 0-3-2.5-5-5-5z"/>
+          </svg>
+        </div>
+        <h3 class="srv-name">Kariesbehandlung</h3>
+        <p class="srv-desc">Schonende und präzise Behandlung von Karies – für gesunde, schmerzfreie Zähne in jedem Stadium.</p>
+      </div>
+
+      <!-- Professionelle Zahnreinigung -->
+      <div class="srv-card">
+        <div class="srv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l2 5h5l-4 3 1.5 5L12 12l-4.5 3L9 10 5 7h5z"/>
+          </svg>
+        </div>
+        <h3 class="srv-name">Professionelle Zahnreinigung</h3>
+        <p class="srv-desc">Tiefenreinigung für makellos saubere Zähne, gesundes Zahnfleisch und ein strahlendes Lächeln.</p>
+      </div>
+
+      <!-- Zahnfleischbehandlung -->
+      <div class="srv-card">
+        <div class="srv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s7-5 7-10a7 7 0 0 0-14 0c0 5 7 10 7 10z"/>
+            <path d="M9 11.5c0-1.7 1.3-3 3-3s3 1.3 3 3" opacity=".5"/>
+          </svg>
+        </div>
+        <h3 class="srv-name">Zahnfleischbehandlung</h3>
+        <p class="srv-desc">Behandlung von Zahnfleischerkrankungen (Parodontitis) und Prophylaxe für langfristige Mundgesundheit.</p>
+      </div>
+
+      <!-- Implantate -->
+      <div class="srv-card">
+        <div class="srv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="2" x2="12" y2="22"/>
+            <path d="M8 6h8M9 10h6M10 14h4"/>
+          </svg>
+        </div>
+        <h3 class="srv-name">Implantate</h3>
+        <p class="srv-desc">Hochwertige Zahnimplantate als dauerhafte, natürlich aussehende Lösung für fehlende Zähne.</p>
+      </div>
+
+      <!-- Amalgam-Sanierung -->
+      <div class="srv-card">
+        <div class="srv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.5 15a9 9 0 1 1-2.5-9.5L23 10"/>
+          </svg>
+        </div>
+        <h3 class="srv-name">Amalgam-Sanierung</h3>
+        <p class="srv-desc">Professionelle und sichere Entfernung von Amalgamfüllungen mit modernen Schutzprotokollen.</p>
+      </div>
+
+      <!-- Bleaching -->
+      <div class="srv-card">
+        <div class="srv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </div>
+        <h3 class="srv-name">Bleaching</h3>
+        <p class="srv-desc">Professionelle Zahnaufhellung für ein strahlendes Lächeln.</p>
+        <span class="srv-brand">BriteSmile</span>
+      </div>
+
+      <!-- Zahnschmuck -->
+      <div class="srv-card">
+        <div class="srv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <h3 class="srv-name">Zahnschmuck</h3>
+        <p class="srv-desc">Exklusiver Zahnschmuck für ein individuelles und einzigartiges Lächeln.</p>
+        <span class="srv-brand">BrilliAnce</span>
+      </div>
+
+      <!-- Zahntechnisches Labor -->
+      <div class="srv-card">
+        <div class="srv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0H3m6 0h12m0 0v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5"/>
+          </svg>
+        </div>
+        <h3 class="srv-name">Zahntechnisches Labor</h3>
+        <p class="srv-desc">Eigenes zahntechnisches Labor in der Praxis für höchste Qualität, Passgenauigkeit und kurze Wartezeiten.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIAL ═══════════════════════════════════════════ -->
+<section class="testimonial">
+  <div class="testimonial-inner">
+    <div class="t-stars">★★★★★</div>
+    <span class="t-quote-mark">"</span>
+    <p class="t-quote">
+      Ich hatte einen abgebrochenen Schneidezahn und wurde dort sehr professionell
+      und einfühlsam behandelt. Das Team ist durchgängig freundlich und kompetent –
+      ich würde die Praxis Müser jederzeit weiterempfehlen.
+    </p>
+    <div class="t-author">— Hajo Gollnik</div>
+    <div class="t-source">Verifizierte Patientenbewertung · Sanego.de</div>
+  </div>
+</section>
+
+<!-- ═══ LOCATION ═════════════════════════════════════════════ -->
+<section class="location" id="location">
+  <div class="location-inner">
+    <div>
+      <div class="sec-eyebrow">Standort &amp; Kontakt</div>
+      <h2 class="sec-h2 location-h2">
+        Besuchen Sie uns<br>in Hagen
+      </h2>
+
+      <div class="info-block">
+        <div class="info-lbl">Adresse</div>
+        <div class="info-val">
+          Karl-Marx-Straße 10<br>
+          58095 Hagen
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-lbl">Telefon &amp; Fax</div>
+        <div class="info-val">
+          <a href="tel:+4923312704 6">+49 2331 / 270 46</a><br>
+          <span style="color:var(--text-muted);font-size:13px;">Fax: +49 2331 / 144 06</span>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-lbl">Öffnungszeiten</div>
+        <!-- PLACEHOLDER — CONFIRM WITH CLIENT: actual weekly schedule not confirmed -->
+        <div class="hours-placeholder">
+          Öffnungszeiten bitte telefonisch erfragen oder auf praxis-mueser.de prüfen.<br>
+          <em style="font-style:normal;opacity:0.6;font-size:10px;">Daten werden nach Bestätigung durch den Kunden ergänzt.</em>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-lbl">Versicherung</div>
+        <div class="insurance-row">
+          <span class="ins-badge">Kasse</span>
+          <span class="ins-badge">Privat</span>
+          <span class="ins-badge">Selbstzahler</span>
+        </div>
+      </div>
+
+      <div class="loc-ctas">
+        <a href="tel:+4923312704 6" class="btn-mint">Jetzt anrufen →</a>
+        <a href="https://praxis-mueser.de" target="_blank" rel="noopener" class="btn-outline">Website besuchen</a>
+      </div>
+    </div>
+
+    <div class="loc-map">
+      <iframe
+        src="https://www.google.com/maps?q=Karl-Marx-Stra%C3%9Fe+10,+58095+Hagen,+Germany&output=embed"
+        width="100%" height="100%" style="border:0;" allowfullscreen loading="lazy"
+        title="Praxis Müser – Karl-Marx-Straße 10, 58095 Hagen">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">Praxis Müser</div>
+      <div class="footer-brand-sub">Zahnärzte im Volksparkbogen</div>
+      <p class="footer-desc">
+        Ihre Zahnarztpraxis in Hagen für professionelle
+        Zahnmedizin – für Kassen-, Privat- und Selbstzahler.
+      </p>
+    </div>
+    <div>
+      <div class="footer-col-title">Leistungen</div>
+      <ul class="footer-links">
+        <li><a href="#services">Kariesbehandlung</a></li>
+        <li><a href="#services">Professionelle Zahnreinigung</a></li>
+        <li><a href="#services">Implantate</a></li>
+        <li><a href="#services">Bleaching</a></li>
+        <li><a href="#services">Zahnschmuck</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Kontakt</div>
+      <ul class="footer-links">
+        <li><a href="#">Karl-Marx-Straße 10, 58095 Hagen</a></li>
+        <li><a href="tel:+4923312704 6">+49 2331 / 270 46</a></li>
+        <li><a href="https://praxis-mueser.de" target="_blank" rel="noopener">praxis-mueser.de</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 Praxis Müser – Zahnärzte im Volksparkbogen · Hagen</span>
+    <div class="footer-legal">
+      <a href="#">Impressum</a>
+      <a href="#">Datenschutz</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/praxis-mueser/website/chatbot/chatbot.js" defer></script>
+</body>
+</html>
