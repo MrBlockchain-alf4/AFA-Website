@@ -300,17 +300,17 @@
 
     /* ─── LOCATION ───────────────────────────── */
     .location{
-      padding:120px 52px;
+      padding:72px 52px;
       background:var(--bg);
       border-top:1px solid var(--border-sub);
     }
     .location-inner{
       max-width:1280px;margin:0 auto;
       display:grid;grid-template-columns:1fr 1fr;
-      gap:80px;align-items:start;
+      gap:48px;align-items:stretch;
     }
-    .location-h2{color:var(--navy);margin-bottom:44px;}
-    .info-block{margin-bottom:32px;}
+    .location-h2{color:var(--navy);margin-bottom:22px;}
+    .info-block{margin-bottom:18px;}
     .info-lbl{
       font-size:10px;font-weight:600;letter-spacing:0.2em;
       text-transform:uppercase;color:var(--mint-deep);margin-bottom:10px;
@@ -320,8 +320,8 @@
     .info-val a:hover{color:var(--mint-dark);}
     .hours-row{
       display:flex;justify-content:space-between;
-      padding:10px 0;border-bottom:1px solid var(--border-sub);
-      font-size:14px;
+      padding:7px 0;border-bottom:1px solid var(--border-sub);
+      font-size:13.5px;
     }
     .hours-row:last-child{border-bottom:none;}
     .hours-day{color:var(--text-muted);}
@@ -338,7 +338,7 @@
       background:var(--mint-dim);border:1px solid var(--border);
       font-size:12px;font-weight:500;color:var(--navy);
     }
-    .loc-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:36px;}
+    .loc-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;}
     .btn-mint{
       display:inline-block;padding:13px 26px;
       background:var(--mint-deep);color:#fff;
@@ -355,7 +355,7 @@
     }
     .btn-outline:hover{border-color:var(--mint-deep);color:var(--mint-deep);}
     .loc-map{
-      width:100%;aspect-ratio:16/9;border-radius:14px;
+      width:100%;height:100%;min-height:360px;border-radius:14px;
       overflow:hidden;border:1px solid var(--border);
     }
     .loc-map iframe{width:100%;height:100%;display:block;border:0;}
@@ -406,9 +406,10 @@
       .nav{padding:0 24px;}
       .nav-links{display:none;}
       .hero,.about,.services,.testimonial,.location,.footer{padding-left:24px;padding-right:24px;}
-      .hero-inner,.about-inner,.location-inner{grid-template-columns:1fr;gap:48px;}
+      .hero-inner,.about-inner,.location-inner{grid-template-columns:1fr;gap:36px;}
       .hero-right{order:-1;}
       .hero-img-wrap{max-height:340px;}
+      .loc-map{height:280px;min-height:unset;}
       .footer-inner{grid-template-columns:1fr;gap:36px;}
     }
     @media(max-width:600px){
