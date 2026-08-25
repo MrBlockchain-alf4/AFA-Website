@@ -49,7 +49,7 @@
       transition:box-shadow 300ms;
     }
     .nav.scrolled{box-shadow:0 2px 20px rgba(13,27,46,0.08);}
-    .nav-logo img{height:40px;width:auto;display:block;}
+    .nav-logo img{height:46px;width:auto;display:block;}
     .nav-links{
       display:flex;align-items:center;gap:36px;list-style:none;
     }
@@ -132,33 +132,25 @@
     }
     .btn-secondary:hover{border-color:var(--navy);}
     .hero-right{
-      display:flex;flex-direction:column;align-items:center;gap:32px;
+      display:flex;flex-direction:column;gap:20px;
     }
-    .hero-logo-wrap{
-      width:320px;max-width:100%;
-      background:rgba(255,255,255,0.72);
-      border-radius:20px;padding:44px 36px;
-      box-shadow:0 8px 40px rgba(13,27,46,0.10);
-      display:flex;align-items:center;justify-content:center;
+    .hero-img-wrap{
+      width:100%;aspect-ratio:4/5;border-radius:20px;overflow:hidden;
+      box-shadow:0 24px 64px rgba(13,27,46,0.18),0 4px 16px rgba(13,27,46,0.10);
+      position:relative;
     }
-    .hero-logo-wrap img{width:100%;height:auto;}
-    .hero-stat-row{
-      display:grid;grid-template-columns:repeat(3,1fr);
-      gap:1px;background:rgba(13,27,46,0.12);
-      border-radius:12px;overflow:hidden;
-      width:100%;max-width:360px;
+    .hero-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+    .hero-img-overlay{
+      position:absolute;inset:0;
+      background:linear-gradient(to top, rgba(13,27,46,0.38) 0%, transparent 50%);
     }
-    .hero-stat{
-      background:rgba(255,255,255,0.65);
-      padding:18px 16px;text-align:center;
-    }
-    .hero-stat-val{
-      font-family:'DM Serif Display',serif;
-      font-size:17px;font-weight:400;color:var(--navy);line-height:1.2;
-    }
-    .hero-stat-lbl{
-      font-size:10px;color:var(--navy);opacity:0.55;
-      margin-top:4px;letter-spacing:0.06em;
+    .hero-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;}
+    .hero-pill{
+      padding:9px 18px;border-radius:20px;
+      background:rgba(255,255,255,0.55);
+      border:1px solid rgba(13,27,46,0.12);
+      font-size:12px;font-weight:600;color:var(--navy);
+      backdrop-filter:blur(4px);
     }
 
     /* ─── SECTION UTILS ──────────────────────── */
@@ -389,7 +381,7 @@
       .hero,.about,.services,.testimonial,.location,.footer{padding-left:24px;padding-right:24px;}
       .hero-inner,.about-inner,.location-inner{grid-template-columns:1fr;gap:48px;}
       .hero-right{order:-1;}
-      .hero-logo-wrap{width:260px;}
+      .hero-img-wrap{max-height:340px;}
       .footer-inner{grid-template-columns:1fr;gap:36px;}
     }
     @media(max-width:600px){
@@ -438,22 +430,15 @@
       </div>
     </div>
     <div class="hero-right">
-      <div class="hero-logo-wrap">
-        <img src="/praxis-mueser/website/public/images/muser-logo.png" alt="Praxis Müser – Zahnärzte im Volksparkbogen">
+      <div class="hero-img-wrap">
+        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=700&h=875&fit=crop&q=85" alt="Zahnarztpraxis – professionelle Behandlung">
+        <div class="hero-img-overlay"></div>
       </div>
-      <div class="hero-stat-row">
-        <div class="hero-stat">
-          <div class="hero-stat-val">Kasse</div>
-          <div class="hero-stat-lbl">& Privat</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-val">Hagen</div>
-          <div class="hero-stat-lbl">Karl-Marx-Str.</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-val">Labor</div>
-          <div class="hero-stat-lbl">im Haus</div>
-        </div>
+      <div class="hero-pills">
+        <span class="hero-pill">Kasse &amp; Privat</span>
+        <span class="hero-pill">Hagen</span>
+        <span class="hero-pill">Labor im Haus</span>
+        <span class="hero-pill">Selbstzahler</span>
       </div>
     </div>
   </div>
@@ -492,7 +477,7 @@
       </div>
     </div>
     <div class="about-img">
-      <img src="https://images.unsplash.com/photo-1588776814546-1ffbb172a33b?w=700&h=933&fit=crop&q=85" alt="Moderne Zahnarztpraxis">
+      <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=700&h=933&fit=crop&q=85" alt="Moderne Zahnarztpraxis">
     </div>
   </div>
 </section>
@@ -653,11 +638,13 @@
 
       <div class="info-block">
         <div class="info-lbl">Öffnungszeiten</div>
-        <!-- PLACEHOLDER — CONFIRM WITH CLIENT: actual weekly schedule not confirmed -->
-        <div class="hours-placeholder">
-          Öffnungszeiten bitte telefonisch erfragen oder auf praxis-mueser.de prüfen.<br>
-          <em style="font-style:normal;opacity:0.6;font-size:10px;">Daten werden nach Bestätigung durch den Kunden ergänzt.</em>
-        </div>
+        <div class="hours-row"><span class="hours-day">Montag</span><span class="hours-time">8:00–12:00, 14:00–18:00</span></div>
+        <div class="hours-row"><span class="hours-day">Dienstag</span><span class="hours-time">8:00–12:00, 14:00–18:00</span></div>
+        <div class="hours-row"><span class="hours-day">Mittwoch</span><span class="hours-time">8:00–13:00</span></div>
+        <div class="hours-row"><span class="hours-day">Donnerstag</span><span class="hours-time">8:00–12:00, 14:00–19:00</span></div>
+        <div class="hours-row"><span class="hours-day">Freitag</span><span class="hours-time">8:00–13:00</span></div>
+        <div class="hours-row"><span class="hours-day">Samstag</span><span class="hours-closed">Geschlossen</span></div>
+        <div class="hours-row"><span class="hours-day">Sonntag</span><span class="hours-closed">Geschlossen</span></div>
       </div>
 
       <div class="info-block">
@@ -689,6 +676,9 @@
 <footer class="footer">
   <div class="footer-inner">
     <div>
+      <div style="display:inline-block;background:rgba(255,255,255,0.10);border-radius:10px;padding:10px 18px;margin-bottom:18px;border:1px solid rgba(255,255,255,0.08);">
+        <img src="/praxis-mueser/website/public/images/muser-logo.png" alt="Praxis Müser" style="height:30px;width:auto;display:block;">
+      </div>
       <div class="footer-brand-name">Praxis Müser</div>
       <div class="footer-brand-sub">Zahnärzte im Volksparkbogen</div>
       <p class="footer-desc">

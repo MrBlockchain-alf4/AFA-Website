@@ -182,8 +182,8 @@
     const wrap = el('div', `display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;`);
     const avatar = el('div',
       `width:30px;height:30px;border-radius:50%;background:${G.mint};flex-shrink:0;` +
-      `display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:2px;`,
-      '🦷'
+      `display:flex;align-items:center;justify-content:center;margin-top:2px;`,
+      `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${G.navy}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>`
     );
     const bubble = el('div',
       `background:${G.bgOff};border:1px solid ${G.border};border-radius:4px 14px 14px 14px;` +
@@ -230,12 +230,13 @@
   const root = el('div', `position:fixed;bottom:24px;right:24px;z-index:9000;font-family:'DM Sans',system-ui,sans-serif;`);
   root.id = 'pm-cb-root';
 
-  /* panel */
+  /* panel — absolutely positioned above the launcher so the button never shifts */
   const panel = el('div',
-    `width:360px;height:520px;background:${G.white};border-radius:18px;` +
-    `box-shadow:0 20px 60px rgba(13,27,46,0.16),0 4px 16px rgba(13,27,46,0.08);` +
-    `display:none;flex-direction:column;overflow:hidden;margin-bottom:14px;` +
-    `border:1px solid ${G.border};`
+    `width:440px;height:600px;background:${G.white};border-radius:18px;` +
+    `box-shadow:0 20px 60px rgba(13,27,46,0.18),0 4px 16px rgba(13,27,46,0.08);` +
+    `display:none;flex-direction:column;overflow:hidden;` +
+    `border:1px solid ${G.border};` +
+    `position:absolute;bottom:72px;right:0;`
   );
 
   /* header */
@@ -244,8 +245,8 @@
   );
   const hAvatar = el('div',
     `width:40px;height:40px;border-radius:50%;background:${G.mint};` +
-    `display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;`,
-    '🦷'
+    `display:flex;align-items:center;justify-content:center;flex-shrink:0;`,
+    `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${G.navy}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>`
   );
   const hInfo = el('div', `flex:1;`);
   const hName = el('div', `font-size:15px;font-weight:600;color:#fff;line-height:1.2;`, 'Praxis Müser');
