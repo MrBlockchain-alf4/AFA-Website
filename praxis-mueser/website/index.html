@@ -271,10 +271,22 @@
     .t-author{font-size:13px;font-weight:600;color:var(--navy);opacity:0.7;letter-spacing:0.06em;}
     .t-source{font-size:11px;color:var(--navy);opacity:0.45;margin-top:6px;letter-spacing:0.04em;}
     /* ─── CAROUSEL ───────────────────────────── */
-    .t-carousel{position:relative;min-height:230px;}
-    .t-slide{position:absolute;top:0;left:0;right:0;opacity:0;transition:opacity 600ms ease;pointer-events:none;}
-    .t-slide.tc-on{opacity:1;pointer-events:auto;}
-    .t-dots{display:flex;gap:10px;justify-content:center;padding-top:260px;}
+    @keyframes tcFadeIn{from{opacity:0;}to{opacity:1;}}
+    .tc-outer{display:flex;align-items:center;gap:16px;}
+    .t-carousel{flex:1;min-height:160px;}
+    .t-slide{display:none;}
+    .t-slide.tc-on{display:block;animation:tcFadeIn 0.3s ease;}
+    .tc-arr{
+      width:38px;height:38px;border-radius:50%;
+      border:1.5px solid var(--border);background:#fff;
+      cursor:pointer;font-size:24px;line-height:1;font-family:serif;
+      color:var(--navy);flex-shrink:0;user-select:none;
+      display:flex;align-items:center;justify-content:center;
+      transition:background 200ms,border-color 200ms;
+    }
+    .tc-arr:hover{background:var(--mint-dim);border-color:var(--mint-dark);}
+    .tc-arr:active{transform:scale(0.93);}
+    .t-dots{display:flex;gap:10px;justify-content:center;margin-top:20px;}
     .t-dot{width:8px;height:8px;border-radius:50%;background:rgba(13,27,46,0.18);border:none;cursor:pointer;padding:0;transition:background 250ms ease;}
     .t-dot.tc-dot-on{background:var(--mint-deep);}
     /* ─── HOURS TODAY ────────────────────────── */
@@ -283,8 +295,8 @@
     .hours-status{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px;border-radius:8px;margin-left:8px;vertical-align:middle;}
     .hours-status.open{background:rgba(74,158,111,0.15);color:#2d8a5c;}
     .hours-status.closed{background:rgba(220,38,38,0.10);color:#c53030;}
-    /* ─── FOOTER LOGO TEXT ───────────────────── */
-    .footer-logo-text{font-family:'DM Sans',sans-serif;font-size:36px;font-weight:800;letter-spacing:-0.04em;color:#fff;margin-bottom:10px;line-height:1;}
+    /* ─── FOOTER LOGO ────────────────────────── */
+    .footer-logo-img{height:68px;width:auto;display:block;margin-bottom:10px;filter:invert(1);mix-blend-mode:screen;}
 
     /* ─── LOCATION ───────────────────────────── */
     .location{
@@ -343,7 +355,7 @@
     }
     .btn-outline:hover{border-color:var(--mint-deep);color:var(--mint-deep);}
     .loc-map{
-      width:100%;aspect-ratio:1;border-radius:14px;
+      width:100%;aspect-ratio:16/9;border-radius:14px;
       overflow:hidden;border:1px solid var(--border);
     }
     .loc-map iframe{width:100%;height:100%;display:block;border:0;}
@@ -615,32 +627,36 @@
 <section class="testimonial">
   <div class="testimonial-inner">
     <div class="t-stars">★★★★★</div>
-    <div class="t-carousel" id="tc-wrap">
-      <div class="t-slide tc-on">
-        <span class="t-quote-mark">"</span>
-        <p class="t-quote">Ich bin sehr zufrieden mit dieser Zahnarztpraxis! Wenn ich ein Anliegen habe, bekomme ich immer schnell einen Termin – ganz ohne lange Wartezeiten.</p>
-        <div class="t-author">— Kubra</div>
+    <div class="tc-outer">
+      <button class="tc-arr" id="tc-prev" aria-label="Vorherige Bewertung">&#8249;</button>
+      <div class="t-carousel" id="tc-wrap">
+        <div class="t-slide tc-on">
+          <span class="t-quote-mark">"</span>
+          <p class="t-quote">Ich bin sehr zufrieden mit dieser Zahnarztpraxis! Wenn ich ein Anliegen habe, bekomme ich immer schnell einen Termin – ganz ohne lange Wartezeiten.</p>
+          <div class="t-author">— Kubra</div>
+        </div>
+        <div class="t-slide">
+          <span class="t-quote-mark">"</span>
+          <p class="t-quote">Ich bin sehr zufrieden mit meiner Behandlung. Das gesamte Team ist freundlich, professionell und nimmt sich Zeit für die Patienten.</p>
+          <div class="t-author">— Aslan1905</div>
+        </div>
+        <div class="t-slide">
+          <span class="t-quote-mark">"</span>
+          <p class="t-quote">Ich war jetzt mehrmals bei Herrn Müser in Behandlung. Fazit: Sehr nettes und kompetentes Team mit einem hervorragenden Chef (Herr Müser).</p>
+          <div class="t-author">— Bartimarvus</div>
+        </div>
+        <div class="t-slide">
+          <span class="t-quote-mark">"</span>
+          <p class="t-quote">Herr Müser ist ein super Zahnarzt. Hier fühlt man sich wohl und gut aufgehoben. Er nimmt sich Zeit und behandelt immer sehr gründlich.</p>
+          <div class="t-author">— Tobias Fenner</div>
+        </div>
+        <div class="t-slide">
+          <span class="t-quote-mark">"</span>
+          <p class="t-quote">Ein hervorragender Arzt mit einem sehr freundlichen und aufmerksamen Team! Die Behandlungen sind immer auf sehr hohem Niveau.</p>
+          <div class="t-author">— Pietro Di Monaco</div>
+        </div>
       </div>
-      <div class="t-slide">
-        <span class="t-quote-mark">"</span>
-        <p class="t-quote">Ich bin sehr zufrieden mit meiner Behandlung. Das gesamte Team ist freundlich, professionell und nimmt sich Zeit für die Patienten.</p>
-        <div class="t-author">— Aslan1905</div>
-      </div>
-      <div class="t-slide">
-        <span class="t-quote-mark">"</span>
-        <p class="t-quote">Ich war jetzt mehrmals bei Herrn Müser in Behandlung. Fazit: Sehr nettes und kompetentes Team mit einem hervorragenden Chef (Herr Müser).</p>
-        <div class="t-author">— Bartimarvus</div>
-      </div>
-      <div class="t-slide">
-        <span class="t-quote-mark">"</span>
-        <p class="t-quote">Herr Müser ist ein super Zahnarzt. Hier fühlt man sich wohl und gut aufgehoben. Er nimmt sich Zeit und behandelt immer sehr gründlich.</p>
-        <div class="t-author">— Tobias Fenner</div>
-      </div>
-      <div class="t-slide">
-        <span class="t-quote-mark">"</span>
-        <p class="t-quote">Ein hervorragender Arzt mit einem sehr freundlichen und aufmerksamen Team! Die Behandlungen sind immer auf sehr hohem Niveau.</p>
-        <div class="t-author">— Pietro Di Monaco</div>
-      </div>
+      <button class="tc-arr" id="tc-next" aria-label="Nächste Bewertung">&#8250;</button>
     </div>
     <div class="t-dots" id="tc-dots">
       <button class="t-dot tc-dot-on" aria-label="Review 1"></button>
@@ -663,14 +679,18 @@
       slides[cur].classList.add('tc-on');
       dots[cur].classList.add('tc-dot-on');
     }
+    function reset(){clearInterval(timer);timer=setInterval(function(){go(cur+1);},6000);}
     var timer=setInterval(function(){go(cur+1);},6000);
-    dots.forEach(function(d,i){
-      d.addEventListener('click',function(){
-        clearInterval(timer);
-        go(i);
-        timer=setInterval(function(){go(cur+1);},6000);
-      });
-    });
+    document.getElementById('tc-prev').addEventListener('click',function(){go(cur-1);reset();});
+    document.getElementById('tc-next').addEventListener('click',function(){go(cur+1);reset();});
+    dots.forEach(function(d,i){d.addEventListener('click',function(){go(i);reset();});});
+    /* drag/swipe */
+    var dragX=null;
+    var wrap=document.getElementById('tc-wrap');
+    wrap.addEventListener('mousedown',function(e){dragX=e.clientX;});
+    wrap.addEventListener('mouseup',function(e){if(dragX===null)return;var dx=e.clientX-dragX;dragX=null;if(Math.abs(dx)>40){go(cur+(dx<0?1:-1));reset();}});
+    wrap.addEventListener('touchstart',function(e){dragX=e.touches[0].clientX;},{passive:true});
+    wrap.addEventListener('touchend',function(e){if(dragX===null)return;var dx=e.changedTouches[0].clientX-dragX;dragX=null;if(Math.abs(dx)>40){go(cur+(dx<0?1:-1));reset();}});
   })();
   </script>
 </section>
@@ -761,7 +781,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <div class="footer-logo-text">MÜSER</div>
+      <img src="/praxis-mueser/website/public/images/muser-logo.png" alt="Praxis Müser" class="footer-logo-img">
       <div class="footer-brand-name">Praxis Müser</div>
       <div class="footer-brand-sub">Zahnärzte im Volksparkbogen</div>
       <p class="footer-desc">

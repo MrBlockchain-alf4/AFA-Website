@@ -178,40 +178,72 @@
 
   let msgs;
 
-  function addBot(text, chips) {
-    const wrap = el('div', `display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;`);
-    const avatar = el('div',
+  function mkAvatar() {
+    return el('div',
       `width:30px;height:30px;border-radius:50%;background:${G.mint};flex-shrink:0;` +
       `display:flex;align-items:center;justify-content:center;margin-top:2px;`,
       `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${G.navy}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>`
     );
-    const bubble = el('div',
-      `background:${G.bgOff};border:1px solid ${G.border};border-radius:4px 14px 14px 14px;` +
-      `padding:12px 14px;font-size:14px;line-height:1.65;color:${G.text};max-width:80%;`,
-      text.replace(/\n/g, '<br>')
-    );
-    wrap.appendChild(avatar);
-    wrap.appendChild(bubble);
-    msgs.appendChild(wrap);
+  }
 
-    if (chips && chips.length) {
-      const row = el('div', `display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding-left:40px;`);
-      chips.forEach(c => {
-        const btn = el('button',
-          `padding:7px 14px;border-radius:20px;border:1px solid ${G.border};` +
-          `background:${G.white};font-size:12px;font-weight:500;color:${G.navyMid};` +
-          `cursor:pointer;transition:background 180ms,border-color 180ms,color 180ms;font-family:inherit;`,
-          c.label
-        );
-        btn.onmouseenter = () => { btn.style.background = G.mint; btn.style.borderColor = G.mintDark; btn.style.color = G.navy; };
-        btn.onmouseleave = () => { btn.style.background = G.white; btn.style.borderColor = G.border; btn.style.color = G.navyMid; };
-        btn.onclick = () => { addUser(c.label); respond(c.label); };
-        row.appendChild(btn);
-      });
-      msgs.appendChild(row);
+  function addBot(text, chips) {
+    /* inject dot-animation keyframes once */
+    if (!document.getElementById('pm-cb-anim')) {
+      const s = document.createElement('style');
+      s.id = 'pm-cb-anim';
+      s.textContent = '@keyframes pmDot{0%,60%,100%{opacity:0.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}';
+      document.head.appendChild(s);
     }
 
+    /* typing indicator */
+    const typingWrap = el('div', `display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;`);
+    const dotStyle = `width:7px;height:7px;border-radius:50%;background:${G.muted};display:inline-block;`;
+    const tBubble = el('div',
+      `background:${G.bgOff};border:1px solid ${G.border};border-radius:4px 14px 14px 14px;` +
+      `padding:13px 16px;display:flex;gap:5px;align-items:center;`,
+      `<span style="${dotStyle}animation:pmDot 1.2s infinite"></span>` +
+      `<span style="${dotStyle}animation:pmDot 1.2s 0.2s infinite"></span>` +
+      `<span style="${dotStyle}animation:pmDot 1.2s 0.4s infinite"></span>`
+    );
+    typingWrap.appendChild(mkAvatar());
+    typingWrap.appendChild(tBubble);
+    msgs.appendChild(typingWrap);
     msgs.scrollTop = msgs.scrollHeight;
+
+    setTimeout(() => {
+      if (typingWrap.parentNode) typingWrap.parentNode.removeChild(typingWrap);
+
+      const wrap = el('div', `display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;opacity:0;transition:opacity 0.4s ease;`);
+      const bubble = el('div',
+        `background:${G.bgOff};border:1px solid ${G.border};border-radius:4px 14px 14px 14px;` +
+        `padding:12px 14px;font-size:14px;line-height:1.65;color:${G.text};max-width:80%;`,
+        text.replace(/\n/g, '<br>')
+      );
+      wrap.appendChild(mkAvatar());
+      wrap.appendChild(bubble);
+      msgs.appendChild(wrap);
+      requestAnimationFrame(() => requestAnimationFrame(() => { wrap.style.opacity = '1'; }));
+
+      if (chips && chips.length) {
+        const row = el('div', `display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding-left:40px;opacity:0;transition:opacity 0.4s ease 0.15s;`);
+        chips.forEach(c => {
+          const btn = el('button',
+            `padding:7px 14px;border-radius:20px;border:1px solid ${G.border};` +
+            `background:${G.white};font-size:12px;font-weight:500;color:${G.navyMid};` +
+            `cursor:pointer;transition:background 180ms,border-color 180ms,color 180ms;font-family:inherit;`,
+            c.label
+          );
+          btn.onmouseenter = () => { btn.style.background = G.mint; btn.style.borderColor = G.mintDark; btn.style.color = G.navy; };
+          btn.onmouseleave = () => { btn.style.background = G.white; btn.style.borderColor = G.border; btn.style.color = G.navyMid; };
+          btn.onclick = () => { addUser(c.label); respond(c.label); };
+          row.appendChild(btn);
+        });
+        msgs.appendChild(row);
+        requestAnimationFrame(() => requestAnimationFrame(() => { row.style.opacity = '1'; }));
+      }
+
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1400);
   }
 
   function addUser(text) {
