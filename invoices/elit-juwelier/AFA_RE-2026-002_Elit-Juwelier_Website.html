@@ -317,28 +317,25 @@
     @media print {
       @page { size: A4; margin: 0; }
       body { background: white; margin: 0; padding: 0; }
-      .page {
-        width: 210mm;
-        height: 297mm;
-        margin: 0;
-        box-shadow: none;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+      .page { width: 210mm; margin: 0; box-shadow: none; display: block; }
+      .inv-header { padding: 30px 48px 26px; }
+      .inv-meta-strip { padding: 14px 48px; }
+      .inv-body { padding: 28px 48px 36px; }
+      .inv-parties { margin-bottom: 20px; }
+      .inv-divider { margin: 18px 0; }
+      .inv-subject { margin-bottom: 20px; }
+      /* page break: notes + payment go to page 2 */
+      .inv-notes {
+        break-before: page;
+        page-break-before: always;
+        margin-top: 48px;
       }
-      .inv-header { padding: 26px 44px 22px; flex-shrink: 0; }
-      .inv-meta-strip { padding: 11px 44px; gap: 28px; flex-shrink: 0; }
-      .inv-body { flex: 1; padding: 22px 44px 0; overflow: hidden; }
-      .inv-parties { margin-bottom: 16px; }
-      .inv-divider { margin: 12px 0; }
-      .inv-subject { margin-bottom: 14px; padding: 9px 14px; }
-      .inv-notes { margin-top: 14px; }
-      .inv-note { padding: 8px 12px; margin-bottom: 6px; font-size: 8.5pt; line-height: 1.5; }
-      .inv-payment { margin-top: 14px; }
-      .inv-payment-text { padding: 11px 14px; font-size: 8.5pt; line-height: 1.5; }
-      .inv-bank { padding: 9px 14px; }
-      .inv-bank-row { padding: 3px 0; }
-      .inv-footer { position: static; background: var(--navy); padding: 10px 44px; flex-shrink: 0; }
+      .inv-note { padding: 14px 18px; margin-bottom: 12px; font-size: 10pt; line-height: 1.7; }
+      .inv-payment { margin-top: 28px; }
+      .inv-payment-text { padding: 16px 18px; font-size: 10pt; line-height: 1.7; }
+      .inv-bank { padding: 14px 18px; }
+      .inv-bank-row { padding: 5px 0; font-size: 10pt; }
+      .inv-footer { position: static; background: var(--navy); padding: 12px 48px; margin-top: 40px; }
       .inv-table tbody tr { break-inside: avoid; page-break-inside: avoid; }
       .inv-totals-wrap { break-inside: avoid; page-break-inside: avoid; }
       .inv-notes { break-inside: avoid; page-break-inside: avoid; }
