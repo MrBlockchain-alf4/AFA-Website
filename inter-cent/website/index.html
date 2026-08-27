@@ -115,6 +115,9 @@
     }
     .hero-content.active{pointer-events:auto;}
     .hero-logo{height:88px;width:auto;margin-bottom:28px;filter:brightness(0) invert(1);display:block;margin-left:0;}
+    .hero-brand{display:flex;flex-direction:column;line-height:1;margin-bottom:28px;}
+    .hero-brand-name{font-size:46px;font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1;font-family:'Montserrat',sans-serif;}
+    .hero-brand-sub{font-size:13px;font-weight:700;color:rgba(255,255,255,0.75);letter-spacing:0.3em;margin-top:5px;text-transform:uppercase;font-family:'Montserrat',sans-serif;}
     .hero-eyebrow{font-size:10px;font-weight:600;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:16px;display:flex;align-items:center;gap:12px;}
     .hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--green-lt);opacity:0.9;}
     .hero-h1{font-size:clamp(34px,4.2vw,60px);font-weight:700;line-height:1.12;letter-spacing:-0.03em;color:#fff;margin-bottom:16px;}
@@ -662,7 +665,10 @@
     <!-- Hero content (revealed on scroll) -->
     <div class="hero-content" id="hero-content">
       <div class="hero-left">
-        <img src="public/images/intercent_dolmetscher_logo.png" class="hero-logo" alt="Inter-Cent">
+        <div class="hero-brand">
+          <span class="hero-brand-name">inter-cent</span>
+          <span class="hero-brand-sub">Dolmetscher</span>
+        </div>
         <div class="hero-eyebrow">Professionelle Übersetzungen</div>
         <h1 class="hero-h1">Ihr Partner für <em>zertifizierte</em> Übersetzungen in Hagen</h1>
         <p class="hero-desc">Beglaubigte Dokumente, Fachübersetzungen und Dolmetscherdienste – kompetent, schnell und für alle Sprachen. Vertrauen Sie unserem erfahrenen Team.</p>
