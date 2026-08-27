@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Earth · WebGL · Inter-Cent</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.167.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.167.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ─── Renderer ─────────────────────────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+// ─── Scene / Camera ───────────────────────────────────────────────────────────
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(25, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(4.5, 2, 3);
+
+// ─── Sun direction (world-space, normalised) ──────────────────────────────────
+const SUN_DIR = new THREE.Vector3(3, 0.5, 2).normalize();
+const sun = new THREE.DirectionalLight(0xffffff, 1.5);
+sun.position.copy(SUN_DIR);
+scene.add(sun);
+
+// ─── Stars ────────────────────────────────────────────────────────────────────
+{
+  const count = 8000;
+  const pos   = new Float32Array(count * 3);
+  for (let i = 0; i < count * 3; i++) pos[i] = (Math.random() - 0.5) * 200;
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  scene.add(new THREE.Points(geo, new THREE.PointsMaterial({
+    color: 0xffffff, size: 0.12, sizeAttenuation: true
+  })));
+}
+
+// ─── Procedural specular map ──────────────────────────────────────────────────
+// Parse day texture pixels to detect oceans (blue) vs land (brown/green)
+// Built on canvas after dayTexture loads — avoids any external texture dependency.
+function buildSpecMap(dayImg, size = 512) {
+  const c  = document.createElement('canvas');
+  c.width  = size;
+  c.height = size;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(dayImg, 0, 0, size, size);
+  const px  = ctx.getImageData(0, 0, size, size).data;
+  const out = ctx.createImageData(size, size);
+  for (let i = 0; i < size * size; i++) {
+    const r = px[i * 4], g = px[i * 4 + 1], b = px[i * 4 + 2];
+    // ocean pixels are blue-dominant; land is green/brown
+    const ocean = (b > r * 1.1 && b > g * 0.85) ? 1 : 0;
+    const v = ocean * 200;
+    out.data[i * 4]     = v;
+    out.data[i * 4 + 1] = v;
+    out.data[i * 4 + 2] = v;
+    out.data[i * 4 + 3] = 255;
+  }
+  ctx.putImageData(out, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return t;
+}
+
+// Procedural night (city lights) map — warm yellow dots scattered over land
+function buildNightMap(dayImg, size = 512) {
+  const c  = document.createElement('canvas');
+  c.width  = size;
+  c.height = size;
+  const ctx = c.getContext('2d');
+  // Black base
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, size, size);
+  ctx.drawImage(dayImg, 0, 0, size, size);
+  const px  = ctx.getImageData(0, 0, size, size).data;
+  const out = ctx.createImageData(size, size);
+  for (let i = 0; i < size * size; i++) {
+    const r = px[i * 4], g = px[i * 4 + 1], b = px[i * 4 + 2];
+    const isLand = !(b > r * 1.1 && b > g * 0.85);
+    // Sparse bright warm dots simulating city lights
+    const brightness = isLand ? Math.max(0, (r + g) * 0.5 - 60) * 0.4 : 0;
+    out.data[i * 4]     = Math.min(255, brightness * 1.2);
+    out.data[i * 4 + 1] = Math.min(255, brightness * 0.9);
+    out.data[i * 4 + 2] = Math.min(255, brightness * 0.3);
+    out.data[i * 4 + 3] = 255;
+  }
+  ctx.putImageData(out, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return t;
+}
+
+// ─── Load day texture (local — same-origin, no CORS) ──────────────────────────
+const loader = new THREE.TextureLoader();
+const dayTex = loader.load('./earth-map.jpg', tex => {
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+  // Build derived maps from the loaded image
+  const img     = tex.image;
+  const specTex = buildSpecMap(img);
+  const nightTex = buildNightMap(img);
+  nightTex.colorSpace = THREE.SRGBColorSpace;
+
+  globeUni.specMap.value  = specTex;
+  globeUni.nightMap.value = nightTex;
+  globeUni.dayMap.value   = tex;
+});
+
+// ─── Globe shader ─────────────────────────────────────────────────────────────
+const GLOBE_VERT = /* glsl */`
+  varying vec2 vUv;
+  varying vec3 vWorldNormal;
+  varying vec3 vWorldPos;
+
+  void main() {
+    vUv          = uv;
+    vec4 wp      = modelMatrix * vec4(position, 1.0);
+    vWorldPos    = wp.xyz;
+    vWorldNormal = normalize(mat3(modelMatrix) * normal);
+    gl_Position  = projectionMatrix * viewMatrix * wp;
+  }
+`;
+
+const GLOBE_FRAG = /* glsl */`
+  uniform sampler2D dayMap;
+  uniform sampler2D specMap;
+  uniform sampler2D nightMap;
+  uniform vec3      sunDir;
+  uniform vec3      camPos;
+
+  varying vec2 vUv;
+  varying vec3 vWorldNormal;
+  varying vec3 vWorldPos;
+
+  void main() {
+    vec3 N = normalize(vWorldNormal);
+    vec3 L = normalize(sunDir);
+    vec3 V = normalize(camPos - vWorldPos);
+    vec3 H = normalize(L + V);
+
+    vec3  day   = texture2D(dayMap,   vUv).rgb;
+    float sm    = texture2D(specMap,  vUv).r;
+    vec3  night = texture2D(nightMap, vUv).rgb;
+
+    float NdotL  = dot(N, L);
+    float dayStr = smoothstep(-0.25, 0.5, NdotL);
+
+    // Diffuse day
+    vec3 lit = day * clamp(NdotL, 0.0, 1.0) * 2.0;
+
+    // Night city lights
+    vec3 dark = night * 0.9 + vec3(0.002, 0.002, 0.005);
+
+    // Twilight orange band at terminator
+    float twi    = smoothstep(-0.3, 0.05, NdotL) * (1.0 - smoothstep(0.05, 0.35, NdotL));
+    vec3  twiCol = vec3(0.74, 0.29, 0.04);
+
+    // Specular ocean glint
+    float spec = pow(max(dot(N, H), 0.0), 80.0) * sm * dayStr * 0.9;
+
+    // Atmospheric rim on lit limb
+    float fres   = 1.0 - max(dot(V, N), 0.0);
+    fres         = pow(fres, 3.0);
+    float atmDay = smoothstep(-0.3, 0.8, NdotL);
+    vec3  atmCol = mix(twiCol, vec3(0.30, 0.71, 1.00), smoothstep(-0.25, 0.75, NdotL));
+
+    vec3 col = mix(dark, lit, dayStr);
+    col += twiCol * twi * 0.45;
+    col += spec * vec3(0.80, 0.90, 1.00);
+    col  = mix(col, atmCol, clamp(fres * atmDay * 0.4, 0.0, 1.0));
+
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+const sphereGeo = new THREE.SphereGeometry(1, 64, 64);
+const globeUni  = {
+  dayMap:   { value: null },
+  specMap:  { value: null },
+  nightMap: { value: null },
+  sunDir:   { value: SUN_DIR.clone() },
+  camPos:   { value: camera.position.clone() },
+};
+
+const globeMat = new THREE.ShaderMaterial({
+  vertexShader:   GLOBE_VERT,
+  fragmentShader: GLOBE_FRAG,
+  uniforms:       globeUni,
+});
+
+const globe = new THREE.Mesh(sphereGeo, globeMat);
+scene.add(globe);
+
+// ─── Atmosphere shell (BackSide + fresnel + sun-colour blend) ─────────────────
+const ATM_VERT = /* glsl */`
+  varying vec3 vNormal;
+  varying vec3 vViewPos;
+
+  void main() {
+    vNormal  = normalize(normalMatrix * normal);
+    vViewPos = (modelViewMatrix * vec4(position, 1.0)).xyz;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const ATM_FRAG = /* glsl */`
+  uniform vec3 sunDir;
+
+  varying vec3 vNormal;
+  varying vec3 vViewPos;
+
+  void main() {
+    vec3  L      = normalize(sunDir);
+    float NdotL  = dot(vNormal, L);
+    float fres   = 1.0 - abs(dot(normalize(-vViewPos), vNormal));
+    fres         = pow(fres, 3.0);
+    vec3  dayCol = vec3(0.30, 0.71, 1.00);
+    vec3  twiCol = vec3(0.74, 0.29, 0.04);
+    vec3  col    = mix(twiCol, dayCol, smoothstep(-0.25, 0.75, NdotL));
+    float alpha  = fres * clamp(smoothstep(-0.5, 1.0, NdotL), 0.0, 1.0) * 0.90;
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
+const atmMat = new THREE.ShaderMaterial({
+  vertexShader:   ATM_VERT,
+  fragmentShader: ATM_FRAG,
+  uniforms:       { sunDir: { value: SUN_DIR.clone() } },
+  side:           THREE.BackSide,
+  transparent:    true,
+  depthWrite:     false,
+});
+
+const atmosphere = new THREE.Mesh(sphereGeo, atmMat);
+atmosphere.scale.setScalar(1.05);
+scene.add(atmosphere);
+
+// ─── Controls ─────────────────────────────────────────────────────────────────
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.minDistance   = 1.5;
+controls.maxDistance   = 20;
+
+// ─── Resize ───────────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ─── Animate ──────────────────────────────────────────────────────────────────
+const clock = new THREE.Clock();
+
+(function animate() {
+  requestAnimationFrame(animate);
+  globe.rotation.y += clock.getDelta() * 0.05;
+  globeUni.camPos.value.copy(camera.position);
+  controls.update();
+  renderer.render(scene, camera);
+})();
+
+</script>
+</body>
+</html>
