@@ -316,20 +316,29 @@
 
     @media print {
       @page { size: A4; margin: 0; }
-      body { background: white; }
-      .page { width: 100%; margin: 0; box-shadow: none; min-height: 0; display: block; }
-      .inv-header { padding: 28px 40px 24px; }
-      .inv-meta-strip { padding: 12px 40px; gap: 28px; }
-      .inv-body { padding: 24px 40px 0; }
-      .inv-parties { margin-bottom: 18px; }
-      .inv-divider { margin: 14px 0; }
-      .inv-subject { margin-bottom: 16px; padding: 10px 14px; }
-      .inv-notes { margin-top: 16px; }
+      body { background: white; margin: 0; padding: 0; }
+      .page {
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .inv-header { padding: 26px 44px 22px; flex-shrink: 0; }
+      .inv-meta-strip { padding: 11px 44px; gap: 28px; flex-shrink: 0; }
+      .inv-body { flex: 1; padding: 22px 44px 0; overflow: hidden; }
+      .inv-parties { margin-bottom: 16px; }
+      .inv-divider { margin: 12px 0; }
+      .inv-subject { margin-bottom: 14px; padding: 9px 14px; }
+      .inv-notes { margin-top: 14px; }
       .inv-note { padding: 8px 12px; margin-bottom: 6px; font-size: 8.5pt; line-height: 1.5; }
-      .inv-payment { margin-top: 16px; }
-      .inv-payment-text { padding: 12px 14px; font-size: 8.5pt; line-height: 1.5; }
-      .inv-bank { padding: 10px 14px; }
-      .inv-footer { position: static; background: var(--navy); padding: 10px 40px; }
+      .inv-payment { margin-top: 14px; }
+      .inv-payment-text { padding: 11px 14px; font-size: 8.5pt; line-height: 1.5; }
+      .inv-bank { padding: 9px 14px; }
+      .inv-bank-row { padding: 3px 0; }
+      .inv-footer { position: static; background: var(--navy); padding: 10px 44px; flex-shrink: 0; }
       .inv-table tbody tr { break-inside: avoid; page-break-inside: avoid; }
       .inv-totals-wrap { break-inside: avoid; page-break-inside: avoid; }
       .inv-notes { break-inside: avoid; page-break-inside: avoid; }
