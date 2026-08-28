@@ -41,7 +41,6 @@ function TextField({ path, label, multiline }: { path: string; label: string; mu
 
 function TestimonialsEditor() {
   const items = useContentStore((s) => s.content.testimonials);
-  const updateField = useContentStore((s) => s.updateField);
   return (
     <>
       {items.map((_, i) => (
@@ -58,7 +57,29 @@ function TestimonialsEditor() {
   );
 }
 
-const FIELD_SETS: Record<string, { path: string; label: string; multiline?: boolean }[] | 'testimonials'> = {
+function ContactEditor() {
+  const locations = useContentStore((s) => s.content.contact.locations);
+  return (
+    <>
+      <TextField path="contact.email" label="Email" />
+      {locations.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            {locations.length > 1 ? `Location ${i + 1}` : 'Location'}
+          </div>
+          <TextField path={`contact.locations.${i}.name`} label="Studio Name" />
+          <TextField path={`contact.locations.${i}.address`} label="Address" />
+          <TextField path={`contact.locations.${i}.hours`} label="Hours" />
+        </div>
+      ))}
+    </>
+  );
+}
+
+const FIELD_SETS: Record<
+  string,
+  { path: string; label: string; multiline?: boolean }[] | 'testimonials' | 'contact'
+> = {
   'hero.headline': [{ path: 'hero.headline', label: 'Headline', multiline: true }],
   'hero.subtext': [{ path: 'hero.subtext', label: 'Subtext', multiline: true }],
   'hero.buttonText': [{ path: 'hero.buttonText', label: 'Button Text' }],
@@ -76,11 +97,7 @@ const FIELD_SETS: Record<string, { path: string; label: string; multiline?: bool
     { path: 'services.2.desc', label: 'Description', multiline: true },
   ],
   testimonials: 'testimonials',
-  contact: [
-    { path: 'contact.address', label: 'Address' },
-    { path: 'contact.phone', label: 'Email / Phone' },
-    { path: 'contact.hours', label: 'Hours' },
-  ],
+  contact: 'contact',
   footer: [
     { path: 'footer.tagline', label: 'Tagline' },
     { path: 'footer.copyright', label: 'Copyright' },
@@ -114,6 +131,8 @@ export default function FieldEditor() {
           >
             {FIELD_SETS[selectedField] === 'testimonials' ? (
               <TestimonialsEditor />
+            ) : FIELD_SETS[selectedField] === 'contact' ? (
+              <ContactEditor />
             ) : (
               (FIELD_SETS[selectedField] as { path: string; label: string; multiline?: boolean }[])?.map(
                 (f) => <TextField key={f.path} path={f.path} label={f.label} multiline={f.multiline} />,

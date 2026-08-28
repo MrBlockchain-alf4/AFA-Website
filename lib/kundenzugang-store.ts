@@ -12,6 +12,12 @@ export interface TestimonialItem {
   badge: string;
 }
 
+export interface LocationItem {
+  name: string;
+  address: string;
+  hours: string;
+}
+
 export interface SiteContent {
   hero: {
     headline: string;
@@ -22,9 +28,8 @@ export interface SiteContent {
   services: ServiceItem[];
   testimonials: TestimonialItem[];
   contact: {
-    address: string;
-    phone: string;
-    hours: string;
+    email: string;
+    locations: LocationItem[];
   };
   footer: {
     tagline: string;
@@ -47,27 +52,31 @@ export const CLIENTS: Client[] = [
     username: 'framework',
     password: 'afa2026',
     siteName: 'Framework Berlin',
+    // Pulled directly from the live site (https://framework-berlin.vercel.app),
+    // verified via curl on 2026-08-29 — not invented. The hero image is
+    // genuinely empty on the live site right now (shows an "Insert Photo"
+    // placeholder), so it's left blank here too rather than filled with a
+    // stock photo.
     content: {
       hero: {
         headline: 'High-Intensity.\nLow-Impact.\nAll Results.',
         subtext:
           "Transform your body with Berlin's premier Lagree training — science-backed, results-driven.",
         buttonText: 'Book Your First Class',
-        image:
-          'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=1600&auto=format&fit=crop',
+        image: '',
       },
       services: [
         {
-          title: 'Lagree Group Classes',
-          desc: 'High-intensity, low-impact Megaformer workouts for every level.',
-        },
-        {
-          title: 'Physiotherapy',
-          desc: 'Evidence-based 1:1 treatment addressing the root cause, not just symptoms.',
+          title: 'Group Lagree',
+          desc: 'High-intensity, low-impact full-body workouts on the Megaformer™. Perfect for building lean muscle, core strength, and endurance alongside a motivated community.',
         },
         {
           title: 'Personal Training',
-          desc: 'Tailored 1:1 coaching to reach your specific goals faster.',
+          desc: 'One-on-one sessions tailored precisely to your fitness level and personal goals. Expert coaching for accelerated, lasting results on your schedule.',
+        },
+        {
+          title: 'Physiotherapy',
+          desc: 'Active physiotherapy for injury recovery and movement optimization. Qualified professionals provide personalized care to keep you moving freely and pain-free.',
         },
       ],
       testimonials: [
@@ -79,18 +88,38 @@ export const CLIENTS: Client[] = [
         },
         {
           quote:
-            'The Megaformer is genuinely intense — I was shaking after 20 minutes. The instructor kept the energy up and offered great modifications throughout.',
+            'The instructor was welcoming and patient. The class was challenging but I never felt lost thanks to clear instructions.',
+          name: 'Verified Class Review',
+          badge: 'ClassPass',
+        },
+        {
+          quote:
+            'A cozy, spa-like studio with high-quality Lagree equipment. Instructors are supportive and focused on safety and proper technique.',
+          name: 'Verified Class Review',
+          badge: 'ClassPass',
+        },
+        {
+          quote:
+            'The Megaformer is genuinely intense — I was shaking after 20 minutes. The instructor kept the energy up and offered great modifications for my knee throughout.',
+          name: 'Verified Class Review',
+          badge: 'ClassPass',
+        },
+        {
+          quote:
+            'Intimate studio, small class sizes, instructors who are genuinely invested. Feels premium but not intimidating. Already booked my next session.',
           name: 'Verified Class Review',
           badge: 'ClassPass',
         },
       ],
       contact: {
-        address: 'Christinenstraße 19a, 10119 Berlin',
-        phone: 'hello@frameworkberlin.com',
-        hours: 'Mon – Thu: 8:00 am – 5:30 pm',
+        email: 'hello@frameworkberlin.com',
+        locations: [
+          { name: 'P-Berg Studio', address: 'Christinenstraße 19a, 10119 Berlin', hours: 'Mon – Thu: 8:00 am – 5:30 pm' },
+          { name: 'Kreuzberg Studio', address: 'Oranienstraße 185, 10999 Berlin', hours: 'Mon – Thu: 8:00 am – 5:30 pm' },
+        ],
       },
       footer: {
-        tagline: 'Teacher-owned studio in Berlin. Lagree training & physiotherapy.',
+        tagline: 'Premium Lagree & Physiotherapy Studio in Berlin',
         copyright: '© 2026 Framework Berlin. All rights reserved.',
       },
     },
@@ -116,9 +145,8 @@ export const CLIENTS: Client[] = [
         { quote: 'Placeholder review text goes here.', name: 'Customer Name', badge: 'Google' },
       ],
       contact: {
-        address: 'Your Street 1, 12345 City',
-        phone: 'hello@yourcompany.com',
-        hours: 'Mon – Fri: 9:00 – 18:00',
+        email: 'hello@yourcompany.com',
+        locations: [{ name: 'Main Location', address: 'Your Street 1, 12345 City', hours: 'Mon – Fri: 9:00 – 18:00' }],
       },
       footer: {
         tagline: 'Your tagline goes here.',

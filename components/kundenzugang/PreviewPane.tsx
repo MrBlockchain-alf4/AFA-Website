@@ -50,8 +50,18 @@ export default function PreviewPane() {
         <Highlight active={section === 'hero'} className="m-6 overflow-hidden">
           <div
             className="relative flex min-h-[420px] flex-col items-start justify-center gap-5 rounded-lg bg-cover bg-center px-14 py-20"
-            style={{ backgroundImage: `linear-gradient(rgba(10,14,11,0.55),rgba(10,14,11,0.75)), url(${content.hero.image})` }}
+            style={{
+              backgroundImage: content.hero.image
+                ? `linear-gradient(rgba(10,14,11,0.55),rgba(10,14,11,0.75)), url(${content.hero.image})`
+                : undefined,
+              backgroundColor: content.hero.image ? undefined : '#161616',
+            }}
           >
+            {!content.hero.image && (
+              <span className="absolute right-6 top-6 rounded border border-white/10 px-2 py-1 text-[10px] text-zinc-600">
+                No image set
+              </span>
+            )}
             <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5fa87a]">
               {siteName}
             </span>
@@ -118,22 +128,18 @@ export default function PreviewPane() {
           onClick={() => setSelectedField('contact')}
         >
           <div className="rounded-lg border border-white/10 bg-white/[0.03] p-6">
-            <div className="mb-4 text-[11px] font-bold uppercase tracking-[0.16em] text-[#5fa87a]">
-              Contact
+            <div className="mb-4 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.16em] text-[#5fa87a]">
+              <span>Contact</span>
+              <span className="font-normal normal-case tracking-normal text-zinc-400">{content.contact.email}</span>
             </div>
-            <div className="grid grid-cols-3 gap-4 text-[13px] text-zinc-300">
-              <div>
-                <div className="mb-1 text-[10px] uppercase tracking-wide text-zinc-500">Address</div>
-                {content.contact.address}
-              </div>
-              <div>
-                <div className="mb-1 text-[10px] uppercase tracking-wide text-zinc-500">Contact</div>
-                {content.contact.phone}
-              </div>
-              <div>
-                <div className="mb-1 text-[10px] uppercase tracking-wide text-zinc-500">Hours</div>
-                {content.contact.hours}
-              </div>
+            <div className="grid grid-cols-2 gap-4">
+              {content.contact.locations.map((loc, i) => (
+                <div key={i} className="rounded-md bg-white/[0.03] p-4 text-[13px] text-zinc-300">
+                  <div className="mb-1 text-[13px] font-semibold text-white">{loc.name}</div>
+                  <div>{loc.address}</div>
+                  <div className="mt-1 text-zinc-500">{loc.hours}</div>
+                </div>
+              ))}
             </div>
           </div>
         </Highlight>
