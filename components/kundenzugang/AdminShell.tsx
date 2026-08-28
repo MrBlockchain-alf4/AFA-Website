@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import NavTree from './NavTree';
 import FieldEditor from './FieldEditor';
@@ -12,14 +12,35 @@ export default function AdminShell() {
   const clientId = useAuthStore((s) => s.clientId);
   const dirty = useContentStore((s) => s.dirty);
   const save = useContentStore((s) => s.save);
-  const [toast, setToast] = useState(false);
+  const liveSyncStatus = useContentStore((s) => s.liveSyncStatus);
+  const liveSyncMessage = useContentStore((s) => s.liveSyncMessage);
   const siteName = getClientSiteName(clientId);
 
   function handleSave() {
     save();
-    setToast(true);
-    setTimeout(() => setToast(false), 2200);
   }
+
+  useEffect(() => {
+    if (liveSyncStatus === 'idle' || liveSyncStatus === 'syncing') return;
+    const t = setTimeout(() => {
+      useContentStore.setState({ liveSyncStatus: 'idle', liveSyncMessage: null });
+    }, 4500);
+    return () => clearTimeout(t);
+  }, [liveSyncStatus]);
+
+  const toastVisible = liveSyncStatus !== 'idle';
+  const toastText =
+    liveSyncStatus === 'syncing'
+      ? 'Draft saved — pushing Hero to the live site…'
+      : liveSyncStatus === 'success'
+        ? `Draft saved — ${liveSyncMessage}`
+        : liveSyncStatus === 'error'
+          ? `Draft saved. Live sync failed: ${liveSyncMessage}`
+          : liveSyncStatus === 'unsupported'
+            ? 'Draft saved (no live site connected for this client).'
+            : '';
+  const toastTone =
+    liveSyncStatus === 'error' ? 'bg-red-500/90 text-white' : 'bg-[#00D4FF] text-[#0b0e0c]';
 
   return (
     <div className="flex h-screen flex-col bg-[#0b0e0c] text-zinc-100">
@@ -67,15 +88,15 @@ export default function AdminShell() {
       </div>
 
       <AnimatePresence>
-        {toast && (
+        {toastVisible && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-md bg-[#00D4FF] px-5 py-2.5 text-[12px] font-bold text-[#0b0e0c] shadow-lg"
+            className={`fixed bottom-6 left-1/2 max-w-[90vw] -translate-x-1/2 rounded-md px-5 py-2.5 text-center text-[12px] font-bold shadow-lg ${toastTone}`}
           >
-            Changes saved ✓
+            {toastText}
           </motion.div>
         )}
       </AnimatePresence>

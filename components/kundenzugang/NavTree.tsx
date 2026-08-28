@@ -45,6 +45,19 @@ export default function NavTree() {
               )}
               {!hasChildren && <span className="w-[13px] flex-shrink-0" />}
               <span className="truncate">{node.label}</span>
+              {node.live ? (
+                <span
+                  title="Saves reach the live site"
+                  className="ml-auto h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-500"
+                />
+              ) : (
+                <span
+                  title="Draft only — the live site's HTML has no hook for this section yet"
+                  className="ml-auto flex-shrink-0 rounded border border-white/10 px-1.5 py-[1px] text-[9px] font-medium uppercase tracking-wide text-zinc-600"
+                >
+                  Draft
+                </span>
+              )}
             </button>
 
             <AnimatePresence initial={false}>

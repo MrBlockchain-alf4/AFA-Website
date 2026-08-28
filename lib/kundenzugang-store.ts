@@ -41,6 +41,8 @@ export interface Client {
   username: string;
   password: string;
   siteName: string;
+  /** The real, deployed site this client's admin panel previews and edits. */
+  liveUrl?: string;
   content: SiteContent;
 }
 
@@ -52,6 +54,7 @@ export const CLIENTS: Client[] = [
     username: 'framework',
     password: 'afa2026',
     siteName: 'Framework Berlin',
+    liveUrl: 'https://framework-berlin.vercel.app',
     // Pulled directly from the live site (https://framework-berlin.vercel.app),
     // verified via curl on 2026-08-29 — not invented. The hero image is
     // genuinely empty on the live site right now (shows an "Insert Photo"
@@ -194,16 +197,20 @@ export const useAuthStore = create<AuthState>()(
   ),
 );
 
+export type LiveSyncStatus = 'idle' | 'syncing' | 'success' | 'error' | 'unsupported';
+
 interface ContentState {
   currentClientId: string | null;
   content: SiteContent;
   savedContentByClient: Record<string, SiteContent>;
   selectedField: string | null;
   dirty: boolean;
+  liveSyncStatus: LiveSyncStatus;
+  liveSyncMessage: string | null;
   loadClient: (clientId: string) => void;
   setSelectedField: (field: string | null) => void;
   updateField: (path: string, value: string) => void;
-  save: () => void;
+  save: () => Promise<void>;
 }
 
 function setAtPath(obj: any, path: string, value: string) {
@@ -229,6 +236,8 @@ export const useContentStore = create<ContentState>()(
       savedContentByClient: {},
       selectedField: null,
       dirty: false,
+      liveSyncStatus: 'idle' as LiveSyncStatus,
+      liveSyncMessage: null as string | null,
       loadClient: (clientId) => {
         const client = CLIENTS.find((c) => c.username === clientId);
         if (!client) return;
@@ -241,17 +250,58 @@ export const useContentStore = create<ContentState>()(
           content: setAtPath(state.content, path, value),
           dirty: true,
         })),
-      save: () =>
-        set((state) => {
-          if (!state.currentClientId) return state;
-          return {
-            savedContentByClient: {
-              ...state.savedContentByClient,
-              [state.currentClientId]: state.content,
-            },
-            dirty: false,
-          };
-        }),
+      save: async () => {
+        const state = get();
+        if (!state.currentClientId) return;
+        set({
+          savedContentByClient: {
+            ...state.savedContentByClient,
+            [state.currentClientId]: state.content,
+          },
+          dirty: false,
+        });
+
+        // Only Hero actually has data-fw hooks on the live page (see
+        // NAV_TREE's `live` flags) — Services/Testimonials/Contact/Footer
+        // save to the draft store above but have nowhere on the real site
+        // to land, so there's nothing to push for them.
+        const liveUrl = getClientLiveUrl(state.currentClientId);
+        if (!liveUrl) {
+          set({ liveSyncStatus: 'unsupported', liveSyncMessage: null });
+          return;
+        }
+
+        set({ liveSyncStatus: 'syncing', liveSyncMessage: null });
+        try {
+          const dataUrl = `${liveUrl}/admin/api/data`;
+          const getRes = await fetch(dataUrl);
+          if (!getRes.ok) throw new Error(`Could not read live data (HTTP ${getRes.status})`);
+          const live = await getRes.json();
+          live.home = live.home || {};
+          live.home.hero = live.home.hero || {};
+          live.home.hero.headline = state.content.hero.headline;
+          live.home.hero.sub = state.content.hero.subtext;
+          live.home.hero.cta_text = state.content.hero.buttonText;
+          live.home.hero.image = state.content.hero.image || null;
+
+          const postRes = await fetch(dataUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(live),
+          });
+          const postJson = await postRes.json().catch(() => ({}) as any);
+          if (postRes.ok && postJson.ok) {
+            set({ liveSyncStatus: 'success', liveSyncMessage: 'Hero pushed to the live site.' });
+          } else {
+            set({
+              liveSyncStatus: 'error',
+              liveSyncMessage: postJson.error || `Live save failed (HTTP ${postRes.status}).`,
+            });
+          }
+        } catch (err) {
+          set({ liveSyncStatus: 'error', liveSyncMessage: String(err) });
+        }
+      },
     }),
     {
       name: 'kundenzugang-content',
@@ -263,6 +313,10 @@ export const useContentStore = create<ContentState>()(
 
 export function getClientSiteName(clientId: string | null): string {
   return CLIENTS.find((c) => c.username === clientId)?.siteName ?? '';
+}
+
+export function getClientLiveUrl(clientId: string | null): string | undefined {
+  return CLIENTS.find((c) => c.username === clientId)?.liveUrl;
 }
 
 export function getAtPath(obj: any, path: string): string {
