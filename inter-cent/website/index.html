@@ -1078,12 +1078,12 @@ const ATM_FRAG = `
   }
 `;
 
-function buildSpecMap(img, sz = 256) {
-  const c = document.createElement('canvas'); c.width = c.height = sz;
-  const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, sz, sz);
-  const px = ctx.getImageData(0, 0, sz, sz).data;
-  const out = ctx.createImageData(sz, sz);
-  for (let i = 0; i < sz * sz; i++) {
+function buildSpecMap(img, w = 2048, h = 1024) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, w, h);
+  const px = ctx.getImageData(0, 0, w, h).data;
+  const out = ctx.createImageData(w, h);
+  for (let i = 0; i < w * h; i++) {
     const r = px[i*4], g = px[i*4+1], b = px[i*4+2];
     const v = (b > r * 1.1 && b > g * 0.85) ? 200 : 0;
     out.data[i*4] = out.data[i*4+1] = out.data[i*4+2] = v; out.data[i*4+3] = 255;
@@ -1092,12 +1092,12 @@ function buildSpecMap(img, sz = 256) {
   return new THREE.CanvasTexture(c);
 }
 
-function buildNightMap(img, sz = 256) {
-  const c = document.createElement('canvas'); c.width = c.height = sz;
-  const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, sz, sz);
-  const px = ctx.getImageData(0, 0, sz, sz).data;
-  const out = ctx.createImageData(sz, sz);
-  for (let i = 0; i < sz * sz; i++) {
+function buildNightMap(img, w = 2048, h = 1024) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, w, h);
+  const px = ctx.getImageData(0, 0, w, h).data;
+  const out = ctx.createImageData(w, h);
+  for (let i = 0; i < w * h; i++) {
     const r = px[i*4], g = px[i*4+1], b = px[i*4+2];
     const isLand = !(b > r * 1.1 && b > g * 0.85);
     const v = isLand ? Math.max(0, (r + g) * 0.5 - 60) * 0.4 : 0;
@@ -1114,7 +1114,7 @@ function createEarth(canvasId, speed = 0.05) {
   const cont = el.parentElement;
 
   const renderer = new THREE.WebGLRenderer({ canvas: el, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 3));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   // Size canvas to fill the circular container, without overriding CSS display size
@@ -1136,7 +1136,7 @@ function createEarth(canvasId, speed = 0.05) {
   sunLight.position.copy(SUN_DIR);
   scene.add(sunLight);
 
-  const sphereGeo = new THREE.SphereGeometry(1, 64, 64);
+  const sphereGeo = new THREE.SphereGeometry(1, 96, 96);
 
   const uni = {
     dayMap:   { value: null },
