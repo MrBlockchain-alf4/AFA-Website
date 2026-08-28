@@ -398,22 +398,107 @@
     .footer-bottom a:hover{color:rgba(255,255,255,0.5);}
     .footer-legal{display:flex;gap:20px;}
 
-    /* ─── MOBILE ─────────────────────────────── */
+    /* ─── HAMBURGER ──────────────────────────── */
+    .nav-burger{
+      display:none;flex-direction:column;justify-content:center;gap:5px;
+      background:none;border:none;cursor:pointer;padding:8px;
+      width:44px;height:44px;flex-shrink:0;
+    }
+    .nav-burger span{
+      display:block;width:22px;height:2px;background:var(--navy);border-radius:2px;
+      transition:transform 220ms ease,opacity 180ms;
+    }
+    .nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-burger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+    .nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+    /* ─── TABLET ──────────────────────────────── */
     @media(max-width:1024px){
       .srv-grid{grid-template-columns:repeat(2,1fr);}
     }
-    @media(max-width:960px){
-      .nav{padding:0 24px;}
-      .nav-links{display:none;}
-      .hero,.about,.services,.testimonial,.location,.footer{padding-left:24px;padding-right:24px;}
-      .hero-inner,.about-inner,.location-inner{grid-template-columns:1fr;gap:36px;}
+
+    /* ─── MOBILE ─────────────────────────────── */
+    @media(max-width:768px){
+      /* Nav */
+      .nav{padding:0 20px;height:68px;}
+      .nav-logo img{height:38px;}
+      .nav-burger{display:flex;}
+      .nav-links{
+        display:none;flex-direction:column;gap:0;
+        position:fixed;top:68px;left:0;right:0;
+        background:#fff;border-bottom:1px solid var(--border-sub);
+        padding:8px 20px 20px;
+        box-shadow:0 8px 24px rgba(13,27,46,0.10);
+        z-index:199;
+      }
+      .nav-links.open{display:flex;}
+      .nav-links li{border-bottom:1px solid var(--border-sub);}
+      .nav-links li:last-child{border-bottom:none;padding-top:8px;}
+      .nav-links a{
+        display:block;padding:14px 0;
+        font-size:15px;font-weight:500;color:var(--text);
+      }
+      .nav-links a.nav-cta{
+        width:100%;text-align:center;padding:14px;
+        border-radius:8px;background:var(--navy);color:#fff;
+      }
+
+      /* Hero */
+      .hero{padding:88px 20px 52px;}
+      .hero-inner{grid-template-columns:1fr;gap:32px;}
       .hero-right{order:-1;}
-      .hero-img-wrap{max-height:340px;}
-      .loc-map{height:280px;min-height:unset;}
-      .footer-inner{grid-template-columns:1fr;gap:36px;}
+      .hero-img-wrap{max-height:300px;aspect-ratio:unset;}
+      .hero-img-wrap img{height:300px;object-fit:cover;}
+      .hero-h1{font-size:clamp(36px,9vw,52px);}
+      .hero-sub-title{font-size:16px;}
+      .hero-p{font-size:14px;margin-bottom:28px;}
+      .hero-actions{flex-direction:column;gap:12px;}
+      .btn-primary{width:100%;text-align:center;padding:16px 24px;font-size:14px;}
+      .btn-secondary{font-size:14px;}
+      .hero-pills{gap:8px;}
+      .hero-pill{font-size:11px;padding:7px 14px;}
+
+      /* About */
+      .about{padding:60px 20px;}
+      .about-inner{grid-template-columns:1fr;gap:32px;}
+      .about-img{order:-1;}
+      .about-h2{font-size:clamp(28px,7vw,40px);}
+      .about-p{font-size:14px;}
+
+      /* Services */
+      .services{padding:60px 20px;}
+      .srv-grid{grid-template-columns:1fr 1fr;}
+      .srv-card{padding:24px 18px;}
+      .srv-name{font-size:16px;}
+      .srv-desc{font-size:12px;}
+
+      /* Testimonial */
+      .testimonial{padding:60px 20px;}
+      .tc-arr{width:44px;height:44px;font-size:28px;}
+      .t-dots button{width:12px;height:12px;}
+      .t-quote{font-size:18px;}
+
+      /* Location */
+      .location{padding:52px 20px;}
+      .location-inner{grid-template-columns:1fr;gap:32px;}
+      .loc-map{height:280px;min-height:unset;border-radius:10px;}
+      .loc-ctas{flex-direction:column;}
+      .btn-mint,.btn-outline{width:100%;text-align:center;padding:16px 20px;font-size:14px;}
+
+      /* Footer */
+      .footer{padding:52px 20px 28px;}
+      .footer-inner{grid-template-columns:1fr;gap:32px;}
+      .footer-logo-img{height:48px;}
+      .footer-bottom{flex-direction:column;align-items:flex-start;gap:8px;}
     }
-    @media(max-width:600px){
+
+    @media(max-width:480px){
       .srv-grid{grid-template-columns:1fr;}
+      .hero-h1{font-size:34px;}
+      .about-h2,.sec-h2{font-size:28px;}
+      .hero{padding:80px 16px 48px;}
+      .about,.services,.testimonial,.location,.footer{padding-left:16px;padding-right:16px;}
+      .hours-row{font-size:12.5px;}
     }
   </style>
 </head>
@@ -422,19 +507,34 @@
 <!-- ═══ NAV ════════════════════════════════════════════════ -->
 <nav class="nav" id="nav">
   <a href="#top" class="nav-logo">
-    <img src="/praxis-mueser/website/public/images/muser-logo.png" alt="Praxis Müser">
+    <img src="/public/images/muser-logo.png" alt="Praxis Müser">
   </a>
-  <ul class="nav-links">
-    <li><a href="#about">Über uns</a></li>
-    <li><a href="#services">Leistungen</a></li>
-    <li><a href="#location">Standort</a></li>
-    <li><a href="javascript:void(0)" class="nav-cta" onclick="if(window.pmCbOpen)window.pmCbOpen()">Termin anfragen</a></li>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about" onclick="closeMenu()">Über uns</a></li>
+    <li><a href="#services" onclick="closeMenu()">Leistungen</a></li>
+    <li><a href="#location" onclick="closeMenu()">Standort</a></li>
+    <li><a href="javascript:void(0)" class="nav-cta" onclick="closeMenu();if(window.pmCbOpen)window.pmCbOpen()">Termin anfragen</a></li>
   </ul>
+  <button class="nav-burger" id="nav-burger" aria-label="Menü öffnen" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 <script>
   window.addEventListener('scroll',function(){
     document.getElementById('nav').classList.toggle('scrolled',window.scrollY>20);
   });
+  var burger=document.getElementById('nav-burger');
+  var navLinks=document.getElementById('nav-links');
+  burger.addEventListener('click',function(){
+    var open=navLinks.classList.toggle('open');
+    burger.classList.toggle('open',open);
+    burger.setAttribute('aria-expanded',open);
+  });
+  function closeMenu(){
+    navLinks.classList.remove('open');
+    burger.classList.remove('open');
+    burger.setAttribute('aria-expanded','false');
+  }
 </script>
 
 <!-- ═══ HERO ════════════════════════════════════════════════ -->
@@ -782,7 +882,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <img src="/praxis-mueser/website/public/images/muser-logo.png" alt="Praxis Müser" class="footer-logo-img">
+      <img src="/public/images/muser-logo.png" alt="Praxis Müser" class="footer-logo-img">
       <div class="footer-brand-name">Praxis Müser</div>
       <div class="footer-brand-sub">Zahnärzte im Volksparkbogen</div>
       <p class="footer-desc">
@@ -818,6 +918,6 @@
   </div>
 </footer>
 
-<script src="/praxis-mueser/website/chatbot/chatbot.js" defer></script>
+<script src="/chatbot/chatbot.js" defer></script>
 </body>
 </html>

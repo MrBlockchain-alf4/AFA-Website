@@ -265,6 +265,33 @@
     msgs.scrollTop = msgs.scrollHeight;
   }
 
+  /* ── MOBILE RESPONSIVE STYLES ── */
+  (function(){
+    const s = document.createElement('style');
+    s.textContent = `
+      @media(max-width:600px){
+        #pm-cb-root{bottom:16px !important;right:16px !important;}
+        #pm-cb-panel{
+          position:fixed !important;
+          width:100vw !important;max-width:100vw !important;
+          left:0 !important;right:0 !important;bottom:0 !important;
+          height:85vh !important;
+          height:85dvh !important;
+          border-radius:20px 20px 0 0 !important;
+          overflow:hidden !important;
+        }
+        #pm-cb-input-row{
+          padding:10px 12px !important;
+          padding-bottom:max(10px,env(safe-area-inset-bottom,0px)) !important;
+          flex-shrink:0 !important;
+        }
+        #pm-cb-send{width:44px !important;height:44px !important;}
+        #pm-cb-inp{font-size:16px !important;padding:12px 14px !important;}
+      }
+    `;
+    document.head.appendChild(s);
+  })();
+
   /* ── BUILD UI ── */
   const root = el('div', `position:fixed;bottom:24px;right:24px;z-index:9000;font-family:'DM Sans',system-ui,sans-serif;`);
   root.id = 'pm-cb-root';
@@ -277,6 +304,7 @@
     `border:1px solid ${G.border};` +
     `position:absolute;bottom:72px;right:0;`
   );
+  panel.id = 'pm-cb-panel';
 
   /* header */
   const header = el('div',
@@ -311,7 +339,9 @@
   const inputRow = el('div',
     `display:flex;gap:8px;padding:12px 14px;border-top:1px solid ${G.border};background:${G.bgOff};`
   );
+  inputRow.id = 'pm-cb-input-row';
   const inp = el('input', null);
+  inp.id = 'pm-cb-inp';
   inp.type = 'text';
   inp.placeholder = 'Ihre Nachricht ...';
   inp.setAttribute('style',
@@ -328,6 +358,7 @@
     `transition:background 160ms,transform 150ms;`,
     `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`
   );
+  sendBtn.id = 'pm-cb-send';
   sendBtn.onmouseenter = () => { sendBtn.style.background = G.navyMid; sendBtn.style.transform = 'scale(1.08)'; };
   sendBtn.onmouseleave = () => { sendBtn.style.background = G.navy; sendBtn.style.transform = 'scale(1)'; };
 
@@ -367,6 +398,8 @@
     open = !open;
     panel.style.display = open ? 'flex' : 'none';
     dot.style.display = open ? 'none' : 'block';
+    // On mobile, hide the launcher so it doesn't block the input row
+    btn.style.display = (open && window.innerWidth <= 600) ? 'none' : 'flex';
     if (open && msgs.children.length === 0) {
       bState = 'treatment';
       bData = {};
