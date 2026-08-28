@@ -219,6 +219,79 @@ function NavLink({ label, id, active, onNavClick }: {
   );
 }
 
+function NavRouteLink({ label, href }: { label: string; href: string }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Link
+      href={href}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        fontFamily: C.M, fontSize: 13,
+        color: hovered ? C.text : C.muted,
+        transition: "color 0.18s",
+        position: "relative",
+        paddingBottom: 4,
+        textDecoration: "none",
+      }}
+    >
+      {label}
+      <motion.span
+        initial={false}
+        animate={{ scaleX: hovered ? 1 : 0, opacity: 0.75 }}
+        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: "absolute", bottom: 0, left: 0,
+          width: "100%", height: 1.5,
+          background: C.acc,
+          transformOrigin: "left center",
+          display: "block", borderRadius: 2,
+        }}
+      />
+    </Link>
+  );
+}
+
+function MobileNavRouteLink({ label, href, index }: { label: string; href: string; index: number }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1], delay: index * 0.05 }}
+    >
+      <Link
+        href={href}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          display: "block", width: "100%", textAlign: "left",
+          fontFamily: C.M, fontSize: 15,
+          color: hovered ? C.acc : "rgba(255,255,255,0.6)",
+          padding: "13px 20px 14px",
+          transition: "color 0.18s",
+          position: "relative",
+          textDecoration: "none",
+        }}
+      >
+        {label}
+        <motion.span
+          initial={false}
+          animate={{ scaleX: hovered ? 1 : 0 }}
+          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            position: "absolute", bottom: 8, left: 20,
+            width: "calc(100% - 40px)", height: 1.5,
+            background: C.acc,
+            transformOrigin: "left center",
+            display: "block", borderRadius: 2,
+          }}
+        />
+      </Link>
+    </motion.div>
+  );
+}
+
 function MobileMenuItem({ label, index, onClick }: { label: string; index: number; onClick: () => void }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -375,14 +448,7 @@ function Nav() {
             {NAV_LINKS.map(({ label, id }) => (
               <NavLink key={id} label={label} id={id} active={activeId === id} onNavClick={handleLinkClick} />
             ))}
-            <Link
-              href="/kundenzugang"
-              style={{ fontFamily: C.M, fontSize: 13, color: C.muted, textDecoration: "none", transition: "color 0.18s" }}
-              onMouseEnter={e => (e.currentTarget.style.color = C.text)}
-              onMouseLeave={e => (e.currentTarget.style.color = C.muted)}
-            >
-              KUNDENZUGANG
-            </Link>
+            <NavRouteLink label="Kundenzugang" href="/kundenzugang" />
           </nav>
 
           {/* Right side — hamburger + CTA on mobile, CTA only on desktop */}
@@ -451,18 +517,7 @@ function Nav() {
                 onClick={() => handleMobileMenuClick(id)}
               />
             ))}
-            <Link
-              href="/kundenzugang"
-              style={{
-                display: "block", width: "100%", textAlign: "left",
-                fontFamily: C.M, fontSize: 15,
-                color: "rgba(255,255,255,0.6)",
-                padding: "13px 20px 14px",
-                textDecoration: "none",
-              }}
-            >
-              KUNDENZUGANG
-            </Link>
+            <MobileNavRouteLink label="Kundenzugang" href="/kundenzugang" index={NAV_LINKS.length} />
           </motion.nav>
         )}
       </AnimatePresence>
