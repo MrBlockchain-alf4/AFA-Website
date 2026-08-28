@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 
@@ -374,6 +375,14 @@ function Nav() {
             {NAV_LINKS.map(({ label, id }) => (
               <NavLink key={id} label={label} id={id} active={activeId === id} onNavClick={handleLinkClick} />
             ))}
+            <Link
+              href="/kundenzugang"
+              style={{ fontFamily: C.M, fontSize: 13, color: C.muted, textDecoration: "none", transition: "color 0.18s" }}
+              onMouseEnter={e => (e.currentTarget.style.color = C.text)}
+              onMouseLeave={e => (e.currentTarget.style.color = C.muted)}
+            >
+              KUNDENZUGANG
+            </Link>
           </nav>
 
           {/* Right side — hamburger + CTA on mobile, CTA only on desktop */}
@@ -442,6 +451,18 @@ function Nav() {
                 onClick={() => handleMobileMenuClick(id)}
               />
             ))}
+            <Link
+              href="/kundenzugang"
+              style={{
+                display: "block", width: "100%", textAlign: "left",
+                fontFamily: C.M, fontSize: 15,
+                color: "rgba(255,255,255,0.6)",
+                padding: "13px 20px 14px",
+                textDecoration: "none",
+              }}
+            >
+              KUNDENZUGANG
+            </Link>
           </motion.nav>
         )}
       </AnimatePresence>
