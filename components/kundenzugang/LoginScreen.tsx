@@ -16,9 +16,12 @@ const C = {
   muted: '#71717a',
   soft: '#a1a1aa',
   acc: '#00bbfd',
+  accDark: '#0092c7',
   H: 'var(--font-jakarta,"Plus Jakarta Sans",sans-serif)',
   M: 'var(--font-chivo,"Chivo Mono",monospace)',
 };
+
+const ease = [0.16, 1, 0.3, 1];
 
 function Field({
   label,
@@ -35,14 +38,14 @@ function Field({
 }) {
   const [focused, setFocused] = useState(false);
   return (
-    <div style={{ marginBottom: 18 }}>
+    <div style={{ marginBottom: 20 }}>
       <label
         style={{
           display: 'block',
           fontFamily: C.M,
           fontSize: 11,
           fontWeight: 600,
-          letterSpacing: '0.08em',
+          letterSpacing: '0.1em',
           textTransform: 'uppercase',
           color: C.muted,
           marginBottom: 8,
@@ -62,12 +65,13 @@ function Field({
           background: C.s2,
           border: `1px solid ${focused ? C.acc : C.bd}`,
           borderRadius: 8,
-          padding: '12px 14px',
+          padding: '13px 14px',
           fontFamily: C.M,
           fontSize: 14,
           color: C.text,
           outline: 'none',
-          transition: 'border-color 0.15s',
+          transition: 'border-color 0.2s, box-shadow 0.2s',
+          boxShadow: focused ? '0 0 0 3px rgba(0,187,253,0.12), 0 0 24px rgba(0,187,253,0.10)' : 'none',
           boxSizing: 'border-box',
         }}
       />
@@ -107,10 +111,13 @@ export default function LoginScreen() {
     >
       <motion.form
         onSubmit={handleSubmit}
-        key={shake}
-        initial={shake ? { x: 0 } : false}
-        animate={shake ? { x: [0, -8, 8, -6, 6, 0] } : {}}
-        transition={{ duration: 0.4 }}
+        initial={{ opacity: 0, y: 18 }}
+        animate={
+          shake
+            ? { opacity: 1, y: 0, x: [0, -8, 8, -6, 6, 0] }
+            : { opacity: 1, y: 0 }
+        }
+        transition={shake ? { duration: 0.4 } : { duration: 0.55, ease }}
         style={{
           width: '100%',
           maxWidth: 380,
@@ -119,29 +126,29 @@ export default function LoginScreen() {
           borderRadius: 20,
           padding: '40px 32px',
           boxSizing: 'border-box',
+          boxShadow: '0 24px 70px rgba(0,0,0,0.55), 0 4px 20px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,187,253,0.03)',
         }}
       >
         <p
           style={{
             fontFamily: C.M,
             fontSize: 11,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: C.acc,
-            marginBottom: 12,
+            letterSpacing: '0.1em',
+            color: C.muted,
+            marginBottom: 14,
           }}
         >
-          Client Admin
+          Admin Bereich
         </p>
         <h1
           style={{
             fontFamily: C.H,
             fontWeight: 800,
             letterSpacing: '-0.03em',
-            fontSize: 30,
+            fontSize: 32,
             lineHeight: 1.1,
             color: '#fff',
-            margin: '0 0 10px',
+            margin: '0 0 12px',
           }}
         >
           Kundenzugang
@@ -150,20 +157,20 @@ export default function LoginScreen() {
           style={{
             fontFamily: C.M,
             fontSize: 13,
-            lineHeight: 1.6,
+            lineHeight: 1.65,
             color: C.soft,
-            margin: '0 0 28px',
+            margin: '0 0 32px',
           }}
         >
-          Sign in to edit your Framework Berlin website content.
+          Melden Sie sich an, um Ihre Website zu bearbeiten.
         </p>
 
-        <Field label="Username" type="text" value={username} onChange={setUsername} autoFocus />
-        <Field label="Password" type="password" value={password} onChange={setPassword} />
+        <Field label="Benutzername" type="text" value={username} onChange={setUsername} autoFocus />
+        <Field label="Passwort" type="password" value={password} onChange={setPassword} />
 
         {error && (
           <p style={{ fontFamily: C.M, fontSize: 12, color: '#f87171', margin: '0 0 8px' }}>
-            Incorrect username or password.
+            Benutzername oder Passwort ist falsch.
           </p>
         )}
 
@@ -176,18 +183,19 @@ export default function LoginScreen() {
             fontFamily: C.H,
             fontWeight: 700,
             fontSize: 13,
-            background: C.acc,
+            background: hover ? C.accDark : C.acc,
             color: '#000',
-            padding: '13px 22px',
+            padding: '14px 22px',
             borderRadius: 6,
             border: 'none',
             cursor: 'pointer',
-            filter: hover ? 'brightness(1.1)' : 'brightness(1)',
-            transition: 'filter 0.15s',
-            marginTop: 8,
+            transition: 'background 0.2s, transform 0.15s, box-shadow 0.2s',
+            transform: hover ? 'translateY(-1px)' : 'translateY(0)',
+            boxShadow: hover ? '0 8px 24px rgba(0,187,253,0.25)' : '0 4px 14px rgba(0,187,253,0.12)',
+            marginTop: 10,
           }}
         >
-          Sign In
+          Anmelden
         </button>
 
         <p
@@ -196,11 +204,12 @@ export default function LoginScreen() {
             fontSize: 11,
             color: C.muted,
             textAlign: 'center',
-            marginTop: 24,
+            marginTop: 26,
             marginBottom: 0,
+            lineHeight: 1.6,
           }}
         >
-          Demo: framework / afa2026
+          Demo-Zugang: Benutzername: framework / Passwort: afa2026
         </p>
       </motion.form>
     </div>
