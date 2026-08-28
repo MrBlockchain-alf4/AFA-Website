@@ -261,10 +261,6 @@ export const useContentStore = create<ContentState>()(
           dirty: false,
         });
 
-        // Only Hero actually has data-fw hooks on the live page (see
-        // NAV_TREE's `live` flags) — Services/Testimonials/Contact/Footer
-        // save to the draft store above but have nowhere on the real site
-        // to land, so there's nothing to push for them.
         const liveUrl = getClientLiveUrl(state.currentClientId);
         if (!liveUrl) {
           set({ liveSyncStatus: 'unsupported', liveSyncMessage: null });
@@ -277,12 +273,43 @@ export const useContentStore = create<ContentState>()(
           const getRes = await fetch(dataUrl);
           if (!getRes.ok) throw new Error(`Could not read live data (HTTP ${getRes.status})`);
           const live = await getRes.json();
+          const c = state.content;
+
           live.home = live.home || {};
           live.home.hero = live.home.hero || {};
-          live.home.hero.headline = state.content.hero.headline;
-          live.home.hero.sub = state.content.hero.subtext;
-          live.home.hero.cta_text = state.content.hero.buttonText;
-          live.home.hero.image = state.content.hero.image || null;
+          live.home.hero.headline = c.hero.headline;
+          live.home.hero.sub = c.hero.subtext;
+          live.home.hero.cta_text = c.hero.buttonText;
+          live.home.hero.image = c.hero.image || null;
+
+          // home.services didn't exist before this integration — matches
+          // the data-fw="home.services.N.title/desc" hooks added to the
+          // three class cards.
+          live.home.services = c.services.map((s) => ({ title: s.title, desc: s.desc }));
+
+          // home.testimonials already existed and was already the real
+          // content — this just overwrites it with the edited version.
+          live.home.testimonials = c.testimonials.map((t) => ({
+            quote: t.quote,
+            name: t.name,
+            badge: t.badge,
+          }));
+
+          // home.locations already existed too (id="fw-locations-root").
+          // Only overwrite name/address/hours — preserve neighborhood/image/
+          // img_position from the live copy rather than dropping them, since
+          // our schema doesn't carry those fields.
+          const liveLocations = Array.isArray(live.home.locations) ? live.home.locations : [];
+          live.home.locations = c.contact.locations.map((loc, i) => ({
+            ...(liveLocations[i] || {}),
+            name: loc.name,
+            address: loc.address,
+            hours: loc.hours,
+          }));
+
+          live.footer = live.footer || {};
+          live.footer.tagline = c.footer.tagline;
+          live.footer.copyright = c.footer.copyright;
 
           const postRes = await fetch(dataUrl, {
             method: 'POST',
@@ -291,7 +318,7 @@ export const useContentStore = create<ContentState>()(
           });
           const postJson = await postRes.json().catch(() => ({}) as any);
           if (postRes.ok && postJson.ok) {
-            set({ liveSyncStatus: 'success', liveSyncMessage: 'Hero pushed to the live site.' });
+            set({ liveSyncStatus: 'success', liveSyncMessage: 'Pushed to the live site.' });
           } else {
             set({
               liveSyncStatus: 'error',

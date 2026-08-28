@@ -8,10 +8,11 @@ export interface NavNode {
   label: string;
   children?: NavLeaf[];
   /**
-   * Whether this section is actually wired to the live site (has real
-   * data-fw hooks in its HTML) — see SECTIONS_WITH_LIVE_HOOKS below. Only
-   * Hero is true today; the rest save to the draft store but have no way to
-   * reach the live page without editing its markup, which is out of scope.
+   * Whether this section is wired to the live site — either via a data-fw
+   * hook or an id-based rebuild in page-loader.js. All five are true now
+   * (Services + Footer via new data-fw hooks; Testimonials + Contact were
+   * already wired via #car-track/#fw-locations-root, just unreachable until
+   * /admin/api/data existed).
    */
   live: boolean;
 }
@@ -31,16 +32,16 @@ export const NAV_TREE: NavNode[] = [
   {
     id: 'services',
     label: 'Services',
-    live: false,
+    live: true,
     children: [
       { id: 'services.0', label: 'Service 1' },
       { id: 'services.1', label: 'Service 2' },
       { id: 'services.2', label: 'Service 3' },
     ],
   },
-  { id: 'testimonials', label: 'Testimonials', live: false },
-  { id: 'contact', label: 'Contact', live: false },
-  { id: 'footer', label: 'Footer', live: false },
+  { id: 'testimonials', label: 'Testimonials', live: true },
+  { id: 'contact', label: 'Contact', live: true },
+  { id: 'footer', label: 'Footer', live: true },
 ];
 
 // Given a selected field id like "hero.headline" or "services.1", return the
