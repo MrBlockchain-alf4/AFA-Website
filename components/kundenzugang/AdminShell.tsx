@@ -5,13 +5,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import NavTree from './NavTree';
 import FieldEditor from './FieldEditor';
 import PreviewPane from './PreviewPane';
-import { useAuthStore, useContentStore } from '@/lib/kundenzugang-store';
+import { useAuthStore, useContentStore, getClientSiteName } from '@/lib/kundenzugang-store';
 
 export default function AdminShell() {
   const logout = useAuthStore((s) => s.logout);
+  const clientId = useAuthStore((s) => s.clientId);
   const dirty = useContentStore((s) => s.dirty);
   const save = useContentStore((s) => s.save);
   const [toast, setToast] = useState(false);
+  const siteName = getClientSiteName(clientId);
 
   function handleSave() {
     save();
@@ -27,7 +29,7 @@ export default function AdminShell() {
           <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00D4FF]">
             Kundenzugang
           </span>
-          <span className="text-[11px] text-zinc-600">/ Framework Berlin</span>
+          <span className="text-[11px] text-zinc-600">/ {siteName}</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-[11px] text-zinc-600">{dirty ? 'Unsaved changes' : 'All changes saved'}</span>

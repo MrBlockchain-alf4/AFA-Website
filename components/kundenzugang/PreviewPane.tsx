@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useContentStore } from '@/lib/kundenzugang-store';
+import { useContentStore, useAuthStore, getClientSiteName } from '@/lib/kundenzugang-store';
 import { sectionOf, indexOf } from '@/lib/kundenzugang-nav';
 import { cn } from '@/lib/utils';
 
@@ -40,6 +40,8 @@ export default function PreviewPane() {
   const setSelectedField = useContentStore((s) => s.setSelectedField);
   const section = sectionOf(selectedField);
   const svcIndex = indexOf(selectedField);
+  const clientId = useAuthStore((s) => s.clientId);
+  const siteName = getClientSiteName(clientId);
 
   return (
     <div className="h-full overflow-y-auto bg-[#0b0e0c]">
@@ -51,7 +53,7 @@ export default function PreviewPane() {
             style={{ backgroundImage: `linear-gradient(rgba(10,14,11,0.55),rgba(10,14,11,0.75)), url(${content.hero.image})` }}
           >
             <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5fa87a]">
-              Framework Berlin
+              {siteName}
             </span>
             <h1 className="whitespace-pre-line text-[44px] font-extrabold leading-[1.05] tracking-tight text-white">
               {content.hero.headline}
