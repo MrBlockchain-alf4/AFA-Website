@@ -18,8 +18,20 @@ export interface LocationItem {
   hours: string;
 }
 
+export interface StatItem {
+  /** Full display string, e.g. "50 min" or "32+" — edited as free text. */
+  value: string;
+  label: string;
+}
+
+export interface SectionHeader {
+  eyebrow: string;
+  heading: string;
+}
+
 export interface SiteContent {
   hero: {
+    eyebrow: string;
     headline: string;
     subtext: string;
     buttonText: string;
@@ -30,11 +42,28 @@ export interface SiteContent {
     /** Zoom as a percentage (CSS background-size), 100 = fit, up to 200. */
     imageScale: number;
   };
+  stats: StatItem[];
   services: ServiceItem[];
+  classesSection: SectionHeader;
+  about: {
+    eyebrow: string;
+    heading: string;
+    body1: string;
+    body2: string;
+    image: string;
+    stats: StatItem[];
+    chips: string[];
+  };
   testimonials: TestimonialItem[];
+  testimonialsSection: SectionHeader;
   contact: {
     email: string;
     locations: LocationItem[];
+  };
+  locationsSection: SectionHeader;
+  cta: {
+    heading: string;
+    sub: string;
   };
   footer: {
     tagline: string;
@@ -67,6 +96,7 @@ export const CLIENTS: Client[] = [
     // stock photo.
     content: {
       hero: {
+        eyebrow: 'Lagree · Megaformer · Berlin',
         headline: 'High-Intensity.\nLow-Impact.\nAll Results.',
         subtext:
           "Transform your body with Berlin's premier Lagree training — science-backed, results-driven.",
@@ -76,6 +106,12 @@ export const CLIENTS: Client[] = [
         imagePositionY: 50,
         imageScale: 100,
       },
+      stats: [
+        { value: '2', label: 'Studio Locations' },
+        { value: '50 min', label: 'Full-Body Sessions' },
+        { value: '32+', label: 'Team Members' },
+        { value: '24h', label: 'Afterburn Effect' },
+      ],
       services: [
         {
           title: 'Group Lagree',
@@ -90,6 +126,27 @@ export const CLIENTS: Client[] = [
           desc: 'Active physiotherapy for injury recovery and movement optimization. Qualified professionals provide personalized care to keep you moving freely and pain-free.',
         },
       ],
+      classesSection: { eyebrow: 'What We Offer', heading: 'Our Classes' },
+      about: {
+        eyebrow: 'The Lagree Method',
+        heading: 'What is\nFramework?',
+        body1:
+          'Framework is a boutique fitness studio offering a unique blend of Lagree™ training and active physiotherapy. Lagree is a highly intensive full-body muscle endurance workout performed on the Megaformer™ — a revolutionary machine designed to challenge every muscle group simultaneously.',
+        body2:
+          "The method focuses on slow-twitch muscle fibers, building lean muscle mass and core strength while staying low-impact on your joints. You'll feel the burn during — and for up to 24 hours after — every session.",
+        image: '',
+        stats: [
+          { value: '2', label: 'Berlin Studios' },
+          { value: '32+', label: 'Expert Trainers' },
+        ],
+        chips: ['Megaformer™', 'Low Impact', 'Science-backed', 'Berlin'],
+      },
+      testimonialsSection: { eyebrow: 'Community', heading: 'What Our Members Say' },
+      locationsSection: { eyebrow: 'Where to Find Us', heading: 'Our Studios' },
+      cta: {
+        heading: 'Ready to Transform\nYour Body?',
+        sub: 'Join our community of strong, empowered people across Berlin. Your first class is just one step away.',
+      },
       testimonials: [
         {
           quote:
@@ -141,6 +198,7 @@ export const CLIENTS: Client[] = [
     siteName: 'Demo Client',
     content: {
       hero: {
+        eyebrow: 'Your Eyebrow Text',
         headline: 'Welcome to\nYour Website.',
         subtext: 'This is placeholder content — edit any section from the panel on the left.',
         buttonText: 'Get Started',
@@ -150,17 +208,42 @@ export const CLIENTS: Client[] = [
         imagePositionY: 50,
         imageScale: 100,
       },
+      stats: [
+        { value: '1', label: 'Stat One' },
+        { value: '2', label: 'Stat Two' },
+        { value: '3', label: 'Stat Three' },
+        { value: '4', label: 'Stat Four' },
+      ],
       services: [
         { title: 'Service One', desc: 'Describe your first core service here.' },
         { title: 'Service Two', desc: 'Describe your second core service here.' },
         { title: 'Service Three', desc: 'Describe your third core service here.' },
       ],
+      classesSection: { eyebrow: 'What We Offer', heading: 'Our Services' },
+      about: {
+        eyebrow: 'About Us',
+        heading: 'Who We\nAre',
+        body1: 'Describe your business here — what you do and who you do it for.',
+        body2: 'A second paragraph with more detail about your story or approach.',
+        image: '',
+        stats: [
+          { value: '1', label: 'About Stat One' },
+          { value: '2', label: 'About Stat Two' },
+        ],
+        chips: ['Tag One', 'Tag Two', 'Tag Three', 'Tag Four'],
+      },
       testimonials: [
         { quote: 'Placeholder review text goes here.', name: 'Customer Name', badge: 'Google' },
       ],
+      testimonialsSection: { eyebrow: 'Community', heading: 'What Our Customers Say' },
       contact: {
         email: 'hello@yourcompany.com',
         locations: [{ name: 'Main Location', address: 'Your Street 1, 12345 City', hours: 'Mon – Fri: 9:00 – 18:00' }],
+      },
+      locationsSection: { eyebrow: 'Where to Find Us', heading: 'Our Location' },
+      cta: {
+        heading: 'Ready to\nGet Started?',
+        sub: 'Join us today — your first step is just one click away.',
       },
       footer: {
         tagline: 'Your tagline goes here.',
@@ -178,14 +261,30 @@ function findClient(username: string, password: string): Client | undefined {
 // shape back into our SiteContent shape. contact.email has no live-side
 // field (nothing on the page has a data-fw hook for it — it's hardcoded in
 // the footer's mailto link), so it falls back to the seed value.
+function mapStatArray(live: any, fallback: StatItem[]): StatItem[] {
+  if (!Array.isArray(live)) return fallback;
+  return live.map((s: any, i: number) => ({
+    value: s?.value ?? fallback[i]?.value ?? '',
+    label: s?.label ?? fallback[i]?.label ?? '',
+  }));
+}
+
+function mapSectionHeader(live: any, fallback: SectionHeader): SectionHeader {
+  return { eyebrow: live?.eyebrow ?? fallback.eyebrow, heading: live?.heading ?? fallback.heading };
+}
+
 function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
   const h = live?.home?.hero ?? {};
+  const stats = Array.isArray(live?.home?.stats) ? live.home.stats : null;
   const services = Array.isArray(live?.home?.services) ? live.home.services : null;
+  const about = live?.home?.about ?? {};
   const testimonials = Array.isArray(live?.home?.testimonials) ? live.home.testimonials : null;
   const locations = Array.isArray(live?.home?.locations) ? live.home.locations : null;
+  const cta = live?.home?.cta ?? {};
   const footer = live?.footer ?? {};
   return {
     hero: {
+      eyebrow: h.eyebrow ?? fallback.hero.eyebrow,
       headline: h.headline ?? fallback.hero.headline,
       subtext: h.sub ?? fallback.hero.subtext,
       buttonText: h.cta_text ?? fallback.hero.buttonText,
@@ -194,17 +293,34 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
       imagePositionY: h.image_position?.y ?? fallback.hero.imagePositionY,
       imageScale: h.image_position?.scale ?? fallback.hero.imageScale,
     },
+    stats: mapStatArray(stats, fallback.stats),
     services: services
       ? services.map((s: any) => ({ title: s.title ?? '', desc: s.desc ?? '' }))
       : fallback.services,
+    classesSection: mapSectionHeader(live?.home?.classes, fallback.classesSection),
+    about: {
+      eyebrow: about.eyebrow ?? fallback.about.eyebrow,
+      heading: about.heading ?? fallback.about.heading,
+      body1: about.body_1 ?? fallback.about.body1,
+      body2: about.body_2 ?? fallback.about.body2,
+      image: about.image ?? fallback.about.image,
+      stats: mapStatArray(about.stats, fallback.about.stats),
+      chips: Array.isArray(about.chips) ? about.chips : fallback.about.chips,
+    },
     testimonials: testimonials
       ? testimonials.map((t: any) => ({ quote: t.quote ?? '', name: t.name ?? '', badge: t.badge ?? '' }))
       : fallback.testimonials,
+    testimonialsSection: mapSectionHeader(live?.home?.testimonials_section, fallback.testimonialsSection),
     contact: {
       email: fallback.contact.email,
       locations: locations
         ? locations.map((l: any) => ({ name: l.name ?? '', address: l.address ?? '', hours: l.hours ?? '' }))
         : fallback.contact.locations,
+    },
+    locationsSection: mapSectionHeader(live?.home?.locations_section, fallback.locationsSection),
+    cta: {
+      heading: cta.heading ?? fallback.cta.heading,
+      sub: cta.sub ?? fallback.cta.sub,
     },
     footer: {
       tagline: footer.tagline ?? fallback.footer.tagline,
@@ -375,6 +491,7 @@ export const useContentStore = create<ContentState>()(
 
           live.home = live.home || {};
           live.home.hero = live.home.hero || {};
+          live.home.hero.eyebrow = c.hero.eyebrow;
           live.home.hero.headline = c.hero.headline;
           live.home.hero.sub = c.hero.subtext;
           live.home.hero.cta_text = c.hero.buttonText;
@@ -385,10 +502,22 @@ export const useContentStore = create<ContentState>()(
             scale: c.hero.imageScale,
           };
 
+          live.home.stats = c.stats.map((s) => ({ value: s.value, label: s.label }));
+
           // home.services didn't exist before this integration — matches
           // the data-fw="home.services.N.title/desc" hooks added to the
           // three class cards.
           live.home.services = c.services.map((s) => ({ title: s.title, desc: s.desc }));
+          live.home.classes = { eyebrow: c.classesSection.eyebrow, heading: c.classesSection.heading };
+
+          live.home.about = live.home.about || {};
+          live.home.about.eyebrow = c.about.eyebrow;
+          live.home.about.heading = c.about.heading;
+          live.home.about.body_1 = c.about.body1;
+          live.home.about.body_2 = c.about.body2;
+          live.home.about.image = c.about.image || null;
+          live.home.about.stats = c.about.stats.map((s) => ({ value: s.value, label: s.label }));
+          live.home.about.chips = c.about.chips;
 
           // home.testimonials already existed and was already the real
           // content — this just overwrites it with the edited version.
@@ -397,6 +526,10 @@ export const useContentStore = create<ContentState>()(
             name: t.name,
             badge: t.badge,
           }));
+          live.home.testimonials_section = {
+            eyebrow: c.testimonialsSection.eyebrow,
+            heading: c.testimonialsSection.heading,
+          };
 
           // home.locations already existed too (id="fw-locations-root").
           // Only overwrite name/address/hours — preserve neighborhood/image/
@@ -409,6 +542,12 @@ export const useContentStore = create<ContentState>()(
             address: loc.address,
             hours: loc.hours,
           }));
+          live.home.locations_section = {
+            eyebrow: c.locationsSection.eyebrow,
+            heading: c.locationsSection.heading,
+          };
+
+          live.home.cta = { heading: c.cta.heading, sub: c.cta.sub };
 
           live.footer = live.footer || {};
           live.footer.tagline = c.footer.tagline;
@@ -460,6 +599,7 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
   return {
     home: {
       hero: {
+        eyebrow: content.hero.eyebrow,
         headline: content.hero.headline,
         sub: content.hero.subtext,
         cta_text: content.hero.buttonText,
@@ -470,14 +610,31 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
           scale: content.hero.imageScale,
         },
       },
+      stats: content.stats.map((s) => ({ value: s.value, label: s.label })),
       services: content.services.map((s) => ({ title: s.title, desc: s.desc })),
+      classes: { eyebrow: content.classesSection.eyebrow, heading: content.classesSection.heading },
+      about: {
+        eyebrow: content.about.eyebrow,
+        heading: content.about.heading,
+        body_1: content.about.body1,
+        body_2: content.about.body2,
+        image: content.about.image || null,
+        stats: content.about.stats.map((s) => ({ value: s.value, label: s.label })),
+        chips: content.about.chips,
+      },
       testimonials: content.testimonials.map((t) => ({ quote: t.quote, name: t.name, badge: t.badge })),
+      testimonials_section: {
+        eyebrow: content.testimonialsSection.eyebrow,
+        heading: content.testimonialsSection.heading,
+      },
       locations: content.contact.locations.map((loc, i) => ({
         ...(locationExtras[i] || {}),
         name: loc.name,
         address: loc.address,
         hours: loc.hours,
       })),
+      locations_section: { eyebrow: content.locationsSection.eyebrow, heading: content.locationsSection.heading },
+      cta: { heading: content.cta.heading, sub: content.cta.sub },
     },
     footer: { tagline: content.footer.tagline, copyright: content.footer.copyright },
   };

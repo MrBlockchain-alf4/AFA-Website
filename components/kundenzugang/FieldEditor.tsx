@@ -173,12 +173,14 @@ function TestimonialsEditor() {
   const items = useContentStore((s) => s.content.testimonials);
   return (
     <>
+      <TextField path="testimonialsSection.eyebrow" label="Section Eyebrow" autoFocus />
+      <TextField path="testimonialsSection.heading" label="Section Heading" />
       {items.map((_, i) => (
         <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
           <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
             Review {i + 1}
           </div>
-          <TextField path={`testimonials.${i}.quote`} label="Quote" multiline autoFocus={i === 0} />
+          <TextField path={`testimonials.${i}.quote`} label="Quote" multiline />
           <TextField path={`testimonials.${i}.name`} label="Name" />
           <TextField path={`testimonials.${i}.badge`} label="Badge" />
         </div>
@@ -191,7 +193,9 @@ function ContactEditor() {
   const locations = useContentStore((s) => s.content.contact.locations);
   return (
     <>
-      <TextField path="contact.email" label="Email" autoFocus />
+      <TextField path="locationsSection.eyebrow" label="Section Eyebrow" autoFocus />
+      <TextField path="locationsSection.heading" label="Section Heading" />
+      <TextField path="contact.email" label="Email" />
       {locations.map((_, i) => (
         <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
           <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
@@ -206,14 +210,96 @@ function ContactEditor() {
   );
 }
 
-const FIELD_SETS: Record<
-  string,
-  { path: string; label: string; multiline?: boolean }[] | 'testimonials' | 'contact' | 'heroImage'
-> = {
+function StatListEditor({ basePath, count }: { basePath: string; count: number }) {
+  return (
+    <>
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Stat {i + 1}
+          </div>
+          <TextField path={`${basePath}.${i}.value`} label="Value" autoFocus={i === 0} />
+          <TextField path={`${basePath}.${i}.label`} label="Label" />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function ChipListEditor({ basePath, count }: { basePath: string; count: number }) {
+  return (
+    <>
+      {Array.from({ length: count }).map((_, i) => (
+        <TextField key={i} path={`${basePath}.${i}`} label={`Tag ${i + 1}`} autoFocus={i === 0} />
+      ))}
+    </>
+  );
+}
+
+function SimpleImageEditor({ path, label }: { path: string; label: string }) {
+  const image = useContentStore((s) => getAtPath(s.content, path));
+  const updateField = useContentStore((s) => s.updateField);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  function handleFile(file: File | undefined) {
+    if (!file) return;
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      setUploadError('Please choose a .jpg, .png, or .webp file.');
+      return;
+    }
+    setUploadError(null);
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') updateField(path, reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  return (
+    <div className="mb-4">
+      <Label>{label}</Label>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        className="hidden"
+        onChange={(e) => handleFile(e.target.files?.[0])}
+      />
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        className="mb-2 w-full rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07]"
+      >
+        Upload Image
+      </button>
+      {uploadError && <p className="mb-2 text-[11px] text-red-400">{uploadError}</p>}
+      {image ? (
+        <div
+          className="mb-2 aspect-video w-full overflow-hidden rounded-md border border-white/10 bg-black"
+          style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        />
+      ) : (
+        <p className="mb-3 text-[11px] text-zinc-600">No image yet — upload one above.</p>
+      )}
+      <TextField path={path} label="Or paste an Image URL" />
+    </div>
+  );
+}
+
+type FieldSet = { path: string; label: string; multiline?: boolean }[] | { component: React.ReactNode };
+
+const FIELD_SETS: Record<string, FieldSet> = {
+  'hero.eyebrow': [{ path: 'hero.eyebrow', label: 'Eyebrow' }],
   'hero.headline': [{ path: 'hero.headline', label: 'Headline', multiline: true }],
   'hero.subtext': [{ path: 'hero.subtext', label: 'Subtext', multiline: true }],
   'hero.buttonText': [{ path: 'hero.buttonText', label: 'Button Text' }],
-  'hero.image': 'heroImage',
+  'hero.image': { component: <HeroImageEditor /> },
+  stats: { component: <StatListEditor basePath="stats" count={4} /> },
+  'services.header': [
+    { path: 'classesSection.eyebrow', label: 'Section Eyebrow' },
+    { path: 'classesSection.heading', label: 'Section Heading' },
+  ],
   'services.0': [
     { path: 'services.0.title', label: 'Title' },
     { path: 'services.0.desc', label: 'Description', multiline: true },
@@ -226,8 +312,19 @@ const FIELD_SETS: Record<
     { path: 'services.2.title', label: 'Title' },
     { path: 'services.2.desc', label: 'Description', multiline: true },
   ],
-  testimonials: 'testimonials',
-  contact: 'contact',
+  'about.eyebrow': [{ path: 'about.eyebrow', label: 'Eyebrow' }],
+  'about.heading': [{ path: 'about.heading', label: 'Heading', multiline: true }],
+  'about.body1': [{ path: 'about.body1', label: 'Paragraph 1', multiline: true }],
+  'about.body2': [{ path: 'about.body2', label: 'Paragraph 2', multiline: true }],
+  'about.image': { component: <SimpleImageEditor path="about.image" label="Image" /> },
+  'about.stats': { component: <StatListEditor basePath="about.stats" count={2} /> },
+  'about.chips': { component: <ChipListEditor basePath="about.chips" count={4} /> },
+  testimonials: { component: <TestimonialsEditor /> },
+  contact: { component: <ContactEditor /> },
+  cta: [
+    { path: 'cta.heading', label: 'Heading', multiline: true },
+    { path: 'cta.sub', label: 'Subtext', multiline: true },
+  ],
   footer: [
     { path: 'footer.tagline', label: 'Tagline' },
     { path: 'footer.copyright', label: 'Copyright' },
@@ -236,6 +333,7 @@ const FIELD_SETS: Record<
 
 export default function FieldEditor() {
   const selectedField = useContentStore((s) => s.selectedField);
+  const fieldSet = selectedField ? FIELD_SETS[selectedField] : null;
 
   return (
     <div className="px-4 pb-4">
@@ -259,19 +357,11 @@ export default function FieldEditor() {
             transition={{ duration: 0.15 }}
             className="border-t border-white/10 pt-4"
           >
-            {FIELD_SETS[selectedField] === 'testimonials' ? (
-              <TestimonialsEditor />
-            ) : FIELD_SETS[selectedField] === 'contact' ? (
-              <ContactEditor />
-            ) : FIELD_SETS[selectedField] === 'heroImage' ? (
-              <HeroImageEditor />
-            ) : (
-              (FIELD_SETS[selectedField] as { path: string; label: string; multiline?: boolean }[])?.map(
-                (f, i) => (
+            {fieldSet && 'component' in fieldSet
+              ? fieldSet.component
+              : (fieldSet as { path: string; label: string; multiline?: boolean }[] | null)?.map((f, i) => (
                   <TextField key={f.path} path={f.path} label={f.label} multiline={f.multiline} autoFocus={i === 0} />
-                ),
-              )
-            )}
+                ))}
           </motion.div>
         )}
       </AnimatePresence>
