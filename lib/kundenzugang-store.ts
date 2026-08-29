@@ -163,6 +163,42 @@ function findClient(username: string, password: string): Client | undefined {
   return CLIENTS.find((c) => c.username === username && c.password === password);
 }
 
+// Inverse of the merge logic in save() — turns the live site's real JSON
+// shape back into our SiteContent shape. contact.email has no live-side
+// field (nothing on the page has a data-fw hook for it — it's hardcoded in
+// the footer's mailto link), so it falls back to the seed value.
+function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
+  const h = live?.home?.hero ?? {};
+  const services = Array.isArray(live?.home?.services) ? live.home.services : null;
+  const testimonials = Array.isArray(live?.home?.testimonials) ? live.home.testimonials : null;
+  const locations = Array.isArray(live?.home?.locations) ? live.home.locations : null;
+  const footer = live?.footer ?? {};
+  return {
+    hero: {
+      headline: h.headline ?? fallback.hero.headline,
+      subtext: h.sub ?? fallback.hero.subtext,
+      buttonText: h.cta_text ?? fallback.hero.buttonText,
+      image: h.image ?? fallback.hero.image,
+    },
+    services: services
+      ? services.map((s: any) => ({ title: s.title ?? '', desc: s.desc ?? '' }))
+      : fallback.services,
+    testimonials: testimonials
+      ? testimonials.map((t: any) => ({ quote: t.quote ?? '', name: t.name ?? '', badge: t.badge ?? '' }))
+      : fallback.testimonials,
+    contact: {
+      email: fallback.contact.email,
+      locations: locations
+        ? locations.map((l: any) => ({ name: l.name ?? '', address: l.address ?? '', hours: l.hours ?? '' }))
+        : fallback.contact.locations,
+    },
+    footer: {
+      tagline: footer.tagline ?? fallback.footer.tagline,
+      copyright: footer.copyright ?? fallback.footer.copyright,
+    },
+  };
+}
+
 interface AuthState {
   isAuthenticated: boolean;
   clientId: string | null;
@@ -207,7 +243,7 @@ interface ContentState {
   dirty: boolean;
   liveSyncStatus: LiveSyncStatus;
   liveSyncMessage: string | null;
-  loadClient: (clientId: string) => void;
+  loadClient: (clientId: string) => Promise<void>;
   setSelectedField: (field: string | null) => void;
   updateField: (path: string, value: string) => void;
   save: () => Promise<void>;
@@ -238,11 +274,34 @@ export const useContentStore = create<ContentState>()(
       dirty: false,
       liveSyncStatus: 'idle' as LiveSyncStatus,
       liveSyncMessage: null as string | null,
-      loadClient: (clientId) => {
+      loadClient: async (clientId) => {
         const client = CLIENTS.find((c) => c.username === clientId);
         if (!client) return;
         const saved = get().savedContentByClient[clientId] ?? client.content;
         set({ currentClientId: clientId, content: saved, selectedField: null, dirty: false });
+
+        // Refresh from the real live data so the preview reflects whatever
+        // was actually saved last (from any session, any device) — not a
+        // possibly-stale local cache or the hardcoded seed.
+        if (!client.liveUrl) return;
+        try {
+          const res = await fetch(`${client.liveUrl}/admin/api/data`);
+          if (!res.ok) return;
+          const live = await res.json();
+          const mapped = mapLiveToContent(live, client.content);
+          set((state) =>
+            state.currentClientId === clientId
+              ? {
+                  content: mapped,
+                  savedContentByClient: { ...state.savedContentByClient, [clientId]: mapped },
+                  dirty: false,
+                }
+              : state,
+          );
+        } catch {
+          // Offline or the live endpoint is down — keep the local/seed
+          // content already set above rather than blocking login on it.
+        }
       },
       setSelectedField: (field) => set({ selectedField: field }),
       updateField: (path, value) =>

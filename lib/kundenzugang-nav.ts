@@ -59,23 +59,3 @@ export function indexOf(fieldId: string | null): number | null {
   const n = Number(parts[1]);
   return Number.isNaN(n) ? null : n;
 }
-
-// Real anchors on the live Framework Berlin site (framework-berlin.vercel.app)
-// that a section maps to, so selecting a field scrolls the embedded live
-// preview to roughly the right place. The live site has no distinct anchor
-// for "testimonials" or the footer, so those fall back to the nearest
-// preceding section that does have one — a real constraint of the site's
-// current markup, not something faked here.
-const SECTION_ANCHOR: Record<string, string> = {
-  hero: 'top',
-  services: 'classes',
-  testimonials: 'locations',
-  contact: 'locations',
-  footer: 'contact',
-};
-
-export function anchorOf(fieldId: string | null): string | null {
-  const section = sectionOf(fieldId);
-  if (!section) return null;
-  return SECTION_ANCHOR[section] ?? null;
-}
