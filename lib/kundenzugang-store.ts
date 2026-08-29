@@ -24,6 +24,11 @@ export interface SiteContent {
     subtext: string;
     buttonText: string;
     image: string;
+    /** Focal point as a percentage (CSS background-position), 0-100. */
+    imagePositionX: number;
+    imagePositionY: number;
+    /** Zoom as a percentage (CSS background-size), 100 = fit, up to 200. */
+    imageScale: number;
   };
   services: ServiceItem[];
   testimonials: TestimonialItem[];
@@ -67,6 +72,9 @@ export const CLIENTS: Client[] = [
           "Transform your body with Berlin's premier Lagree training — science-backed, results-driven.",
         buttonText: 'Book Your First Class',
         image: '',
+        imagePositionX: 50,
+        imagePositionY: 50,
+        imageScale: 100,
       },
       services: [
         {
@@ -138,6 +146,9 @@ export const CLIENTS: Client[] = [
         buttonText: 'Get Started',
         image:
           'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1600&auto=format&fit=crop',
+        imagePositionX: 50,
+        imagePositionY: 50,
+        imageScale: 100,
       },
       services: [
         { title: 'Service One', desc: 'Describe your first core service here.' },
@@ -179,6 +190,9 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
       subtext: h.sub ?? fallback.hero.subtext,
       buttonText: h.cta_text ?? fallback.hero.buttonText,
       image: h.image ?? fallback.hero.image,
+      imagePositionX: h.image_position?.x ?? fallback.hero.imagePositionX,
+      imagePositionY: h.image_position?.y ?? fallback.hero.imagePositionY,
+      imageScale: h.image_position?.scale ?? fallback.hero.imageScale,
     },
     services: services
       ? services.map((s: any) => ({ title: s.title ?? '', desc: s.desc ?? '' }))
@@ -253,6 +267,8 @@ interface ContentState {
   loadClient: (clientId: string) => Promise<void>;
   setSelectedField: (field: string | null) => void;
   updateField: (path: string, value: string) => void;
+  setHeroImagePosition: (x: number, y: number) => void;
+  setHeroImageScale: (scale: number) => void;
   save: () => Promise<void>;
 }
 
@@ -319,6 +335,19 @@ export const useContentStore = create<ContentState>()(
           content: setAtPath(state.content, path, value),
           dirty: true,
         })),
+      setHeroImagePosition: (x, y) =>
+        set((state) => ({
+          content: {
+            ...state.content,
+            hero: { ...state.content.hero, imagePositionX: x, imagePositionY: y },
+          },
+          dirty: true,
+        })),
+      setHeroImageScale: (scale) =>
+        set((state) => ({
+          content: { ...state.content, hero: { ...state.content.hero, imageScale: scale } },
+          dirty: true,
+        })),
       save: async () => {
         const state = get();
         if (!state.currentClientId) return;
@@ -350,6 +379,11 @@ export const useContentStore = create<ContentState>()(
           live.home.hero.sub = c.hero.subtext;
           live.home.hero.cta_text = c.hero.buttonText;
           live.home.hero.image = c.hero.image || null;
+          live.home.hero.image_position = {
+            x: c.hero.imagePositionX,
+            y: c.hero.imagePositionY,
+            scale: c.hero.imageScale,
+          };
 
           // home.services didn't exist before this integration — matches
           // the data-fw="home.services.N.title/desc" hooks added to the
@@ -430,6 +464,11 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         sub: content.hero.subtext,
         cta_text: content.hero.buttonText,
         image: content.hero.image || null,
+        image_position: {
+          x: content.hero.imagePositionX,
+          y: content.hero.imagePositionY,
+          scale: content.hero.imageScale,
+        },
       },
       services: content.services.map((s) => ({ title: s.title, desc: s.desc })),
       testimonials: content.testimonials.map((t) => ({ quote: t.quote, name: t.name, badge: t.badge })),
