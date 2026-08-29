@@ -78,12 +78,27 @@ const LIVE_PATH_TO_FIELD: Record<string, string> = {
   'footer.copyright': 'footer',
 };
 
+// Section-marker values the live site actually emits as data-fw-section —
+// these ARE field ids directly (chosen that way on purpose), unlike
+// data-fw paths which need the LIVE_PATH_TO_FIELD translation above.
+const KNOWN_SECTION_FIELD_IDS = new Set([
+  'testimonials',
+  'contact',
+  'footer',
+  'services.0',
+  'services.1',
+  'services.2',
+]);
+
 // Click inside the iframe → which field to select in the left panel.
-// Testimonials/Contact have no per-field data-fw hooks (rebuilt in bulk),
-// so those come through as a data-fw-section marker instead of a path.
+// Falls back to data-fw-section for elements with no per-field data-fw hook
+// — either because the section is rebuilt in bulk (Testimonials/Contact) or
+// because the click landed on chrome around the real field (a service
+// card's photo placeholder, the footer logo, the hero overlay sitting on
+// top of #hero-bg).
 export function mapLiveClickToField(path: string | null, section: string | null): string | null {
   if (path && LIVE_PATH_TO_FIELD[path]) return LIVE_PATH_TO_FIELD[path];
-  if (section === 'testimonials' || section === 'contact') return section;
+  if (section && KNOWN_SECTION_FIELD_IDS.has(section)) return section;
   return null;
 }
 
