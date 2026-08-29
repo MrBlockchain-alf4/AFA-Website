@@ -59,3 +59,48 @@ export function indexOf(fieldId: string | null): number | null {
   const n = Number(parts[1]);
   return Number.isNaN(n) ? null : n;
 }
+
+// ── Bidirectional bridge with the real iframe's data-fw/data-fw-section
+// markers (click-to-select + highlight-on-select). Kept in one place so the
+// two directions can't drift apart.
+const LIVE_PATH_TO_FIELD: Record<string, string> = {
+  'home.hero.headline': 'hero.headline',
+  'home.hero.sub': 'hero.subtext',
+  'home.hero.cta_text': 'hero.buttonText',
+  'home.hero.image': 'hero.image',
+  'home.services.0.title': 'services.0',
+  'home.services.0.desc': 'services.0',
+  'home.services.1.title': 'services.1',
+  'home.services.1.desc': 'services.1',
+  'home.services.2.title': 'services.2',
+  'home.services.2.desc': 'services.2',
+  'footer.tagline': 'footer',
+  'footer.copyright': 'footer',
+};
+
+// Click inside the iframe → which field to select in the left panel.
+// Testimonials/Contact have no per-field data-fw hooks (rebuilt in bulk),
+// so those come through as a data-fw-section marker instead of a path.
+export function mapLiveClickToField(path: string | null, section: string | null): string | null {
+  if (path && LIVE_PATH_TO_FIELD[path]) return LIVE_PATH_TO_FIELD[path];
+  if (section === 'testimonials' || section === 'contact') return section;
+  return null;
+}
+
+const FIELD_TO_LIVE_PATHS: Record<string, string[]> = {
+  'hero.headline': ['home.hero.headline'],
+  'hero.subtext': ['home.hero.sub'],
+  'hero.buttonText': ['home.hero.cta_text'],
+  'hero.image': ['home.hero.image'],
+  'services.0': ['home.services.0.title', 'home.services.0.desc'],
+  'services.1': ['home.services.1.title', 'home.services.1.desc'],
+  'services.2': ['home.services.2.title', 'home.services.2.desc'],
+  footer: ['footer.tagline', 'footer.copyright'],
+};
+
+// Selected field in the left panel → what to highlight inside the iframe.
+export function getHighlightTarget(fieldId: string | null): { paths: string[] | null; section: string | null } {
+  if (!fieldId) return { paths: null, section: null };
+  if (fieldId === 'testimonials' || fieldId === 'contact') return { paths: null, section: fieldId };
+  return { paths: FIELD_TO_LIVE_PATHS[fieldId] || null, section: null };
+}

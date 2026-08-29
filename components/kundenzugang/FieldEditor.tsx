@@ -14,7 +14,17 @@ function Label({ children }: { children: React.ReactNode }) {
 const inputCls =
   'w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-[13px] text-zinc-100 outline-none transition-colors focus:border-[#00D4FF]/50 focus:bg-white/[0.07] placeholder:text-zinc-600';
 
-function TextField({ path, label, multiline }: { path: string; label: string; multiline?: boolean }) {
+function TextField({
+  path,
+  label,
+  multiline,
+  autoFocus,
+}: {
+  path: string;
+  label: string;
+  multiline?: boolean;
+  autoFocus?: boolean;
+}) {
   const value = useContentStore((s) => getAtPath(s.content, path));
   const updateField = useContentStore((s) => s.updateField);
   return (
@@ -22,6 +32,7 @@ function TextField({ path, label, multiline }: { path: string; label: string; mu
       <Label>{label}</Label>
       {multiline ? (
         <textarea
+          autoFocus={autoFocus}
           rows={3}
           className={inputCls}
           value={value}
@@ -29,6 +40,7 @@ function TextField({ path, label, multiline }: { path: string; label: string; mu
         />
       ) : (
         <input
+          autoFocus={autoFocus}
           type="text"
           className={inputCls}
           value={value}
@@ -48,7 +60,7 @@ function TestimonialsEditor() {
           <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
             Review {i + 1}
           </div>
-          <TextField path={`testimonials.${i}.quote`} label="Quote" multiline />
+          <TextField path={`testimonials.${i}.quote`} label="Quote" multiline autoFocus={i === 0} />
           <TextField path={`testimonials.${i}.name`} label="Name" />
           <TextField path={`testimonials.${i}.badge`} label="Badge" />
         </div>
@@ -61,7 +73,7 @@ function ContactEditor() {
   const locations = useContentStore((s) => s.content.contact.locations);
   return (
     <>
-      <TextField path="contact.email" label="Email" />
+      <TextField path="contact.email" label="Email" autoFocus />
       {locations.map((_, i) => (
         <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
           <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
@@ -135,7 +147,9 @@ export default function FieldEditor() {
               <ContactEditor />
             ) : (
               (FIELD_SETS[selectedField] as { path: string; label: string; multiline?: boolean }[])?.map(
-                (f) => <TextField key={f.path} path={f.path} label={f.label} multiline={f.multiline} />,
+                (f, i) => (
+                  <TextField key={f.path} path={f.path} label={f.label} multiline={f.multiline} autoFocus={i === 0} />
+                ),
               )
             )}
           </motion.div>

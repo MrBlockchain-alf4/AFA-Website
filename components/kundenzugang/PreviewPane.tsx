@@ -8,12 +8,15 @@ import {
   getClientLiveUrl,
   buildLivePreviewPayload,
 } from '@/lib/kundenzugang-store';
+import { mapLiveClickToField, getHighlightTarget } from '@/lib/kundenzugang-nav';
 import { cn } from '@/lib/utils';
 
 export default function PreviewPane() {
   const content = useContentStore((s) => s.content);
   const dirty = useContentStore((s) => s.dirty);
   const liveLocationExtras = useContentStore((s) => s.liveLocationExtras);
+  const selectedField = useContentStore((s) => s.selectedField);
+  const setSelectedField = useContentStore((s) => s.setSelectedField);
   const clientId = useAuthStore((s) => s.clientId);
   const siteName = getClientSiteName(clientId);
   const liveUrl = getClientLiveUrl(clientId);
@@ -21,19 +24,28 @@ export default function PreviewPane() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const readyRef = useRef(false);
 
+  function postToIframe(msg: unknown) {
+    if (!liveUrl || !readyRef.current) return;
+    const win = iframeRef.current?.contentWindow;
+    if (!win) return;
+    win.postMessage(msg, new URL(liveUrl).origin);
+  }
+
   // Post the current draft to the live page's postMessage listener
   // (admin/page-loader.js) on every change, so the real iframe reflects
   // edits instantly without waiting for Save.
   useEffect(() => {
-    if (!liveUrl || !readyRef.current) return;
-    const win = iframeRef.current?.contentWindow;
-    if (!win) return;
-    const targetOrigin = new URL(liveUrl).origin;
-    win.postMessage(
-      { type: 'FW_ADMIN_PREVIEW', data: buildLivePreviewPayload(content, liveLocationExtras) },
-      targetOrigin,
-    );
+    postToIframe({ type: 'FW_ADMIN_PREVIEW', data: buildLivePreviewPayload(content, liveLocationExtras) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, liveLocationExtras, liveUrl]);
+
+  // Tell the iframe which element(s) to outline whenever the selected field
+  // changes — from a nav-tree click OR a click inside the iframe itself.
+  useEffect(() => {
+    const { paths, section } = getHighlightTarget(selectedField);
+    postToIframe({ type: 'FW_ADMIN_HIGHLIGHT', paths, section });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedField, liveUrl]);
 
   // After a successful save, reload the iframe so it re-fetches fresh from
   // Supabase via its own normal GET-on-load path, rather than trusting the
@@ -44,6 +56,22 @@ export default function PreviewPane() {
     readyRef.current = false;
     iframeRef.current.src = iframeRef.current.src;
   }, [liveSyncStatus]);
+
+  // Figma-style click-to-edit: a click inside the iframe on a data-fw(-section)
+  // element posts its path back here; map it to a field id and select it.
+  useEffect(() => {
+    if (!liveUrl) return;
+    const targetOrigin = new URL(liveUrl).origin;
+    function onMessage(event: MessageEvent) {
+      if (event.origin !== targetOrigin) return;
+      const msg = event.data;
+      if (!msg || msg.type !== 'FW_ADMIN_SELECT') return;
+      const fieldId = mapLiveClickToField(msg.path ?? null, msg.section ?? null);
+      if (fieldId) setSelectedField(fieldId);
+    }
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, [liveUrl, setSelectedField]);
 
   if (!liveUrl) {
     return (
@@ -90,15 +118,9 @@ export default function PreviewPane() {
         title={`${siteName} — live preview`}
         onLoad={() => {
           readyRef.current = true;
-          // Push the current draft immediately once the frame (and its
-          // page-loader.js listener) is actually ready to receive it.
-          const win = iframeRef.current?.contentWindow;
-          if (win) {
-            win.postMessage(
-              { type: 'FW_ADMIN_PREVIEW', data: buildLivePreviewPayload(content, liveLocationExtras) },
-              new URL(liveUrl).origin,
-            );
-          }
+          postToIframe({ type: 'FW_ADMIN_PREVIEW', data: buildLivePreviewPayload(content, liveLocationExtras) });
+          const { paths, section } = getHighlightTarget(selectedField);
+          postToIframe({ type: 'FW_ADMIN_HIGHLIGHT', paths, section });
         }}
       />
     </div>

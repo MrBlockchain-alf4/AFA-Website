@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
-import { NAV_TREE } from '@/lib/kundenzugang-nav';
+import { NAV_TREE, sectionOf } from '@/lib/kundenzugang-nav';
 import { useContentStore } from '@/lib/kundenzugang-store';
 import { cn } from '@/lib/utils';
 
@@ -11,6 +11,16 @@ export default function NavTree() {
   const selectedField = useContentStore((s) => s.selectedField);
   const setSelectedField = useContentStore((s) => s.setSelectedField);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ hero: true, services: true });
+
+  // Figma-style: whenever the selection changes (nav click, or a click
+  // inside the live iframe), make sure its parent section is open — the
+  // user shouldn't have to manually expand a collapsed section to see what
+  // just got selected.
+  useEffect(() => {
+    const section = sectionOf(selectedField);
+    if (!section) return;
+    setExpanded((e) => (e[section] ? e : { ...e, [section]: true }));
+  }, [selectedField]);
 
   return (
     <nav className="flex flex-col gap-0.5 px-2 py-3">
