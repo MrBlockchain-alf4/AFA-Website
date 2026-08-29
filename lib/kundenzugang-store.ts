@@ -243,6 +243,13 @@ interface ContentState {
   dirty: boolean;
   liveSyncStatus: LiveSyncStatus;
   liveSyncMessage: string | null;
+  /**
+   * Fields the live site tracks per-location (neighborhood, image,
+   * img_position) that our schema doesn't carry — kept only so the
+   * postMessage preview payload can include them and avoid rendering
+   * "undefined" in the iframe. Never edited, just passed through.
+   */
+  liveLocationExtras: Record<string, unknown>[];
   loadClient: (clientId: string) => Promise<void>;
   setSelectedField: (field: string | null) => void;
   updateField: (path: string, value: string) => void;
@@ -274,6 +281,7 @@ export const useContentStore = create<ContentState>()(
       dirty: false,
       liveSyncStatus: 'idle' as LiveSyncStatus,
       liveSyncMessage: null as string | null,
+      liveLocationExtras: [] as Record<string, unknown>[],
       loadClient: async (clientId) => {
         const client = CLIENTS.find((c) => c.username === clientId);
         if (!client) return;
@@ -289,12 +297,14 @@ export const useContentStore = create<ContentState>()(
           if (!res.ok) return;
           const live = await res.json();
           const mapped = mapLiveToContent(live, client.content);
+          const extras = Array.isArray(live?.home?.locations) ? live.home.locations : [];
           set((state) =>
             state.currentClientId === clientId
               ? {
                   content: mapped,
                   savedContentByClient: { ...state.savedContentByClient, [clientId]: mapped },
                   dirty: false,
+                  liveLocationExtras: extras,
                 }
               : state,
           );
@@ -403,6 +413,35 @@ export function getClientSiteName(clientId: string | null): string {
 
 export function getClientLiveUrl(clientId: string | null): string | undefined {
   return CLIENTS.find((c) => c.username === clientId)?.liveUrl;
+}
+
+// Builds the partial payload posted to the live iframe's page-loader.js
+// listener. Deliberately partial (only home.hero/services/testimonials/
+// locations + footer) — applyData() on the receiving end only patches keys
+// that exist, so omitting site/team/physio/pricing leaves those untouched.
+// locationExtras carries neighborhood/image/img_position from the live
+// fetch so the iframe doesn't render "undefined" for fields our schema
+// doesn't track.
+export function buildLivePreviewPayload(content: SiteContent, locationExtras: Record<string, unknown>[]) {
+  return {
+    home: {
+      hero: {
+        headline: content.hero.headline,
+        sub: content.hero.subtext,
+        cta_text: content.hero.buttonText,
+        image: content.hero.image || null,
+      },
+      services: content.services.map((s) => ({ title: s.title, desc: s.desc })),
+      testimonials: content.testimonials.map((t) => ({ quote: t.quote, name: t.name, badge: t.badge })),
+      locations: content.contact.locations.map((loc, i) => ({
+        ...(locationExtras[i] || {}),
+        name: loc.name,
+        address: loc.address,
+        hours: loc.hours,
+      })),
+    },
+    footer: { tagline: content.footer.tagline, copyright: content.footer.copyright },
+  };
 }
 
 export function getAtPath(obj: any, path: string): string {
