@@ -315,6 +315,25 @@ const FIELD_TO_LIVE_PATHS: Record<string, string[]> = {
   'about.chips': ['home.about.chips.0', 'home.about.chips.1', 'home.about.chips.2', 'home.about.chips.3'],
   cta: ['home.cta.heading', 'home.cta.sub'],
   footer: ['footer.tagline', 'footer.copyright'],
+  // Elit Juwelier — exact per-element paths, same convention as Framework's
+  // Hero/About above (not section-based): the hero section alone is
+  // min-height:100vh, so a single outline around the whole thing would be
+  // effectively invisible — highlighting each real element instead gives
+  // the same precise, visible selection feedback Framework has.
+  'elit.logo': ['elit.site.logo'],
+  'elit.hero': [
+    'elit.hero.eyebrow', 'elit.hero.headline', 'elit.hero.headline_em', 'elit.hero.subtitle', 'elit.hero.desc',
+    'elit.hero.chips.0', 'elit.hero.chips.1', 'elit.hero.chips.2', 'elit.hero.chips.3',
+    'elit.hero.primary_btn_text', 'elit.hero.secondary_btn_text',
+    'elit.hero.badge_number', 'elit.hero.badge_text', 'elit.hero.image',
+  ],
+  'elit.about': [
+    'elit.about.eyebrow', 'elit.about.heading', 'elit.about.heading_em', 'elit.about.body_1', 'elit.about.body_2',
+    'elit.about.image', 'elit.about.stamp_number', 'elit.about.stamp_text',
+    'elit.contact.address', 'elit.contact.phone', 'elit.contact.whatsapp',
+    'elit.contact.hours_weekday', 'elit.contact.hours_sunday',
+  ],
+  'elit.footer': ['elit.footer.tagline', 'elit.footer.copyright'],
 };
 
 // Field ids that highlight by section (data-fw-section) rather than by a
@@ -332,11 +351,11 @@ const SECTION_HIGHLIGHT_FIELDS = new Set([
   'physio.services',
   'physio.specialists',
   'physio.cta',
-  'elit.logo',
-  'elit.hero',
+  // Only Gallery stays section-based — 16 open-ended photos, like Team.
+  // Hero/About/Footer/Logo now use exact per-element paths (above), since
+  // their sections are too large (hero is min-height:100vh) or would
+  // otherwise cover more than the actual field for no benefit.
   'elit.gallery',
-  'elit.about',
-  'elit.footer',
 ]);
 
 // Selected field in the left panel → what to highlight inside the iframe.
