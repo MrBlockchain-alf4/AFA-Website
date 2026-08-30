@@ -236,6 +236,9 @@ export interface ElitContent {
     stampText: string;
   };
   contact: {
+    eyebrow: string;
+    heading: string;
+    headingEm: string;
     address: string;
     phone: string;
     whatsapp: string;
@@ -776,6 +779,9 @@ export const CLIENTS: Client[] = [
         stampText: 'Jahre\nTradition',
       },
       contact: {
+        eyebrow: 'Kontakt & Öffnungszeiten',
+        heading: 'Wir freuen uns',
+        headingEm: 'auf Sie',
         address: 'Elberfelder Str. 22\n58095 Hagen, NRW',
         phone: '02331 / 5936841',
         whatsapp: '0174 / 9155488',
@@ -1178,6 +1184,9 @@ function mapElitLiveToContent(live: any, fallback: ElitContent): ElitContent {
       stampText: about.stamp_text ?? fallback.about.stampText,
     },
     contact: {
+      eyebrow: contact.eyebrow ?? fallback.contact.eyebrow,
+      heading: contact.heading ?? fallback.contact.heading,
+      headingEm: contact.heading_em ?? fallback.contact.headingEm,
       address: contact.address ?? fallback.contact.address,
       phone: contact.phone ?? fallback.contact.phone,
       whatsapp: contact.whatsapp ?? fallback.contact.whatsapp,
@@ -1307,6 +1316,9 @@ function buildElitLiveSection(c: ElitContent) {
       stamp_text: c.about.stampText,
     },
     contact: {
+      eyebrow: c.contact.eyebrow,
+      heading: c.contact.heading,
+      heading_em: c.contact.headingEm,
       address: c.contact.address,
       phone: c.contact.phone,
       whatsapp: c.contact.whatsapp,

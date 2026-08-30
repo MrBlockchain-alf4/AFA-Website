@@ -684,17 +684,33 @@ function ElitServicesEditor() {
   );
 }
 
-function ElitAboutContactEditor() {
+function ElitAboutEditor() {
   return (
     <>
-      <TextField path="elit.about.eyebrow" label="About Eyebrow" autoFocus />
-      <TextField path="elit.about.heading" label="About Heading" />
-      <TextField path="elit.about.headingEm" label="About Heading (emphasized word)" />
-      <TextField path="elit.about.body1" label="About Paragraph 1" multiline />
-      <TextField path="elit.about.body2" label="About Paragraph 2" multiline />
-      <ImagePositionEditor imagePath="elit.about.image" posPath="elit.about.imagePos" label="About Image" />
+      <TextField path="elit.about.eyebrow" label="Eyebrow" autoFocus />
+      <TextField path="elit.about.heading" label="Heading" />
+      <TextField path="elit.about.headingEm" label="Heading (emphasized word)" />
+      <TextField path="elit.about.body1" label="Paragraph 1" multiline />
+      <TextField path="elit.about.body2" label="Paragraph 2" multiline />
+      <ImagePositionEditor imagePath="elit.about.image" posPath="elit.about.imagePos" label="Image" />
       <TextField path="elit.about.stampNumber" label="Stamp Number" />
       <TextField path="elit.about.stampText" label="Stamp Text" multiline />
+    </>
+  );
+}
+
+// A separate leaf from About even though the seed content is analogous in
+// tone — the live site renders them as two distinct <section> elements
+// (.about and .contact), so combining them into one field group meant
+// clicking anywhere in Contact would highlight/scroll to About's elements
+// too (its own eyebrow/heading came first in the highlight list), jumping
+// the preview away from what was actually clicked.
+function ElitContactEditor() {
+  return (
+    <>
+      <TextField path="elit.contact.eyebrow" label="Eyebrow" autoFocus />
+      <TextField path="elit.contact.heading" label="Heading" />
+      <TextField path="elit.contact.headingEm" label="Heading (emphasized word)" />
       <TextField path="elit.contact.address" label="Address" multiline />
       <TextField path="elit.contact.phone" label="Phone" />
       <TextField path="elit.contact.whatsapp" label="WhatsApp" />
@@ -878,7 +894,8 @@ const FIELD_SETS: Record<string, FieldSet> = {
   'elit.stats': { component: <StatListEditor basePath="elit.stats" count={4} /> },
   'elit.services': { component: <ElitServicesEditor /> },
   'elit.gallery': { component: <ElitGalleryEditor /> },
-  'elit.about': { component: <ElitAboutContactEditor /> },
+  'elit.about': { component: <ElitAboutEditor /> },
+  'elit.contact': { component: <ElitContactEditor /> },
   'elit.goldankaufInfo': { component: <ElitGoldankaufInfoEditor /> },
   'elit.reviews': { component: <ElitReviewsEditor /> },
   'elit.instagram': { component: <ElitInstagramEditor /> },
