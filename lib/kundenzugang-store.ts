@@ -13,9 +13,19 @@ export interface TestimonialItem {
 }
 
 export interface LocationItem {
+  neighborhood: string;
   name: string;
   address: string;
   hours: string;
+  image: string;
+}
+
+export interface PricingTier {
+  credits: string;
+  name: string;
+  amount: string;
+  note: string;
+  popular: boolean;
 }
 
 export interface StatItem {
@@ -45,6 +55,8 @@ export interface SiteContent {
   stats: StatItem[];
   services: ServiceItem[];
   classesSection: SectionHeader;
+  pricing: PricingTier[];
+  pricingSection: { eyebrow: string; heading: string; sub: string };
   about: {
     eyebrow: string;
     heading: string;
@@ -127,6 +139,20 @@ export const CLIENTS: Client[] = [
         },
       ],
       classesSection: { eyebrow: 'What We Offer', heading: 'Our Classes' },
+      // Pulled directly from the live site's /admin/api/data on 2026-08-30 —
+      // verified via curl, not invented.
+      pricing: [
+        { credits: '2 Credits', name: 'First Timer', amount: '€35', note: '€17.50 per class', popular: false },
+        { credits: '1 Credit', name: 'Drop In', amount: '€35', note: '€35 per class', popular: false },
+        { credits: '5 Credits', name: '5 Classes', amount: '€160', note: '€32 per class', popular: false },
+        { credits: '10 Credits', name: '10 Classes', amount: '€290', note: '€29 per class', popular: true },
+        { credits: '20 Credits', name: '20 Classes', amount: '€520', note: '€26 per class', popular: false },
+      ],
+      pricingSection: {
+        eyebrow: 'Credit Packs',
+        heading: 'Membership Options',
+        sub: 'Same pricing at both Berlin studio locations. Credits valid at P-Berg & Kreuzberg.',
+      },
       about: {
         eyebrow: 'The Lagree Method',
         heading: 'What is\nFramework?',
@@ -182,8 +208,20 @@ export const CLIENTS: Client[] = [
       contact: {
         email: 'hello@frameworkberlin.com',
         locations: [
-          { name: 'P-Berg Studio', address: 'Christinenstraße 19a, 10119 Berlin', hours: 'Mon – Thu: 8:00 am – 5:30 pm' },
-          { name: 'Kreuzberg Studio', address: 'Oranienstraße 185, 10999 Berlin', hours: 'Mon – Thu: 8:00 am – 5:30 pm' },
+          {
+            neighborhood: 'Prenzlauer Berg',
+            name: 'P-Berg Studio',
+            address: 'Christinenstraße 19a, 10119 Berlin',
+            hours: 'Mon – Thu: 8:00 am – 5:30 pm',
+            image: '/framework-berlin/website/public/studio/pberg.png',
+          },
+          {
+            neighborhood: 'Kreuzberg',
+            name: 'Kreuzberg Studio',
+            address: 'Oranienstraße 185, 10999 Berlin',
+            hours: 'Mon – Thu: 8:00 am – 5:30 pm',
+            image: '/framework-berlin/website/public/studio/xberg.png',
+          },
         ],
       },
       footer: {
@@ -220,6 +258,12 @@ export const CLIENTS: Client[] = [
         { title: 'Service Three', desc: 'Describe your third core service here.' },
       ],
       classesSection: { eyebrow: 'What We Offer', heading: 'Our Services' },
+      pricing: [
+        { credits: '1 Credit', name: 'Starter', amount: '€35', note: 'per class', popular: false },
+        { credits: '5 Credits', name: 'Basic Pack', amount: '€150', note: '€30 per class', popular: false },
+        { credits: '10 Credits', name: 'Pro Pack', amount: '€280', note: '€28 per class', popular: true },
+      ],
+      pricingSection: { eyebrow: 'Pricing', heading: 'Membership Options', sub: 'Choose the plan that fits you best.' },
       about: {
         eyebrow: 'About Us',
         heading: 'Who We\nAre',
@@ -238,7 +282,9 @@ export const CLIENTS: Client[] = [
       testimonialsSection: { eyebrow: 'Community', heading: 'What Our Customers Say' },
       contact: {
         email: 'hello@yourcompany.com',
-        locations: [{ name: 'Main Location', address: 'Your Street 1, 12345 City', hours: 'Mon – Fri: 9:00 – 18:00' }],
+        locations: [
+          { neighborhood: 'Downtown', name: 'Main Location', address: 'Your Street 1, 12345 City', hours: 'Mon – Fri: 9:00 – 18:00', image: '' },
+        ],
       },
       locationsSection: { eyebrow: 'Where to Find Us', heading: 'Our Location' },
       cta: {
@@ -277,6 +323,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
   const h = live?.home?.hero ?? {};
   const stats = Array.isArray(live?.home?.stats) ? live.home.stats : null;
   const services = Array.isArray(live?.home?.services) ? live.home.services : null;
+  const pricing = Array.isArray(live?.home?.pricing) ? live.home.pricing : null;
   const about = live?.home?.about ?? {};
   const testimonials = Array.isArray(live?.home?.testimonials) ? live.home.testimonials : null;
   const locations = Array.isArray(live?.home?.locations) ? live.home.locations : null;
@@ -298,6 +345,20 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
       ? services.map((s: any) => ({ title: s.title ?? '', desc: s.desc ?? '' }))
       : fallback.services,
     classesSection: mapSectionHeader(live?.home?.classes, fallback.classesSection),
+    pricing: pricing
+      ? pricing.map((p: any, i: number) => ({
+          credits: p.credits ?? fallback.pricing[i]?.credits ?? '',
+          name: p.name ?? fallback.pricing[i]?.name ?? '',
+          amount: p.amount ?? fallback.pricing[i]?.amount ?? '',
+          note: p.note ?? fallback.pricing[i]?.note ?? '',
+          popular: !!p.popular,
+        }))
+      : fallback.pricing,
+    pricingSection: {
+      eyebrow: live?.home?.pricing_section?.eyebrow ?? fallback.pricingSection.eyebrow,
+      heading: live?.home?.pricing_section?.heading ?? fallback.pricingSection.heading,
+      sub: live?.home?.pricing_section?.sub ?? fallback.pricingSection.sub,
+    },
     about: {
       eyebrow: about.eyebrow ?? fallback.about.eyebrow,
       heading: about.heading ?? fallback.about.heading,
@@ -314,7 +375,13 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
     contact: {
       email: fallback.contact.email,
       locations: locations
-        ? locations.map((l: any) => ({ name: l.name ?? '', address: l.address ?? '', hours: l.hours ?? '' }))
+        ? locations.map((l: any, i: number) => ({
+            neighborhood: l.neighborhood ?? fallback.contact.locations[i]?.neighborhood ?? '',
+            name: l.name ?? '',
+            address: l.address ?? '',
+            hours: l.hours ?? '',
+            image: l.image ?? fallback.contact.locations[i]?.image ?? '',
+          }))
         : fallback.contact.locations,
     },
     locationsSection: mapSectionHeader(live?.home?.locations_section, fallback.locationsSection),
@@ -374,21 +441,21 @@ interface ContentState {
   liveSyncStatus: LiveSyncStatus;
   liveSyncMessage: string | null;
   /**
-   * Fields the live site tracks per-location (neighborhood, image,
-   * img_position) that our schema doesn't carry — kept only so the
-   * postMessage preview payload can include them and avoid rendering
-   * "undefined" in the iframe. Never edited, just passed through.
+   * Fields the live site tracks per-location (currently just img_position)
+   * that our schema doesn't carry — kept only so the postMessage preview
+   * payload can include them and avoid rendering "undefined" in the iframe.
+   * Never edited, just passed through.
    */
   liveLocationExtras: Record<string, unknown>[];
   loadClient: (clientId: string) => Promise<void>;
   setSelectedField: (field: string | null) => void;
-  updateField: (path: string, value: string) => void;
+  updateField: (path: string, value: string | boolean) => void;
   setHeroImagePosition: (x: number, y: number) => void;
   setHeroImageScale: (scale: number) => void;
   save: () => Promise<void>;
 }
 
-function setAtPath(obj: any, path: string, value: string) {
+function setAtPath(obj: any, path: string, value: string | boolean) {
   const keys = path.split('.');
   const clone = structuredClone(obj);
   let cur = clone;
@@ -510,6 +577,19 @@ export const useContentStore = create<ContentState>()(
           live.home.services = c.services.map((s) => ({ title: s.title, desc: s.desc }));
           live.home.classes = { eyebrow: c.classesSection.eyebrow, heading: c.classesSection.heading };
 
+          live.home.pricing = c.pricing.map((p) => ({
+            credits: p.credits,
+            name: p.name,
+            amount: p.amount,
+            note: p.note,
+            popular: p.popular,
+          }));
+          live.home.pricing_section = {
+            eyebrow: c.pricingSection.eyebrow,
+            heading: c.pricingSection.heading,
+            sub: c.pricingSection.sub,
+          };
+
           live.home.about = live.home.about || {};
           live.home.about.eyebrow = c.about.eyebrow;
           live.home.about.heading = c.about.heading;
@@ -532,15 +612,16 @@ export const useContentStore = create<ContentState>()(
           };
 
           // home.locations already existed too (id="fw-locations-root").
-          // Only overwrite name/address/hours — preserve neighborhood/image/
-          // img_position from the live copy rather than dropping them, since
-          // our schema doesn't carry those fields.
+          // Spread the live copy first so img_position (not tracked in our
+          // schema) survives, then overwrite every field we do track.
           const liveLocations = Array.isArray(live.home.locations) ? live.home.locations : [];
           live.home.locations = c.contact.locations.map((loc, i) => ({
             ...(liveLocations[i] || {}),
+            neighborhood: loc.neighborhood,
             name: loc.name,
             address: loc.address,
             hours: loc.hours,
+            image: loc.image || null,
           }));
           live.home.locations_section = {
             eyebrow: c.locationsSection.eyebrow,
@@ -589,9 +670,9 @@ export function getClientLiveUrl(clientId: string | null): string | undefined {
 }
 
 // Builds the partial payload posted to the live iframe's page-loader.js
-// listener. Deliberately partial (only home.hero/services/testimonials/
-// locations + footer) — applyData() on the receiving end only patches keys
-// that exist, so omitting site/team/physio/pricing leaves those untouched.
+// listener. Deliberately partial (only home.* + footer) — applyData() on the
+// receiving end only patches keys that exist, so omitting site/team/physio
+// leaves those untouched (they aren't tracked in SiteContent yet).
 // locationExtras carries neighborhood/image/img_position from the live
 // fetch so the iframe doesn't render "undefined" for fields our schema
 // doesn't track.
@@ -613,6 +694,18 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
       stats: content.stats.map((s) => ({ value: s.value, label: s.label })),
       services: content.services.map((s) => ({ title: s.title, desc: s.desc })),
       classes: { eyebrow: content.classesSection.eyebrow, heading: content.classesSection.heading },
+      pricing: content.pricing.map((p) => ({
+        credits: p.credits,
+        name: p.name,
+        amount: p.amount,
+        note: p.note,
+        popular: p.popular,
+      })),
+      pricing_section: {
+        eyebrow: content.pricingSection.eyebrow,
+        heading: content.pricingSection.heading,
+        sub: content.pricingSection.sub,
+      },
       about: {
         eyebrow: content.about.eyebrow,
         heading: content.about.heading,
@@ -629,9 +722,11 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
       },
       locations: content.contact.locations.map((loc, i) => ({
         ...(locationExtras[i] || {}),
+        neighborhood: loc.neighborhood,
         name: loc.name,
         address: loc.address,
         hours: loc.hours,
+        image: loc.image || null,
       })),
       locations_section: { eyebrow: content.locationsSection.eyebrow, heading: content.locationsSection.heading },
       cta: { heading: content.cta.heading, sub: content.cta.sub },

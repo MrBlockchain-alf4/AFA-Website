@@ -53,6 +53,7 @@ export const NAV_TREE: NavNode[] = [
       { id: 'about.chips', label: 'Tags' },
     ],
   },
+  { id: 'pricing', label: 'Membership Pricing', live: true },
   { id: 'testimonials', label: 'Testimonials', live: true },
   { id: 'contact', label: 'Contact', live: true },
   { id: 'cta', label: 'Call to Action', live: true },
@@ -91,6 +92,14 @@ const LIVE_PATH_TO_FIELD: Record<string, string> = {
   'home.services.2.desc': 'services.2',
   'home.classes.eyebrow': 'services.header',
   'home.classes.heading': 'services.header',
+  'home.pricing_section.eyebrow': 'pricing',
+  'home.pricing_section.heading': 'pricing',
+  'home.pricing_section.sub': 'pricing',
+  'home.pricing.0.credits': 'pricing', 'home.pricing.0.name': 'pricing', 'home.pricing.0.amount': 'pricing', 'home.pricing.0.note': 'pricing',
+  'home.pricing.1.credits': 'pricing', 'home.pricing.1.name': 'pricing', 'home.pricing.1.amount': 'pricing', 'home.pricing.1.note': 'pricing',
+  'home.pricing.2.credits': 'pricing', 'home.pricing.2.name': 'pricing', 'home.pricing.2.amount': 'pricing', 'home.pricing.2.note': 'pricing',
+  'home.pricing.3.credits': 'pricing', 'home.pricing.3.name': 'pricing', 'home.pricing.3.amount': 'pricing', 'home.pricing.3.note': 'pricing',
+  'home.pricing.4.credits': 'pricing', 'home.pricing.4.name': 'pricing', 'home.pricing.4.amount': 'pricing', 'home.pricing.4.note': 'pricing',
   'home.about.eyebrow': 'about.eyebrow',
   'home.about.heading': 'about.heading',
   'home.about.body_1': 'about.body1',
@@ -106,6 +115,10 @@ const LIVE_PATH_TO_FIELD: Record<string, string> = {
   'home.about.chips.3': 'about.chips',
   'home.locations_section.eyebrow': 'contact',
   'home.locations_section.heading': 'contact',
+  'home.locations.0.neighborhood': 'contact', 'home.locations.0.name': 'contact',
+  'home.locations.0.address': 'contact', 'home.locations.0.hours': 'contact', 'home.locations.0.image': 'contact',
+  'home.locations.1.neighborhood': 'contact', 'home.locations.1.name': 'contact',
+  'home.locations.1.address': 'contact', 'home.locations.1.hours': 'contact', 'home.locations.1.image': 'contact',
   'home.testimonials_section.eyebrow': 'testimonials',
   'home.testimonials_section.heading': 'testimonials',
   'home.cta.heading': 'cta',
@@ -118,6 +131,7 @@ const LIVE_PATH_TO_FIELD: Record<string, string> = {
 // these ARE field ids directly (chosen that way on purpose), unlike
 // data-fw paths which need the LIVE_PATH_TO_FIELD translation above.
 const KNOWN_SECTION_FIELD_IDS = new Set([
+  'pricing',
   'testimonials',
   'contact',
   'footer',
@@ -171,6 +185,6 @@ const FIELD_TO_LIVE_PATHS: Record<string, string[]> = {
 // Selected field in the left panel → what to highlight inside the iframe.
 export function getHighlightTarget(fieldId: string | null): { paths: string[] | null; section: string | null } {
   if (!fieldId) return { paths: null, section: null };
-  if (fieldId === 'testimonials' || fieldId === 'contact') return { paths: null, section: fieldId };
+  if (fieldId === 'testimonials' || fieldId === 'contact' || fieldId === 'pricing') return { paths: null, section: fieldId };
   return { paths: FIELD_TO_LIVE_PATHS[fieldId] || null, section: null };
 }

@@ -6,6 +6,47 @@ import { useContentStore, getAtPath } from '@/lib/kundenzugang-store';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
+// Uploads are stored as base64 data URIs and shipped whole inside the save
+// payload (Vercel serverless functions cap request bodies at 4.5MB, and the
+// persisted store also has to fit in localStorage) — so every upload gets
+// downscaled/re-encoded client-side before it ever reaches state.
+const MAX_IMAGE_DIMENSION = 1600;
+const JPEG_QUALITY = 0.82;
+const MAX_DATA_URL_BYTES = 3 * 1024 * 1024;
+
+function compressImage(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(img.width, img.height));
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      URL.revokeObjectURL(objectUrl);
+      if (!ctx) {
+        reject(new Error('Canvas not supported'));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, w, h);
+      // Keep PNG (lossless, alpha-safe) for transparent logos/graphics; re-encode
+      // everything else as JPEG, which compresses far better for photos.
+      const outputType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const dataUrl =
+        outputType === 'image/jpeg' ? canvas.toDataURL(outputType, JPEG_QUALITY) : canvas.toDataURL(outputType);
+      resolve(dataUrl);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Could not read image'));
+    };
+    img.src = objectUrl;
+  });
+}
+
 function Label({ children }: { children: React.ReactNode }) {
   return (
     <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
@@ -66,20 +107,29 @@ function HeroImageEditor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const dragging = useRef(false);
 
-  function handleFile(file: File | undefined) {
+  async function handleFile(file: File | undefined) {
     if (!file) return;
     if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
       setUploadError('Please choose a .jpg, .png, or .webp file.');
       return;
     }
     setUploadError(null);
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') updateField('hero.image', reader.result);
-    };
-    reader.readAsDataURL(file);
+    setUploading(true);
+    try {
+      const dataUrl = await compressImage(file);
+      if (dataUrl.length > MAX_DATA_URL_BYTES) {
+        setUploadError('Image is still too large after compression — please choose a simpler photo.');
+        return;
+      }
+      updateField('hero.image', dataUrl);
+    } catch {
+      setUploadError('Could not process that image — please try a different file.');
+    } finally {
+      setUploading(false);
+    }
   }
 
   function positionFromPointer(clientX: number, clientY: number) {
@@ -119,10 +169,11 @@ function HeroImageEditor() {
       />
       <button
         type="button"
+        disabled={uploading}
         onClick={() => fileInputRef.current?.click()}
-        className="mb-2 w-full rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07]"
+        className="mb-2 w-full rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        Upload Image
+        {uploading ? 'Uploading…' : 'Upload Image'}
       </button>
       {uploadError && <p className="mb-2 text-[11px] text-red-400">{uploadError}</p>}
 
@@ -201,9 +252,43 @@ function ContactEditor() {
           <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
             {locations.length > 1 ? `Location ${i + 1}` : 'Location'}
           </div>
+          <TextField path={`contact.locations.${i}.neighborhood`} label="Neighborhood" />
           <TextField path={`contact.locations.${i}.name`} label="Studio Name" />
           <TextField path={`contact.locations.${i}.address`} label="Address" />
           <TextField path={`contact.locations.${i}.hours`} label="Hours" />
+          <SimpleImageEditor path={`contact.locations.${i}.image`} label="Studio Photo" />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function PricingEditor() {
+  const tiers = useContentStore((s) => s.content.pricing);
+  const updateField = useContentStore((s) => s.updateField);
+  return (
+    <>
+      <TextField path="pricingSection.eyebrow" label="Section Eyebrow" autoFocus />
+      <TextField path="pricingSection.heading" label="Section Heading" />
+      <TextField path="pricingSection.sub" label="Section Subtext" multiline />
+      {tiers.map((tier, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Tier {i + 1}
+          </div>
+          <TextField path={`pricing.${i}.credits`} label="Credits Label" />
+          <TextField path={`pricing.${i}.name`} label="Tier Name" />
+          <TextField path={`pricing.${i}.amount`} label="Price" />
+          <TextField path={`pricing.${i}.note`} label="Note" />
+          <label className="mb-4 flex items-center gap-2 text-[12px] text-zinc-300">
+            <input
+              type="checkbox"
+              checked={tier.popular}
+              onChange={(e) => updateField(`pricing.${i}.popular`, e.target.checked)}
+              className="accent-[#00D4FF]"
+            />
+            Mark as &quot;Most Popular&quot;
+          </label>
         </div>
       ))}
     </>
@@ -241,19 +326,28 @@ function SimpleImageEditor({ path, label }: { path: string; label: string }) {
   const updateField = useContentStore((s) => s.updateField);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
-  function handleFile(file: File | undefined) {
+  async function handleFile(file: File | undefined) {
     if (!file) return;
     if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
       setUploadError('Please choose a .jpg, .png, or .webp file.');
       return;
     }
     setUploadError(null);
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') updateField(path, reader.result);
-    };
-    reader.readAsDataURL(file);
+    setUploading(true);
+    try {
+      const dataUrl = await compressImage(file);
+      if (dataUrl.length > MAX_DATA_URL_BYTES) {
+        setUploadError('Image is still too large after compression — please choose a simpler photo.');
+        return;
+      }
+      updateField(path, dataUrl);
+    } catch {
+      setUploadError('Could not process that image — please try a different file.');
+    } finally {
+      setUploading(false);
+    }
   }
 
   return (
@@ -268,10 +362,11 @@ function SimpleImageEditor({ path, label }: { path: string; label: string }) {
       />
       <button
         type="button"
+        disabled={uploading}
         onClick={() => fileInputRef.current?.click()}
-        className="mb-2 w-full rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07]"
+        className="mb-2 w-full rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        Upload Image
+        {uploading ? 'Uploading…' : 'Upload Image'}
       </button>
       {uploadError && <p className="mb-2 text-[11px] text-red-400">{uploadError}</p>}
       {image ? (
@@ -319,6 +414,7 @@ const FIELD_SETS: Record<string, FieldSet> = {
   'about.image': { component: <SimpleImageEditor path="about.image" label="Image" /> },
   'about.stats': { component: <StatListEditor basePath="about.stats" count={2} /> },
   'about.chips': { component: <ChipListEditor basePath="about.chips" count={4} /> },
+  pricing: { component: <PricingEditor /> },
   testimonials: { component: <TestimonialsEditor /> },
   contact: { component: <ContactEditor /> },
   cta: [

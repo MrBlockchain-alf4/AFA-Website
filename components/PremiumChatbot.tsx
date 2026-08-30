@@ -1,5 +1,6 @@
 ﻿'use client';
 import { useState, useRef, useEffect, useMemo } from 'react';
+import { usePathname } from 'next/navigation';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type Step =
@@ -490,6 +491,7 @@ const CHAT_CSS = `
 
 // ── Component ─────────────────────────────────────────────────────────────
 export default function PremiumChatbot() {
+  const pathname = usePathname();
   const [open,       setOpen]      = useState(false);
   const [closing,    setClosing]   = useState(false);
   const [step,       setStep]      = useState<Step>('welcome');
@@ -2074,6 +2076,8 @@ export default function PremiumChatbot() {
   const winRd = isMobile ? 16      : 22;
 
   // ── Main render ───────────────────────────────────────────────────────────
+  if (pathname?.startsWith('/kundenzugang')) return null;
+
   return (
     <>
       <style>{CHAT_CSS}</style>
