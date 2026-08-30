@@ -180,6 +180,10 @@ export interface ElitGalleryItem {
 
 export interface ElitContent {
   logo: string;
+  nav: {
+    links: string[]; // Kollektion, Leistungen, Goldankauf, Über Uns, Kontakt
+    ctaText: string; // "Termin anfragen"
+  };
   hero: {
     eyebrow: string;
     headline: string;
@@ -193,6 +197,26 @@ export interface ElitContent {
     badgeText: string;
     image: string;
     imagePos: ImagePosition;
+  };
+  banner: {
+    eyebrow: string;
+    headline1: string;
+    headline2: string;
+    sub: string;
+    ctaText: string;
+    items: { title: string; desc: string }[]; // 4
+  };
+  stats: { value: string; label: string }[]; // 4
+  services: {
+    eyebrow: string;
+    heading: string;
+    headingEm: string;
+    lead: string;
+    featuredTitle: string;
+    featuredDesc: string;
+    featuredList: string[]; // 4
+    featuredCtaText: string;
+    cards: { title: string; desc: string; linkText: string }[]; // 3
   };
   gallery: {
     eyebrow: string;
@@ -218,9 +242,49 @@ export interface ElitContent {
     hoursWeekday: string;
     hoursSunday: string;
   };
+  goldankaufInfo: {
+    eyebrow: string;
+    heading: string;
+    headingEm: string;
+    body1: string;
+    body2: string;
+    ctaText: string;
+    cards: { title: string; desc: string }[]; // 4
+  };
+  reviews: {
+    eyebrow: string;
+    heading: string;
+    headingEm: string;
+    score: string;
+    scoreLabel: string;
+    scoreSubLabel: string;
+    items: { text: string; name: string; source: string }[];
+    googleBtnText: string;
+  };
+  instagram: {
+    heading: string;
+    sub: string;
+    btnText: string;
+  };
   footer: {
     tagline: string;
     copyright: string;
+    col1Title: string;
+    col1Links: string[]; // 4
+    col2Title: string;
+    col2Links: string[]; // 3
+    col3Title: string;
+    col3Links: string[]; // 4
+    legalLinks: string[]; // 3 (bottom bar)
+  };
+  legal: {
+    impressumHtml: string;
+    datenschutzHtml: string;
+  };
+  cookie: {
+    text: string;
+    acceptText: string;
+    essentialText: string;
   };
 }
 
@@ -620,6 +684,10 @@ export const CLIENTS: Client[] = [
     // copy (2026-08-30) — not invented, matches what's actually live.
     elitContent: {
       logo: 'public/images/elit-logo-transparent.png',
+      nav: {
+        links: ['Kollektion', 'Leistungen', 'Goldankauf', 'Über Uns', 'Kontakt'],
+        ctaText: 'Termin anfragen',
+      },
       hero: {
         eyebrow: 'Seit 2001 · 25 Jahre Erfahrung',
         headline: 'Gold',
@@ -633,6 +701,45 @@ export const CLIENTS: Client[] = [
         badgeText: 'Jahre\nErfahrung',
         image: 'public/images/elit-hero-goldkauf.png',
         imagePos: DEFAULT_IMAGE_POSITION,
+      },
+      banner: {
+        eyebrow: 'Für Ihren großen Moment',
+        headline1: 'Trauringe &',
+        headline2: 'Verlobungsringe',
+        sub: 'Handgefertigte Eheringe und Verlobungsringe in Gold, Weißgold und Rosegold.',
+        ctaText: 'Kollektion ansehen →',
+        items: [
+          { title: 'Individuelle Anfertigung', desc: 'Nach Ihren Wünschen gefertigt' },
+          { title: '585er & 750er Gold', desc: 'Gelbgold, Weißgold oder Rosegold' },
+          { title: 'Echte Diamanten', desc: 'Diamanten, Labdiamanten oder Zirkonia' },
+          { title: '25 Jahre Erfahrung', desc: 'Persönliche Beratung seit 2001' },
+        ],
+      },
+      stats: [
+        { value: '27+', label: 'Jahre Erfahrung' },
+        { value: '5★', label: 'Google Bewertung' },
+        { value: '∞', label: 'Einzigartige Designs' },
+        { value: '100%', label: 'Persönliche Beratung' },
+      ],
+      services: {
+        eyebrow: 'Unsere Leistungen',
+        heading: 'Alles für Ihren',
+        headingEm: 'besonderen Moment',
+        lead: 'Von der Verlobung bis zur Goldene Hochzeit — wir begleiten Sie mit Leidenschaft und Fachkenntnis.',
+        featuredTitle: 'Goldankauf',
+        featuredDesc: 'Wir kaufen Ihr Altgold, Schmuckstücke, Münzen und Zahngold zu fairen Tagespreisen. Sofortige Auszahlung, keine versteckten Gebühren. Bringen Sie Ihren Schmuck direkt zu uns — wir bewerten kostenlos und unverbindlich.',
+        featuredList: [
+          'Goldschmuck, Ketten, Ringe, Armbänder',
+          'Goldmünzen & Barren',
+          'Zahngold & Dentalschmuck',
+          'Sofortauszahlung in Bar',
+        ],
+        featuredCtaText: 'Jetzt bewerten lassen →',
+        cards: [
+          { title: 'Trauringe & Eheringe', desc: 'Wählen Sie aus hunderten Designs oder lassen Sie Ihren Traumring individuell anfertigen. In Gelbgold, Weißgold oder Rosegold — mit oder ohne Steine.', linkText: 'Kollektion ansehen →' },
+          { title: 'Verlobungsringe', desc: 'Der perfekte Ring für den größten Moment. Mit echten Diamanten, Labdiamanten oder Zirkonia-Steinen — jeder Ring wird mit Liebe ausgewählt oder gefertigt.', linkText: 'Beratungstermin →' },
+          { title: 'Schmuck & Accessoires', desc: 'Halsketten, Armbänder, Ohrringe und mehr — eine kuratierte Auswahl hochwertiger Goldschmuckstücke für jeden Anlass und Stil.', linkText: 'Kollektion ansehen →' },
+        ],
       },
       gallery: {
         eyebrow: 'Unsere Kollektion',
@@ -675,9 +782,79 @@ export const CLIENTS: Client[] = [
         hoursWeekday: '10:00 – 19:00 Uhr',
         hoursSunday: 'Geschlossen',
       },
+      goldankaufInfo: {
+        eyebrow: 'Goldankauf',
+        heading: 'Ihr Altgold ist',
+        headingEm: 'mehr wert',
+        body1: 'Haben Sie alten Schmuck, Goldmünzen oder Zahngold? Wir bezahlen faire, tagesaktuelle Preise — sofort in Bar, ohne Wartezeit. Bringen Sie Ihr Gold einfach vorbei, wir bewerten kostenlos und ohne Verpflichtung.',
+        body2: 'Als langjähriger Familienbetrieb wissen wir: Vertrauen ist alles. Deshalb sind unsere Ankaufspreise stets transparent und nachvollziehbar.',
+        ctaText: 'Gold bewerten lassen →',
+        cards: [
+          { title: 'Goldschmuck', desc: 'Ringe, Ketten, Armbänder, Ohrringe — alle Legierungen von 333er bis 999er Gold.' },
+          { title: 'Goldmünzen & Barren', desc: 'Krugerrand, Maple Leaf, Wiener Philharmoniker und andere Anlagemünzen.' },
+          { title: 'Zahngold', desc: 'Zahnkronen, Brücken und andere zahntechnische Goldlegierungen.' },
+          { title: 'Sofortauszahlung', desc: 'Kein Warten, keine Überweisungen — Barzahlung direkt bei der Bewertung.' },
+        ],
+      },
+      reviews: {
+        eyebrow: 'Kundenstimmen',
+        heading: 'Was unsere Kunden',
+        headingEm: 'über uns sagen',
+        score: '5,0',
+        scoreLabel: 'Google Bewertung',
+        scoreSubLabel: 'Basierend auf echten Kundenbewertungen',
+        googleBtnText: 'Alle Bewertungen auf Google ansehen',
+        items: [
+          { text: 'Ich bin sehr zufrieden mit meinem Besuch. Der Ankauf verlief fair, transparent und professionell. Absolut empfehlenswert!', name: 'GmK Yoktur', source: 'Google Rezension' },
+          { text: 'Super nette Beratung und eine angenehme Atmosphäre. Ich fühle mich immer sehr wohl und gut beraten.', name: 'Saranda Hax', source: 'Google Rezension' },
+          { text: 'Sehr nett, macht sehr gute Preise und ist sehr freundlich. Ich würde es definitiv weiterempfehlen.', name: 'Vivian Vogelgesang', source: 'Google Rezension' },
+          { text: 'Sehr nett und kompetent. Rundum zufrieden mit dem Service und den Preisen.', name: 'Cetric Schmidt', source: 'Google Rezension' },
+          { text: 'Sehr nettes und freundliches Personal. Für mich war es eine sehr angenehme Erfahrung. Gerne wieder!', name: 'Emily Schurna', source: 'Google Rezension' },
+          { text: 'Ich war inzwischen schon mehrfach bei Elit Juwelier und bin jedes Mal aufs Neue begeistert. Top Qualität, faire Preise!', name: 'Amin El Hankouri', source: 'Google Rezension' },
+          { text: 'Absolut empfehlenswert! Der Service ist erstklassig und die Auswahl wirklich beeindruckend. Ich komme gerne wieder.', name: 'Vanessa Drysch', source: 'Google Rezension' },
+          { text: 'Super Laden und sehr nette Beratung! Genau das richtige Stück gefunden.', name: 'Max', source: 'Google Rezension' },
+          { text: 'Genialer Service – Super Eigentümer. Man merkt, dass hier mit Herzblut gearbeitet wird.', name: 'Salvatore Cofone', source: 'Google Rezension' },
+          { text: 'Gerne! Sehr empfehlenswerter Juwelier mit ausgezeichnetem Kundenservice und toller Auswahl.', name: 'Jose da Silva', source: 'Google Rezension' },
+          { text: 'Top Beratung, Top Kundenservice. Man fühlt sich von Anfang an gut aufgehoben.', name: 'Elias Damerow', source: 'Google Rezension' },
+          { text: 'Super Laden, Super Service, Super Preise – mehr muss man nicht sagen!', name: 'Sinan', source: 'Google Rezension' },
+          { text: 'Ganz herzlichen Dank für den netten Service ❤️❤️ – wirklich sehr empfehlenswert!', name: 'Basilika Mehlich', source: 'Google Rezension' },
+          { text: 'Sehr gute Beratung, sehr nette Menschen. Man fühlt sich herzlich willkommen.', name: 'Erduan Huseni', source: 'Google Rezension' },
+          { text: 'Sehr schöner Laden mit einer großen Auswahl. Die Beratung war sehr kompetent und freundlich.', name: 'Marilene da Silva', source: 'Google Rezension' },
+          { text: 'Sehr nettes und zuvorkommendes Personal. Wir kommen gerne wieder und empfehlen den Laden weiter.', name: 'Bubi', source: 'Google Rezension' },
+          { text: 'Super Service, vor allem eine sehr ausführliche Erklärung zu jedem Stück. Sehr professionell!', name: 'Ali Erdogan', source: 'Google Rezension' },
+          { text: 'Top Beratung, Top Auswahl – immer zuvorkommend und sehr angenehm.', name: 'Mike Da Silva', source: 'Google Rezension' },
+          { text: 'Sehr gute Beratung, sehr nette Menschen. Wenn Gold kaufen dann bei Elit ❤️', name: 'Sherry Bherry', source: 'Google Rezension' },
+          { text: 'Waren heute mit unserer Tochter da und haben ihr Ohrlöcher stechen lassen. Sehr professionell und einfühlsam – danke!', name: 'Ahmet Schulze', source: 'Google Rezension' },
+          { text: 'Top – Beratung super, nett und kompetent. Genau so stellt man sich einen Juwelier vor.', name: 'Christian H', source: 'Google Rezension' },
+          { text: 'Super freundliches Personal, faire Preise und top Beratung – alles was man sich wünscht!', name: 'M E', source: 'Google Rezension' },
+        ],
+      },
+      instagram: {
+        heading: 'Verpassen Sie keine neuen Produkte mehr — besuchen Sie uns auf Instagram!',
+        sub: 'Neue Kollektionen, exklusive Stücke und besondere Momente — täglich auf Instagram.',
+        btnText: 'Besuchen Sie unser Instagram →',
+      },
       footer: {
         tagline: 'Ihr Juwelier für Trauringe, Verlobungsringe und Goldankauf in Hagen. 25 Jahre Erfahrung, persönliche Beratung, faire Preise.',
         copyright: '© 2026 Elit Juwelier Hagen. Alle Rechte vorbehalten.',
+        col1Title: 'Leistungen',
+        col1Links: ['Goldankauf', 'Trauringe', 'Verlobungsringe', 'Schmuck & Accessoires'],
+        col2Title: 'Kollektion',
+        col2Links: ['Ringe', 'Armbänder', 'Alle Stücke'],
+        col3Title: 'Info',
+        col3Links: ['Über Uns', 'Kontakt', 'Impressum', 'Datenschutz'],
+        legalLinks: ['Impressum', 'Datenschutz', 'Cookie-Einstellungen'],
+      },
+      legal: {
+        impressumHtml:
+          '<h4>Angaben gemäß § 5 TMG</h4><p><strong>Elit Juwelier</strong><br>Elberfelder Str. 22<br>58095 Hagen<br>Deutschland</p><h4>Kontakt</h4><p>Telefon: 02331 / 5936841<br>WhatsApp: 0174 / 9155488</p><h4>Umsatzsteuer-ID</h4><p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz: auf Anfrage erhältlich.</p><h4>Streitschlichtung</h4><p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr/</a>. Unsere E-Mail-Adresse finden Sie oben im Impressum. Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p><h4>Haftung für Inhalte</h4><p>Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen.</p><h4>Urheberrecht</h4><p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>',
+        datenschutzHtml:
+          '<h4>1. Verantwortlicher</h4><p>Elit Juwelier, Elberfelder Str. 22, 58095 Hagen. Telefon: 02331 / 5936841.</p><h4>2. Erhebung und Verarbeitung personenbezogener Daten</h4><p>Diese Website erhebt keine personenbezogenen Daten aktiv. Es werden keine Analyse- oder Tracking-Tools eingesetzt. Keine Cookies werden ohne Ihre Einwilligung gesetzt.</p><h4>3. Lokale Speicherung (localStorage)</h4><p>Wir speichern Ihre Cookie-Einwilligung ausschließlich lokal in Ihrem Browser (localStorage). Diese Daten verlassen Ihr Gerät nicht und werden nicht an uns übertragen.</p><h4>4. Google Fonts (externe Schriftarten)</h4><p>Diese Website verwendet Schriftarten von Google Fonts, einem Dienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Beim Laden der Schriftarten wird Ihre IP-Adresse an Google übertragen. Dies geschieht nur mit Ihrer ausdrücklichen Einwilligung. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO. Datenschutzerklärung Google: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>.</p><h4>5. Google Maps</h4><p>Zur Darstellung unseres Standorts nutzen wir Google Maps, einen Dienst der Google Ireland Limited. Das Einbetten der Karte überträgt Ihre IP-Adresse an Google. Dies geschieht nur nach Ihrer Einwilligung durch Klick auf „Karte aktivieren". Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO.</p><h4>6. Ihre Rechte</h4><p>Sie haben das Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch (Art. 21 DSGVO). Zur Ausübung dieser Rechte wenden Sie sich an: 02331 / 5936841.</p><h4>7. Widerruf der Einwilligung / Cookie-Einstellungen</h4><p>Sie können Ihre Einwilligung jederzeit widerrufen. Klicken Sie dazu auf „Cookie-Einstellungen" im Footer.</p><h4>8. Beschwerderecht</h4><p>Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für NRW: Landesbeauftragte für Datenschutz und Informationsfreiheit NRW, <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener">www.ldi.nrw.de</a>.</p>',
+      },
+      cookie: {
+        text: 'Wir nutzen externe Dienste (Google Maps & Google Fonts). Diese übertragen Daten an Google. Mit „Alle akzeptieren" stimmen Sie zu.',
+        acceptText: 'Alle akzeptieren',
+        essentialText: 'Nur Notwendige',
       },
     },
   },
@@ -901,14 +1078,31 @@ function mapPhysioContent(live: any, fallback: PhysioContent): PhysioContent {
 // `data-fw="elit.hero.headline"`-style paths used in elit-juwelier's HTML).
 function mapElitLiveToContent(live: any, fallback: ElitContent): ElitContent {
   const root = live?.elit ?? {};
+  const nav = root.nav ?? {};
   const hero = root.hero ?? {};
+  const banner = root.banner ?? {};
+  const bannerItems = Array.isArray(banner.items) ? banner.items : null;
+  const stats = Array.isArray(root.stats) ? root.stats : null;
+  const services = root.services ?? {};
+  const serviceCards = Array.isArray(services.cards) ? services.cards : null;
   const gallery = root.gallery ?? {};
   const items = Array.isArray(gallery.items) ? gallery.items : null;
   const about = root.about ?? {};
   const contact = root.contact ?? {};
+  const goldankaufInfo = root.goldankauf_info ?? {};
+  const goldankaufCards = Array.isArray(goldankaufInfo.cards) ? goldankaufInfo.cards : null;
+  const reviews = root.reviews ?? {};
+  const reviewItems = Array.isArray(reviews.items) ? reviews.items : null;
+  const instagram = root.instagram ?? {};
   const footer = root.footer ?? {};
+  const legal = root.legal ?? {};
+  const cookie = root.cookie ?? {};
   return {
     logo: mapNullableImage(root.site?.logo, fallback.logo),
+    nav: {
+      links: Array.isArray(nav.links) ? nav.links : fallback.nav.links,
+      ctaText: nav.cta_text ?? fallback.nav.ctaText,
+    },
     hero: {
       eyebrow: hero.eyebrow ?? fallback.hero.eyebrow,
       headline: hero.headline ?? fallback.hero.headline,
@@ -922,6 +1116,42 @@ function mapElitLiveToContent(live: any, fallback: ElitContent): ElitContent {
       badgeText: hero.badge_text ?? fallback.hero.badgeText,
       image: mapNullableImage(hero.image, fallback.hero.image),
       imagePos: mapImagePos(hero.image_position, fallback.hero.imagePos),
+    },
+    banner: {
+      eyebrow: banner.eyebrow ?? fallback.banner.eyebrow,
+      headline1: banner.headline_1 ?? fallback.banner.headline1,
+      headline2: banner.headline_2 ?? fallback.banner.headline2,
+      sub: banner.sub ?? fallback.banner.sub,
+      ctaText: banner.cta_text ?? fallback.banner.ctaText,
+      items: bannerItems
+        ? bannerItems.map((it: any, i: number) => ({
+            title: it.title ?? fallback.banner.items[i]?.title ?? '',
+            desc: it.desc ?? fallback.banner.items[i]?.desc ?? '',
+          }))
+        : fallback.banner.items,
+    },
+    stats: stats
+      ? stats.map((s: any, i: number) => ({
+          value: s.value ?? fallback.stats[i]?.value ?? '',
+          label: s.label ?? fallback.stats[i]?.label ?? '',
+        }))
+      : fallback.stats,
+    services: {
+      eyebrow: services.eyebrow ?? fallback.services.eyebrow,
+      heading: services.heading ?? fallback.services.heading,
+      headingEm: services.heading_em ?? fallback.services.headingEm,
+      lead: services.lead ?? fallback.services.lead,
+      featuredTitle: services.featured_title ?? fallback.services.featuredTitle,
+      featuredDesc: services.featured_desc ?? fallback.services.featuredDesc,
+      featuredList: Array.isArray(services.featured_list) ? services.featured_list : fallback.services.featuredList,
+      featuredCtaText: services.featured_cta_text ?? fallback.services.featuredCtaText,
+      cards: serviceCards
+        ? serviceCards.map((s: any, i: number) => ({
+            title: s.title ?? fallback.services.cards[i]?.title ?? '',
+            desc: s.desc ?? fallback.services.cards[i]?.desc ?? '',
+            linkText: s.link_text ?? fallback.services.cards[i]?.linkText ?? '',
+          }))
+        : fallback.services.cards,
     },
     gallery: {
       eyebrow: gallery.eyebrow ?? fallback.gallery.eyebrow,
@@ -954,9 +1184,60 @@ function mapElitLiveToContent(live: any, fallback: ElitContent): ElitContent {
       hoursWeekday: contact.hours_weekday ?? fallback.contact.hoursWeekday,
       hoursSunday: contact.hours_sunday ?? fallback.contact.hoursSunday,
     },
+    goldankaufInfo: {
+      eyebrow: goldankaufInfo.eyebrow ?? fallback.goldankaufInfo.eyebrow,
+      heading: goldankaufInfo.heading ?? fallback.goldankaufInfo.heading,
+      headingEm: goldankaufInfo.heading_em ?? fallback.goldankaufInfo.headingEm,
+      body1: goldankaufInfo.body_1 ?? fallback.goldankaufInfo.body1,
+      body2: goldankaufInfo.body_2 ?? fallback.goldankaufInfo.body2,
+      ctaText: goldankaufInfo.cta_text ?? fallback.goldankaufInfo.ctaText,
+      cards: goldankaufCards
+        ? goldankaufCards.map((c: any, i: number) => ({
+            title: c.title ?? fallback.goldankaufInfo.cards[i]?.title ?? '',
+            desc: c.desc ?? fallback.goldankaufInfo.cards[i]?.desc ?? '',
+          }))
+        : fallback.goldankaufInfo.cards,
+    },
+    reviews: {
+      eyebrow: reviews.eyebrow ?? fallback.reviews.eyebrow,
+      heading: reviews.heading ?? fallback.reviews.heading,
+      headingEm: reviews.heading_em ?? fallback.reviews.headingEm,
+      score: reviews.score ?? fallback.reviews.score,
+      scoreLabel: reviews.score_label ?? fallback.reviews.scoreLabel,
+      scoreSubLabel: reviews.score_sub_label ?? fallback.reviews.scoreSubLabel,
+      googleBtnText: reviews.google_btn_text ?? fallback.reviews.googleBtnText,
+      items: reviewItems
+        ? reviewItems.map((r: any, i: number) => ({
+            text: r.text ?? fallback.reviews.items[i]?.text ?? '',
+            name: r.name ?? fallback.reviews.items[i]?.name ?? '',
+            source: r.source ?? fallback.reviews.items[i]?.source ?? '',
+          }))
+        : fallback.reviews.items,
+    },
+    instagram: {
+      heading: instagram.heading ?? fallback.instagram.heading,
+      sub: instagram.sub ?? fallback.instagram.sub,
+      btnText: instagram.btn_text ?? fallback.instagram.btnText,
+    },
     footer: {
       tagline: footer.tagline ?? fallback.footer.tagline,
       copyright: footer.copyright ?? fallback.footer.copyright,
+      col1Title: footer.col1_title ?? fallback.footer.col1Title,
+      col1Links: Array.isArray(footer.col1_links) ? footer.col1_links : fallback.footer.col1Links,
+      col2Title: footer.col2_title ?? fallback.footer.col2Title,
+      col2Links: Array.isArray(footer.col2_links) ? footer.col2_links : fallback.footer.col2Links,
+      col3Title: footer.col3_title ?? fallback.footer.col3Title,
+      col3Links: Array.isArray(footer.col3_links) ? footer.col3_links : fallback.footer.col3Links,
+      legalLinks: Array.isArray(footer.legal_links) ? footer.legal_links : fallback.footer.legalLinks,
+    },
+    legal: {
+      impressumHtml: legal.impressum_html ?? fallback.legal.impressumHtml,
+      datenschutzHtml: legal.datenschutz_html ?? fallback.legal.datenschutzHtml,
+    },
+    cookie: {
+      text: cookie.text ?? fallback.cookie.text,
+      acceptText: cookie.accept_text ?? fallback.cookie.acceptText,
+      essentialText: cookie.essential_text ?? fallback.cookie.essentialText,
     },
   };
 }
@@ -968,6 +1249,7 @@ function mapElitLiveToContent(live: any, fallback: ElitContent): ElitContent {
 function buildElitLiveSection(c: ElitContent) {
   return {
     site: { logo: c.logo || null },
+    nav: { links: c.nav.links, cta_text: c.nav.ctaText },
     hero: {
       eyebrow: c.hero.eyebrow,
       headline: c.hero.headline,
@@ -981,6 +1263,26 @@ function buildElitLiveSection(c: ElitContent) {
       badge_text: c.hero.badgeText,
       image: c.hero.image || null,
       image_position: { ...c.hero.imagePos },
+    },
+    banner: {
+      eyebrow: c.banner.eyebrow,
+      headline_1: c.banner.headline1,
+      headline_2: c.banner.headline2,
+      sub: c.banner.sub,
+      cta_text: c.banner.ctaText,
+      items: c.banner.items.map((it) => ({ title: it.title, desc: it.desc })),
+    },
+    stats: c.stats.map((s) => ({ value: s.value, label: s.label })),
+    services: {
+      eyebrow: c.services.eyebrow,
+      heading: c.services.heading,
+      heading_em: c.services.headingEm,
+      lead: c.services.lead,
+      featured_title: c.services.featuredTitle,
+      featured_desc: c.services.featuredDesc,
+      featured_list: c.services.featuredList,
+      featured_cta_text: c.services.featuredCtaText,
+      cards: c.services.cards.map((s) => ({ title: s.title, desc: s.desc, link_text: s.linkText })),
     },
     gallery: {
       eyebrow: c.gallery.eyebrow,
@@ -1011,7 +1313,39 @@ function buildElitLiveSection(c: ElitContent) {
       hours_weekday: c.contact.hoursWeekday,
       hours_sunday: c.contact.hoursSunday,
     },
-    footer: { tagline: c.footer.tagline, copyright: c.footer.copyright },
+    goldankauf_info: {
+      eyebrow: c.goldankaufInfo.eyebrow,
+      heading: c.goldankaufInfo.heading,
+      heading_em: c.goldankaufInfo.headingEm,
+      body_1: c.goldankaufInfo.body1,
+      body_2: c.goldankaufInfo.body2,
+      cta_text: c.goldankaufInfo.ctaText,
+      cards: c.goldankaufInfo.cards.map((card) => ({ title: card.title, desc: card.desc })),
+    },
+    reviews: {
+      eyebrow: c.reviews.eyebrow,
+      heading: c.reviews.heading,
+      heading_em: c.reviews.headingEm,
+      score: c.reviews.score,
+      score_label: c.reviews.scoreLabel,
+      score_sub_label: c.reviews.scoreSubLabel,
+      google_btn_text: c.reviews.googleBtnText,
+      items: c.reviews.items.map((r) => ({ text: r.text, name: r.name, source: r.source })),
+    },
+    instagram: { heading: c.instagram.heading, sub: c.instagram.sub, btn_text: c.instagram.btnText },
+    footer: {
+      tagline: c.footer.tagline,
+      copyright: c.footer.copyright,
+      col1_title: c.footer.col1Title,
+      col1_links: c.footer.col1Links,
+      col2_title: c.footer.col2Title,
+      col2_links: c.footer.col2Links,
+      col3_title: c.footer.col3Title,
+      col3_links: c.footer.col3Links,
+      legal_links: c.footer.legalLinks,
+    },
+    legal: { impressum_html: c.legal.impressumHtml, datenschutz_html: c.legal.datenschutzHtml },
+    cookie: { text: c.cookie.text, accept_text: c.cookie.acceptText, essential_text: c.cookie.essentialText },
   };
 }
 

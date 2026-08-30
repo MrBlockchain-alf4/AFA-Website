@@ -106,10 +106,19 @@ export const NAV_TREES: Record<PageId, NavNode[]> = {
 // rather than further nav-tree nesting.
 const ELIT_NAV_TREE: NavNode[] = [
   { id: 'elit.logo', label: 'Logo', live: true },
+  { id: 'elit.nav', label: 'Navbar', live: true },
   { id: 'elit.hero', label: 'Goldkauf (Hero)', live: true },
+  { id: 'elit.banner', label: 'Trauringe Banner', live: true },
+  { id: 'elit.stats', label: 'Stats Bar', live: true },
+  { id: 'elit.services', label: 'Services (Leistungen)', live: true },
   { id: 'elit.gallery', label: 'Gallery', live: true },
   { id: 'elit.about', label: 'About & Contact', live: true },
+  { id: 'elit.goldankaufInfo', label: 'Goldankauf Info', live: true },
+  { id: 'elit.reviews', label: 'Reviews', live: true },
+  { id: 'elit.instagram', label: 'Instagram', live: true },
   { id: 'elit.footer', label: 'Footer', live: true },
+  { id: 'elit.legal', label: 'Legal (Impressum/Datenschutz)', live: true },
+  { id: 'elit.cookie', label: 'Cookie Banner', live: true },
 ];
 
 // Client-scoped nav tree lookup — Framework's clients (kind omitted/
@@ -223,8 +232,45 @@ const LIVE_PATH_TO_FIELD: Record<string, string> = {
   'elit.contact.whatsapp': 'elit.about',
   'elit.contact.hours_weekday': 'elit.about',
   'elit.contact.hours_sunday': 'elit.about',
+  'elit.nav.cta_text': 'elit.nav',
+  'elit.banner.eyebrow': 'elit.banner',
+  'elit.banner.headline_1': 'elit.banner',
+  'elit.banner.headline_2': 'elit.banner',
+  'elit.banner.sub': 'elit.banner',
+  'elit.banner.cta_text': 'elit.banner',
+  'elit.services.eyebrow': 'elit.services',
+  'elit.services.heading': 'elit.services',
+  'elit.services.heading_em': 'elit.services',
+  'elit.services.lead': 'elit.services',
+  'elit.services.featured_title': 'elit.services',
+  'elit.services.featured_desc': 'elit.services',
+  'elit.services.featured_cta_text': 'elit.services',
+  'elit.goldankauf_info.eyebrow': 'elit.goldankaufInfo',
+  'elit.goldankauf_info.heading': 'elit.goldankaufInfo',
+  'elit.goldankauf_info.heading_em': 'elit.goldankaufInfo',
+  'elit.goldankauf_info.body_1': 'elit.goldankaufInfo',
+  'elit.goldankauf_info.body_2': 'elit.goldankaufInfo',
+  'elit.goldankauf_info.cta_text': 'elit.goldankaufInfo',
+  'elit.reviews.eyebrow': 'elit.reviews',
+  'elit.reviews.heading': 'elit.reviews',
+  'elit.reviews.heading_em': 'elit.reviews',
+  'elit.reviews.score': 'elit.reviews',
+  'elit.reviews.score_label': 'elit.reviews',
+  'elit.reviews.score_sub_label': 'elit.reviews',
+  'elit.reviews.google_btn_text': 'elit.reviews',
+  'elit.instagram.heading': 'elit.instagram',
+  'elit.instagram.sub': 'elit.instagram',
+  'elit.instagram.btn_text': 'elit.instagram',
   'elit.footer.tagline': 'elit.footer',
   'elit.footer.copyright': 'elit.footer',
+  'elit.footer.col1_title': 'elit.footer',
+  'elit.footer.col2_title': 'elit.footer',
+  'elit.footer.col3_title': 'elit.footer',
+  'elit.legal.impressum_html': 'elit.legal',
+  'elit.legal.datenschutz_html': 'elit.legal',
+  'elit.cookie.text': 'elit.cookie',
+  'elit.cookie.accept_text': 'elit.cookie',
+  'elit.cookie.essential_text': 'elit.cookie',
 };
 
 // Path-prefix fallback for the Team/Physio pages — Team's 32+ members and
@@ -243,6 +289,18 @@ const PREFIX_TO_FIELD: [prefix: string, field: string][] = [
   // Elit's 16-photo gallery is open-ended like Team's members — prefix
   // match instead of listing every "elit.gallery.items.N.image"-style path.
   ['elit.gallery.items.', 'elit.gallery'],
+  // Same reasoning for every other open-ended array field on Elit's site.
+  ['elit.nav.links.', 'elit.nav'],
+  ['elit.banner.items.', 'elit.banner'],
+  ['elit.stats.', 'elit.stats'],
+  ['elit.services.featured_list.', 'elit.services'],
+  ['elit.services.cards.', 'elit.services'],
+  ['elit.goldankauf_info.cards.', 'elit.goldankaufInfo'],
+  ['elit.reviews.items.', 'elit.reviews'],
+  ['elit.footer.col1_links.', 'elit.footer'],
+  ['elit.footer.col2_links.', 'elit.footer'],
+  ['elit.footer.col3_links.', 'elit.footer'],
+  ['elit.footer.legal_links.', 'elit.footer'],
 ];
 
 // Section-marker values the live site actually emits as data-fw-section —
@@ -264,10 +322,19 @@ const KNOWN_SECTION_FIELD_IDS = new Set([
   'physio.specialists',
   'physio.cta',
   'elit.logo',
+  'elit.nav',
   'elit.hero',
+  'elit.banner',
+  'elit.stats',
+  'elit.services',
   'elit.gallery',
   'elit.about',
+  'elit.goldankaufInfo',
+  'elit.reviews',
+  'elit.instagram',
   'elit.footer',
+  'elit.legal',
+  'elit.cookie',
 ]);
 
 // Click inside the iframe → which field to select in the left panel.
@@ -333,7 +400,17 @@ const FIELD_TO_LIVE_PATHS: Record<string, string[]> = {
     'elit.contact.address', 'elit.contact.phone', 'elit.contact.whatsapp',
     'elit.contact.hours_weekday', 'elit.contact.hours_sunday',
   ],
-  'elit.footer': ['elit.footer.tagline', 'elit.footer.copyright'],
+  // Nav/Banner/Instagram/Legal/Cookie are small, fixed-shape blocks — exact
+  // paths, same as Hero/About above.
+  'elit.nav': ['elit.nav.links.0', 'elit.nav.links.1', 'elit.nav.links.2', 'elit.nav.links.3', 'elit.nav.links.4', 'elit.nav.cta_text'],
+  'elit.banner': [
+    'elit.banner.eyebrow', 'elit.banner.headline_1', 'elit.banner.headline_2', 'elit.banner.sub', 'elit.banner.cta_text',
+    'elit.banner.items.0.title', 'elit.banner.items.0.desc', 'elit.banner.items.1.title', 'elit.banner.items.1.desc',
+    'elit.banner.items.2.title', 'elit.banner.items.2.desc', 'elit.banner.items.3.title', 'elit.banner.items.3.desc',
+  ],
+  'elit.instagram': ['elit.instagram.heading', 'elit.instagram.sub', 'elit.instagram.btn_text'],
+  'elit.legal': ['elit.legal.impressum_html', 'elit.legal.datenschutz_html'],
+  'elit.cookie': ['elit.cookie.text', 'elit.cookie.accept_text', 'elit.cookie.essential_text'],
 };
 
 // Field ids that highlight by section (data-fw-section) rather than by a
@@ -351,11 +428,16 @@ const SECTION_HIGHLIGHT_FIELDS = new Set([
   'physio.services',
   'physio.specialists',
   'physio.cta',
-  // Only Gallery stays section-based — 16 open-ended photos, like Team.
-  // Hero/About/Footer/Logo now use exact per-element paths (above), since
-  // their sections are too large (hero is min-height:100vh) or would
-  // otherwise cover more than the actual field for no benefit.
+  // Gallery/Stats/Services/Goldankauf-Info/Reviews/Footer stay section-based
+  // — either genuinely open-ended lists (Gallery's 16 photos, Reviews' 22
+  // testimonials) or compact-enough sections (Stats bar, Footer) that a
+  // whole-section outline reads fine, unlike the min-height:100vh Hero.
   'elit.gallery',
+  'elit.stats',
+  'elit.services',
+  'elit.goldankaufInfo',
+  'elit.reviews',
+  'elit.footer',
 ]);
 
 // Selected field in the left panel → what to highlight inside the iframe.

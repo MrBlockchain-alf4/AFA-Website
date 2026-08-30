@@ -616,6 +616,74 @@ function ElitGalleryEditor() {
   );
 }
 
+function ElitNavEditor() {
+  const links = useContentStore((s) => s.elitContent.nav.links);
+  return (
+    <>
+      {links.map((_, i) => (
+        <TextField key={i} path={`elit.nav.links.${i}`} label={`Nav Link ${i + 1}`} autoFocus={i === 0} />
+      ))}
+      <TextField path="elit.nav.ctaText" label="Nav Button Text" />
+    </>
+  );
+}
+
+function ElitBannerEditor() {
+  const items = useContentStore((s) => s.elitContent.banner.items);
+  return (
+    <>
+      <TextField path="elit.banner.eyebrow" label="Eyebrow" autoFocus />
+      <TextField path="elit.banner.headline1" label="Headline Line 1" />
+      <TextField path="elit.banner.headline2" label="Headline Line 2" />
+      <TextField path="elit.banner.sub" label="Subtext" multiline />
+      <TextField path="elit.banner.ctaText" label="Button Text" />
+      {items.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Item {i + 1}
+          </div>
+          <TextField path={`elit.banner.items.${i}.title`} label="Title" />
+          <TextField path={`elit.banner.items.${i}.desc`} label="Description" />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function ElitServicesEditor() {
+  const cards = useContentStore((s) => s.elitContent.services.cards);
+  const featuredList = useContentStore((s) => s.elitContent.services.featuredList);
+  return (
+    <>
+      <TextField path="elit.services.eyebrow" label="Section Eyebrow" autoFocus />
+      <TextField path="elit.services.heading" label="Section Heading" />
+      <TextField path="elit.services.headingEm" label="Section Heading (emphasized word)" />
+      <TextField path="elit.services.lead" label="Section Lead" multiline />
+      <div className="mb-4 rounded-md border border-white/10 p-3">
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+          Featured Card (Goldankauf)
+        </div>
+        <TextField path="elit.services.featuredTitle" label="Title" />
+        <TextField path="elit.services.featuredDesc" label="Description" multiline />
+        {featuredList.map((_, i) => (
+          <TextField key={i} path={`elit.services.featuredList.${i}`} label={`List Item ${i + 1}`} />
+        ))}
+        <TextField path="elit.services.featuredCtaText" label="Button Text" />
+      </div>
+      {cards.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Card {i + 1}
+          </div>
+          <TextField path={`elit.services.cards.${i}.title`} label="Title" />
+          <TextField path={`elit.services.cards.${i}.desc`} label="Description" multiline />
+          <TextField path={`elit.services.cards.${i}.linkText`} label="Link Text" />
+        </div>
+      ))}
+    </>
+  );
+}
+
 function ElitAboutContactEditor() {
   return (
     <>
@@ -636,11 +704,127 @@ function ElitAboutContactEditor() {
   );
 }
 
+function ElitGoldankaufInfoEditor() {
+  const cards = useContentStore((s) => s.elitContent.goldankaufInfo.cards);
+  return (
+    <>
+      <TextField path="elit.goldankaufInfo.eyebrow" label="Eyebrow" autoFocus />
+      <TextField path="elit.goldankaufInfo.heading" label="Heading" />
+      <TextField path="elit.goldankaufInfo.headingEm" label="Heading (emphasized word)" />
+      <TextField path="elit.goldankaufInfo.body1" label="Paragraph 1" multiline />
+      <TextField path="elit.goldankaufInfo.body2" label="Paragraph 2" multiline />
+      <TextField path="elit.goldankaufInfo.ctaText" label="Button Text" />
+      {cards.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Card {i + 1}
+          </div>
+          <TextField path={`elit.goldankaufInfo.cards.${i}.title`} label="Title" />
+          <TextField path={`elit.goldankaufInfo.cards.${i}.desc`} label="Description" multiline />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function ElitReviewsEditor() {
+  const items = useContentStore((s) => s.elitContent.reviews.items);
+  return (
+    <>
+      <TextField path="elit.reviews.eyebrow" label="Section Eyebrow" autoFocus />
+      <TextField path="elit.reviews.heading" label="Section Heading" />
+      <TextField path="elit.reviews.headingEm" label="Section Heading (emphasized word)" />
+      <TextField path="elit.reviews.score" label="Score (e.g. 5,0)" />
+      <TextField path="elit.reviews.scoreLabel" label="Score Label" />
+      <TextField path="elit.reviews.scoreSubLabel" label="Score Sub-label" />
+      <TextField path="elit.reviews.googleBtnText" label="Google Button Text" />
+      {items.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Review {i + 1}
+          </div>
+          <TextField path={`elit.reviews.items.${i}.text`} label="Quote" multiline />
+          <TextField path={`elit.reviews.items.${i}.name`} label="Name" />
+          <TextField path={`elit.reviews.items.${i}.source`} label="Source" />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function ElitInstagramEditor() {
+  return (
+    <>
+      <TextField path="elit.instagram.heading" label="Heading" multiline autoFocus />
+      <TextField path="elit.instagram.sub" label="Subtext" multiline />
+      <TextField path="elit.instagram.btnText" label="Button Text" />
+    </>
+  );
+}
+
 function ElitFooterEditor() {
+  const col1 = useContentStore((s) => s.elitContent.footer.col1Links);
+  const col2 = useContentStore((s) => s.elitContent.footer.col2Links);
+  const col3 = useContentStore((s) => s.elitContent.footer.col3Links);
+  const legalLinks = useContentStore((s) => s.elitContent.footer.legalLinks);
   return (
     <>
       <TextField path="elit.footer.tagline" label="Tagline" multiline autoFocus />
       <TextField path="elit.footer.copyright" label="Copyright" />
+      <div className="mb-4 rounded-md border border-white/10 p-3">
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+          Column 1
+        </div>
+        <TextField path="elit.footer.col1Title" label="Column Title" />
+        {col1.map((_, i) => (
+          <TextField key={i} path={`elit.footer.col1Links.${i}`} label={`Link ${i + 1}`} />
+        ))}
+      </div>
+      <div className="mb-4 rounded-md border border-white/10 p-3">
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+          Column 2
+        </div>
+        <TextField path="elit.footer.col2Title" label="Column Title" />
+        {col2.map((_, i) => (
+          <TextField key={i} path={`elit.footer.col2Links.${i}`} label={`Link ${i + 1}`} />
+        ))}
+      </div>
+      <div className="mb-4 rounded-md border border-white/10 p-3">
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+          Column 3
+        </div>
+        <TextField path="elit.footer.col3Title" label="Column Title" />
+        {col3.map((_, i) => (
+          <TextField key={i} path={`elit.footer.col3Links.${i}`} label={`Link ${i + 1}`} />
+        ))}
+      </div>
+      <div className="mb-4 rounded-md border border-white/10 p-3">
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+          Bottom Legal Links
+        </div>
+        {legalLinks.map((_, i) => (
+          <TextField key={i} path={`elit.footer.legalLinks.${i}`} label={`Link ${i + 1}`} />
+        ))}
+      </div>
+    </>
+  );
+}
+
+function ElitLegalEditor() {
+  return (
+    <>
+      <TextField path="elit.legal.impressumHtml" label="Impressum (HTML)" multiline autoFocus />
+      <TextField path="elit.legal.datenschutzHtml" label="Datenschutz (HTML)" multiline />
+    </>
+  );
+}
+
+function ElitCookieEditor() {
+  return (
+    <>
+      <TextField path="elit.cookie.text" label="Banner Text" multiline autoFocus />
+      <TextField path="elit.cookie.acceptText" label="Accept Button Text" />
+      <TextField path="elit.cookie.essentialText" label="Essential-Only Button Text" />
     </>
   );
 }
@@ -688,10 +872,19 @@ const FIELD_SETS: Record<string, FieldSet> = {
   'physio.specialists': { component: <PhysioSpecialistsEditor /> },
   'physio.cta': { component: <PhysioCtaEditor /> },
   'elit.logo': { component: <SimpleImageEditor path="elit.logo" label="Site Logo" /> },
+  'elit.nav': { component: <ElitNavEditor /> },
   'elit.hero': { component: <ElitHeroEditor /> },
+  'elit.banner': { component: <ElitBannerEditor /> },
+  'elit.stats': { component: <StatListEditor basePath="elit.stats" count={4} /> },
+  'elit.services': { component: <ElitServicesEditor /> },
   'elit.gallery': { component: <ElitGalleryEditor /> },
   'elit.about': { component: <ElitAboutContactEditor /> },
+  'elit.goldankaufInfo': { component: <ElitGoldankaufInfoEditor /> },
+  'elit.reviews': { component: <ElitReviewsEditor /> },
+  'elit.instagram': { component: <ElitInstagramEditor /> },
   'elit.footer': { component: <ElitFooterEditor /> },
+  'elit.legal': { component: <ElitLegalEditor /> },
+  'elit.cookie': { component: <ElitCookieEditor /> },
 };
 
 export default function FieldEditor() {
