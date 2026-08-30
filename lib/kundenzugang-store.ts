@@ -164,13 +164,80 @@ export interface SiteContent {
   physio: PhysioContent;
 }
 
+// Elit Juwelier is the first client whose site genuinely doesn't fit
+// Framework's fitness-studio shape (hero/services/pricing/team/physio) —
+// rather than force a 16-photo jewelry gallery or a goldsmith's about/contact
+// block into those field names, it gets its own content shape entirely.
+// Kept deliberately flat (no top-level "elit" wrapper) since it lives in its
+// own `elitContent` store slice, distinct from `content: SiteContent` — see
+// the `kind`-branching in loadClient/updateField/save below.
+export interface ElitGalleryItem {
+  image: string;
+  imagePos: ImagePosition;
+  caption: string;
+  category: 'ring' | 'armband';
+}
+
+export interface ElitContent {
+  logo: string;
+  hero: {
+    eyebrow: string;
+    headline: string;
+    headlineEm: string;
+    subtitle: string;
+    desc: string;
+    chips: string[];
+    primaryBtnText: string;
+    secondaryBtnText: string;
+    badgeNumber: string;
+    badgeText: string;
+    image: string;
+    imagePos: ImagePosition;
+  };
+  gallery: {
+    eyebrow: string;
+    heading: string;
+    headingEm: string;
+    items: ElitGalleryItem[];
+  };
+  about: {
+    eyebrow: string;
+    heading: string;
+    headingEm: string;
+    body1: string;
+    body2: string;
+    image: string;
+    imagePos: ImagePosition;
+    stampNumber: string;
+    stampText: string;
+  };
+  contact: {
+    address: string;
+    phone: string;
+    whatsapp: string;
+    hoursWeekday: string;
+    hoursSunday: string;
+  };
+  footer: {
+    tagline: string;
+    copyright: string;
+  };
+}
+
 export interface Client {
   username: string;
   password: string;
   siteName: string;
   /** The real, deployed site this client's admin panel previews and edits. */
   liveUrl?: string;
-  content: SiteContent;
+  /**
+   * Which content shape/save pipeline this client uses. Defaults to
+   * 'framework' when omitted (both existing clients predate this field) —
+   * only 'elit' branches to elitContent/mapElitLiveToContent/elit save path.
+   */
+  kind?: 'framework' | 'elit';
+  content?: SiteContent;
+  elitContent?: ElitContent;
   /** Offline fallback for the page-tab manifest — see DEFAULT_PAGES. */
   defaultPages: PageManifestItem[];
 }
@@ -542,6 +609,78 @@ export const CLIENTS: Client[] = [
       },
     },
   },
+  {
+    username: 'elit',
+    password: 'elit2026',
+    siteName: 'Elit Juwelier',
+    liveUrl: 'https://elit-juwelier.vercel.app',
+    kind: 'elit',
+    defaultPages: [{ id: 'home', label: 'Home', path: '' }],
+    // Pulled directly from elit-juwelier/website/index.html's real current
+    // copy (2026-08-30) — not invented, matches what's actually live.
+    elitContent: {
+      logo: 'public/images/elit-logo-transparent.png',
+      hero: {
+        eyebrow: 'Seit 2001 · 25 Jahre Erfahrung',
+        headline: 'Gold',
+        headlineEm: 'kauf',
+        subtitle: 'Wir kaufen Ihr Gold zu fairen Tagespreisen',
+        desc: 'Bringen Sie Ihr Altgold einfach vorbei — wir bewerten es kostenlos, zahlen faire Tagespreise ohne versteckte Gebühren und Sie erhalten Ihr Geld sofort und sicher in bar. Kein Termin nötig.',
+        chips: ['585er & 750er Gold', 'Faire Tagespreise', 'Sofortauszahlung', 'Kein Termin nötig'],
+        primaryBtnText: 'Termin anfragen →',
+        secondaryBtnText: 'Kollektion ansehen',
+        badgeNumber: '25',
+        badgeText: 'Jahre\nErfahrung',
+        image: 'public/images/elit-hero-goldkauf.png',
+        imagePos: DEFAULT_IMAGE_POSITION,
+      },
+      gallery: {
+        eyebrow: 'Unsere Kollektion',
+        heading: 'Handverlesene',
+        headingEm: 'Schmuckstücke',
+        items: [
+          { image: 'public/images/elit-1.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Ringe mit Steinen', category: 'ring' },
+          { image: 'public/images/elit-2.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldring', category: 'ring' },
+          { image: 'public/images/elit-3.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldring', category: 'ring' },
+          { image: 'public/images/elit-4.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldring', category: 'ring' },
+          { image: 'public/images/elit-5.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Ring-Set', category: 'ring' },
+          { image: 'public/images/elit-6.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldring', category: 'ring' },
+          { image: 'public/images/elit-7.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldring', category: 'ring' },
+          { image: 'public/images/elit-8.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldring', category: 'ring' },
+          { image: 'public/images/elit-9.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Ringe mit Steinen', category: 'ring' },
+          { image: 'public/images/elit-10.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Gold-Bandringe', category: 'ring' },
+          { image: 'public/images/elit-11.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldring', category: 'ring' },
+          { image: 'public/images/elit-12.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldring', category: 'ring' },
+          { image: 'public/images/elit-13.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldarmband', category: 'armband' },
+          { image: 'public/images/elit-14.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldarmband', category: 'armband' },
+          { image: 'public/images/elit-15.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldarmband', category: 'armband' },
+          { image: 'public/images/elit-16.png', imagePos: DEFAULT_IMAGE_POSITION, caption: 'Goldkette Armbänder', category: 'armband' },
+        ],
+      },
+      about: {
+        eyebrow: 'Über Elit Juwelier',
+        heading: '25 Jahre Leidenschaft',
+        headingEm: 'für Goldschmuck',
+        body1: 'Seit 2001 sind wir Ihr vertrauensvoller Juwelier in Hagen. Was als kleine Familienwerkstatt begann, ist heute ein etabliertes Fachgeschäft mit tiefer Leidenschaft für hochwertigen Goldschmuck.',
+        body2: 'Unser Anspruch ist einfach: Jeder Kunde verdient persönliche Aufmerksamkeit und ehrliche Beratung — ob beim Kauf Ihres Traumrings oder beim Verkauf von Altgold. Faire Preise, kein Druck, kein Stress.',
+        image: 'public/images/elit-10.png',
+        imagePos: DEFAULT_IMAGE_POSITION,
+        stampNumber: '25',
+        stampText: 'Jahre\nTradition',
+      },
+      contact: {
+        address: 'Elberfelder Str. 22\n58095 Hagen, NRW',
+        phone: '02331 / 5936841',
+        whatsapp: '0174 / 9155488',
+        hoursWeekday: '10:00 – 19:00 Uhr',
+        hoursSunday: 'Geschlossen',
+      },
+      footer: {
+        tagline: 'Ihr Juwelier für Trauringe, Verlobungsringe und Goldankauf in Hagen. 25 Jahre Erfahrung, persönliche Beratung, faire Preise.',
+        copyright: '© 2026 Elit Juwelier Hagen. Alle Rechte vorbehalten.',
+      },
+    },
+  },
 ];
 
 function findClient(username: string, password: string): Client | undefined {
@@ -756,6 +895,130 @@ function mapPhysioContent(live: any, fallback: PhysioContent): PhysioContent {
   };
 }
 
+// Elit's live document nests everything under a single top-level "elit" key
+// (its Supabase row is a separate client_id from Framework's, but the two
+// live-JSON shapes are otherwise unrelated, so this key just matches the
+// `data-fw="elit.hero.headline"`-style paths used in elit-juwelier's HTML).
+function mapElitLiveToContent(live: any, fallback: ElitContent): ElitContent {
+  const root = live?.elit ?? {};
+  const hero = root.hero ?? {};
+  const gallery = root.gallery ?? {};
+  const items = Array.isArray(gallery.items) ? gallery.items : null;
+  const about = root.about ?? {};
+  const contact = root.contact ?? {};
+  const footer = root.footer ?? {};
+  return {
+    logo: mapNullableImage(root.site?.logo, fallback.logo),
+    hero: {
+      eyebrow: hero.eyebrow ?? fallback.hero.eyebrow,
+      headline: hero.headline ?? fallback.hero.headline,
+      headlineEm: hero.headline_em ?? fallback.hero.headlineEm,
+      subtitle: hero.subtitle ?? fallback.hero.subtitle,
+      desc: hero.desc ?? fallback.hero.desc,
+      chips: Array.isArray(hero.chips) ? hero.chips : fallback.hero.chips,
+      primaryBtnText: hero.primary_btn_text ?? fallback.hero.primaryBtnText,
+      secondaryBtnText: hero.secondary_btn_text ?? fallback.hero.secondaryBtnText,
+      badgeNumber: hero.badge_number ?? fallback.hero.badgeNumber,
+      badgeText: hero.badge_text ?? fallback.hero.badgeText,
+      image: mapNullableImage(hero.image, fallback.hero.image),
+      imagePos: mapImagePos(hero.image_position, fallback.hero.imagePos),
+    },
+    gallery: {
+      eyebrow: gallery.eyebrow ?? fallback.gallery.eyebrow,
+      heading: gallery.heading ?? fallback.gallery.heading,
+      headingEm: gallery.heading_em ?? fallback.gallery.headingEm,
+      items: items
+        ? items.map((it: any, i: number) => ({
+            image: mapNullableImage(it.image, fallback.gallery.items[i]?.image ?? ''),
+            imagePos: mapImagePos(it.image_position, fallback.gallery.items[i]?.imagePos ?? DEFAULT_IMAGE_POSITION),
+            caption: it.caption ?? fallback.gallery.items[i]?.caption ?? '',
+            category: it.category === 'armband' ? 'armband' : 'ring',
+          }))
+        : fallback.gallery.items,
+    },
+    about: {
+      eyebrow: about.eyebrow ?? fallback.about.eyebrow,
+      heading: about.heading ?? fallback.about.heading,
+      headingEm: about.heading_em ?? fallback.about.headingEm,
+      body1: about.body_1 ?? fallback.about.body1,
+      body2: about.body_2 ?? fallback.about.body2,
+      image: mapNullableImage(about.image, fallback.about.image),
+      imagePos: mapImagePos(about.image_position, fallback.about.imagePos),
+      stampNumber: about.stamp_number ?? fallback.about.stampNumber,
+      stampText: about.stamp_text ?? fallback.about.stampText,
+    },
+    contact: {
+      address: contact.address ?? fallback.contact.address,
+      phone: contact.phone ?? fallback.contact.phone,
+      whatsapp: contact.whatsapp ?? fallback.contact.whatsapp,
+      hoursWeekday: contact.hours_weekday ?? fallback.contact.hoursWeekday,
+      hoursSunday: contact.hours_sunday ?? fallback.contact.hoursSunday,
+    },
+    footer: {
+      tagline: footer.tagline ?? fallback.footer.tagline,
+      copyright: footer.copyright ?? fallback.footer.copyright,
+    },
+  };
+}
+
+// Serializes an ElitContent draft into the live document shape Elit's
+// page-loader.js expects (mirrors mapElitLiveToContent's field-name
+// convention in reverse) — shared by save() (full live doc merge) and
+// buildElitLivePreviewPayload (partial postMessage payload).
+function buildElitLiveSection(c: ElitContent) {
+  return {
+    site: { logo: c.logo || null },
+    hero: {
+      eyebrow: c.hero.eyebrow,
+      headline: c.hero.headline,
+      headline_em: c.hero.headlineEm,
+      subtitle: c.hero.subtitle,
+      desc: c.hero.desc,
+      chips: c.hero.chips,
+      primary_btn_text: c.hero.primaryBtnText,
+      secondary_btn_text: c.hero.secondaryBtnText,
+      badge_number: c.hero.badgeNumber,
+      badge_text: c.hero.badgeText,
+      image: c.hero.image || null,
+      image_position: { ...c.hero.imagePos },
+    },
+    gallery: {
+      eyebrow: c.gallery.eyebrow,
+      heading: c.gallery.heading,
+      heading_em: c.gallery.headingEm,
+      items: c.gallery.items.map((it) => ({
+        image: it.image || null,
+        image_position: { ...it.imagePos },
+        caption: it.caption,
+        category: it.category,
+      })),
+    },
+    about: {
+      eyebrow: c.about.eyebrow,
+      heading: c.about.heading,
+      heading_em: c.about.headingEm,
+      body_1: c.about.body1,
+      body_2: c.about.body2,
+      image: c.about.image || null,
+      image_position: { ...c.about.imagePos },
+      stamp_number: c.about.stampNumber,
+      stamp_text: c.about.stampText,
+    },
+    contact: {
+      address: c.contact.address,
+      phone: c.contact.phone,
+      whatsapp: c.contact.whatsapp,
+      hours_weekday: c.contact.hoursWeekday,
+      hours_sunday: c.contact.hoursSunday,
+    },
+    footer: { tagline: c.footer.tagline, copyright: c.footer.copyright },
+  };
+}
+
+export function buildElitLivePreviewPayload(content: ElitContent) {
+  return { elit: buildElitLiveSection(content) };
+}
+
 interface AuthState {
   isAuthenticated: boolean;
   clientId: string | null;
@@ -797,6 +1060,15 @@ interface ContentState {
   currentPage: PageId;
   content: SiteContent;
   savedContentByClient: Record<string, SiteContent>;
+  /**
+   * Elit's content lives in a fully separate slice rather than widening
+   * `content` to a union — Framework's SiteContent shape and every existing
+   * accessor of `s.content.*` stays completely untouched. `updateField`
+   * routes to this slice for any path starting with "elit." (prefix
+   * stripped before traversal — see setAtPath call sites below).
+   */
+  elitContent: ElitContent;
+  savedElitContentByClient: Record<string, ElitContent>;
   selectedField: string | null;
   dirty: boolean;
   liveSyncStatus: LiveSyncStatus;
@@ -844,8 +1116,10 @@ export const useContentStore = create<ContentState>()(
     (set, get) => ({
       currentClientId: null,
       currentPage: 'home' as PageId,
-      content: CLIENTS[0].content,
+      content: CLIENTS[0].content!,
       savedContentByClient: {},
+      elitContent: CLIENTS.find((c) => c.kind === 'elit')!.elitContent!,
+      savedElitContentByClient: {},
       selectedField: null,
       dirty: false,
       liveSyncStatus: 'idle' as LiveSyncStatus,
@@ -856,7 +1130,40 @@ export const useContentStore = create<ContentState>()(
       loadClient: async (clientId) => {
         const client = CLIENTS.find((c) => c.username === clientId);
         if (!client) return;
-        const saved = get().savedContentByClient[clientId] ?? client.content;
+
+        if (client.kind === 'elit') {
+          const savedElit = get().savedElitContentByClient[clientId] ?? client.elitContent!;
+          set({
+            currentClientId: clientId,
+            currentPage: 'home',
+            elitContent: savedElit,
+            selectedField: null,
+            dirty: false,
+            sitePages: client.defaultPages,
+            siteAccent: null,
+          });
+          if (!client.liveUrl) return;
+          try {
+            const res = await fetch(`${client.liveUrl}/admin/api/data`);
+            if (!res.ok) return;
+            const live = await res.json();
+            const mapped = mapElitLiveToContent(live, client.elitContent!);
+            set((state) =>
+              state.currentClientId === clientId
+                ? {
+                    elitContent: mapped,
+                    savedElitContentByClient: { ...state.savedElitContentByClient, [clientId]: mapped },
+                    dirty: false,
+                  }
+                : state,
+            );
+          } catch {
+            // Offline or the live endpoint is down — keep the seed content.
+          }
+          return;
+        }
+
+        const saved = get().savedContentByClient[clientId] ?? client.content!;
         set({
           currentClientId: clientId,
           currentPage: 'home',
@@ -875,7 +1182,7 @@ export const useContentStore = create<ContentState>()(
           const res = await fetch(`${client.liveUrl}/admin/api/data`);
           if (!res.ok) return;
           const live = await res.json();
-          const mapped = mapLiveToContent(live, client.content);
+          const mapped = mapLiveToContent(live, client.content!);
           const extras = Array.isArray(live?.home?.locations) ? live.home.locations : [];
           const pages = Array.isArray(live?.site?.pages) && live.site.pages.length
             ? live.site.pages
@@ -901,13 +1208,60 @@ export const useContentStore = create<ContentState>()(
       setCurrentPage: (page) => set({ currentPage: page, selectedField: null }),
       setSelectedField: (field) => set({ selectedField: field }),
       updateField: (path, value) =>
-        set((state) => ({
-          content: setAtPath(state.content, path, value),
-          dirty: true,
-        })),
+        path.startsWith('elit.')
+          ? set((state) => ({
+              elitContent: setAtPath(state.elitContent, path.slice('elit.'.length), value),
+              dirty: true,
+            }))
+          : set((state) => ({
+              content: setAtPath(state.content, path, value),
+              dirty: true,
+            })),
       save: async () => {
         const state = get();
         if (!state.currentClientId) return;
+
+        const client = CLIENTS.find((c) => c.username === state.currentClientId);
+        if (client?.kind === 'elit') {
+          set({
+            savedElitContentByClient: {
+              ...state.savedElitContentByClient,
+              [state.currentClientId]: state.elitContent,
+            },
+            dirty: false,
+          });
+          const elitLiveUrl = getClientLiveUrl(state.currentClientId);
+          if (!elitLiveUrl) {
+            set({ liveSyncStatus: 'unsupported', liveSyncMessage: null });
+            return;
+          }
+          set({ liveSyncStatus: 'syncing', liveSyncMessage: null });
+          try {
+            const dataUrl = `${elitLiveUrl}/admin/api/data`;
+            const getRes = await fetch(dataUrl);
+            if (!getRes.ok) throw new Error(`Could not read live data (HTTP ${getRes.status})`);
+            const live = await getRes.json();
+            live.elit = buildElitLiveSection(state.elitContent);
+            const postRes = await fetch(dataUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(live),
+            });
+            const postJson = await postRes.json().catch(() => ({}) as any);
+            if (postRes.ok && postJson.ok) {
+              set({ liveSyncStatus: 'success', liveSyncMessage: 'Pushed to the live site.' });
+            } else {
+              set({
+                liveSyncStatus: 'error',
+                liveSyncMessage: postJson.error || `Live save failed (HTTP ${postRes.status}).`,
+              });
+            }
+          } catch (err) {
+            set({ liveSyncStatus: 'error', liveSyncMessage: String(err) });
+          }
+          return;
+        }
+
         set({
           savedContentByClient: {
             ...state.savedContentByClient,
@@ -1101,6 +1455,10 @@ export function getClientSiteName(clientId: string | null): string {
   return CLIENTS.find((c) => c.username === clientId)?.siteName ?? '';
 }
 
+export function getClientKind(clientId: string | null): 'framework' | 'elit' | undefined {
+  return CLIENTS.find((c) => c.username === clientId)?.kind;
+}
+
 export function getClientLiveUrl(clientId: string | null): string | undefined {
   return CLIENTS.find((c) => c.username === clientId)?.liveUrl;
 }
@@ -1251,4 +1609,14 @@ export function getAtPath(obj: any, path: string): string {
     const key: any = /^\d+$/.test(k) ? Number(k) : k;
     return o[key];
   }, obj) as unknown as string;
+}
+
+// Used by FieldEditor.tsx's generic primitives (TextField/ImagePositionEditor/
+// SimpleImageEditor) so the same components work for both content slices —
+// any path starting with "elit." reads from elitContent (prefix stripped),
+// everything else reads from content exactly as before.
+export function getFieldValue(state: { content: SiteContent; elitContent: ElitContent }, path: string): string {
+  return path.startsWith('elit.')
+    ? getAtPath(state.elitContent, path.slice('elit.'.length))
+    : getAtPath(state.content, path);
 }

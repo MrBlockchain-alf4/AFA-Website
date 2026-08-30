@@ -3,15 +3,16 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
-import { NAV_TREES, sectionOf } from '@/lib/kundenzugang-nav';
-import { useContentStore } from '@/lib/kundenzugang-store';
+import { getNavTreeFor, sectionOf } from '@/lib/kundenzugang-nav';
+import { useContentStore, useAuthStore, getClientKind } from '@/lib/kundenzugang-store';
 import { cn, hexToRgba } from '@/lib/utils';
 
 export default function NavTree() {
   const selectedField = useContentStore((s) => s.selectedField);
   const setSelectedField = useContentStore((s) => s.setSelectedField);
   const currentPage = useContentStore((s) => s.currentPage);
-  const navTree = NAV_TREES[currentPage];
+  const clientId = useAuthStore((s) => s.clientId);
+  const navTree = getNavTreeFor(getClientKind(clientId), currentPage);
   // AFA's own brand cyan — kundenzugang is AFA's product, not themed per client.
   const accent = '#00D4FF';
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ hero: true, services: true });

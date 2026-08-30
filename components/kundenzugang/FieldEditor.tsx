@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useContentStore, getAtPath } from '@/lib/kundenzugang-store';
+import { useContentStore, getFieldValue } from '@/lib/kundenzugang-store';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
@@ -69,7 +69,7 @@ function TextField({
   multiline?: boolean;
   autoFocus?: boolean;
 }) {
-  const value = useContentStore((s) => getAtPath(s.content, path));
+  const value = useContentStore((s) => getFieldValue(s,path));
   const updateField = useContentStore((s) => s.updateField);
   return (
     <div className="mb-4">
@@ -113,10 +113,10 @@ function ImagePositionEditor({
   posPath: string;
   label: string;
 }) {
-  const image = useContentStore((s) => getAtPath(s.content, imagePath));
-  const posX = useContentStore((s) => Number(getAtPath(s.content, `${posPath}.x`)) || 50);
-  const posY = useContentStore((s) => Number(getAtPath(s.content, `${posPath}.y`)) || 50);
-  const scale = useContentStore((s) => Number(getAtPath(s.content, `${posPath}.scale`)) || 100);
+  const image = useContentStore((s) => getFieldValue(s,imagePath));
+  const posX = useContentStore((s) => Number(getFieldValue(s,`${posPath}.x`)) || 50);
+  const posY = useContentStore((s) => Number(getFieldValue(s,`${posPath}.y`)) || 50);
+  const scale = useContentStore((s) => Number(getFieldValue(s,`${posPath}.scale`)) || 100);
   const updateField = useContentStore((s) => s.updateField);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -497,7 +497,7 @@ function ChipListEditor({ basePath, count }: { basePath: string; count: number }
 }
 
 function SimpleImageEditor({ path, label }: { path: string; label: string }) {
-  const image = useContentStore((s) => getAtPath(s.content, path));
+  const image = useContentStore((s) => getFieldValue(s,path));
   const updateField = useContentStore((s) => s.updateField);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -568,6 +568,83 @@ function SimpleImageEditor({ path, label }: { path: string; label: string }) {
   );
 }
 
+// ── Elit Juwelier ────────────────────────────────────────────────────────
+// A single-page jewelry site with its own content shape (ElitContent) —
+// these editors read/write via the "elit."-prefixed paths that
+// getFieldValue/updateField route to the elitContent store slice, built
+// entirely from the same generic TextField/ImagePositionEditor/
+// ChipListEditor/SimpleImageEditor primitives used above.
+function ElitHeroEditor() {
+  return (
+    <>
+      <TextField path="elit.hero.eyebrow" label="Eyebrow" autoFocus />
+      <TextField path="elit.hero.headline" label="Headline" />
+      <TextField path="elit.hero.headlineEm" label="Headline (emphasized word)" />
+      <TextField path="elit.hero.subtitle" label="Subtitle" multiline />
+      <TextField path="elit.hero.desc" label="Description" multiline />
+      <ChipListEditor basePath="elit.hero.chips" count={4} />
+      <TextField path="elit.hero.primaryBtnText" label="Primary Button Text" />
+      <TextField path="elit.hero.secondaryBtnText" label="Secondary Button Text" />
+      <TextField path="elit.hero.badgeNumber" label="Badge Number" />
+      <TextField path="elit.hero.badgeText" label="Badge Text" multiline />
+      <ImagePositionEditor imagePath="elit.hero.image" posPath="elit.hero.imagePos" label="Hero Image" />
+    </>
+  );
+}
+
+function ElitGalleryEditor() {
+  const items = useContentStore((s) => s.elitContent.gallery.items);
+  return (
+    <>
+      <TextField path="elit.gallery.eyebrow" label="Section Eyebrow" autoFocus />
+      <TextField path="elit.gallery.heading" label="Section Heading" />
+      <TextField path="elit.gallery.headingEm" label="Section Heading (emphasized word)" />
+      {items.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Photo {i + 1}
+          </div>
+          <ImagePositionEditor
+            imagePath={`elit.gallery.items.${i}.image`}
+            posPath={`elit.gallery.items.${i}.imagePos`}
+            label="Photo"
+          />
+          <TextField path={`elit.gallery.items.${i}.caption`} label="Caption" />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function ElitAboutContactEditor() {
+  return (
+    <>
+      <TextField path="elit.about.eyebrow" label="About Eyebrow" autoFocus />
+      <TextField path="elit.about.heading" label="About Heading" />
+      <TextField path="elit.about.headingEm" label="About Heading (emphasized word)" />
+      <TextField path="elit.about.body1" label="About Paragraph 1" multiline />
+      <TextField path="elit.about.body2" label="About Paragraph 2" multiline />
+      <ImagePositionEditor imagePath="elit.about.image" posPath="elit.about.imagePos" label="About Image" />
+      <TextField path="elit.about.stampNumber" label="Stamp Number" />
+      <TextField path="elit.about.stampText" label="Stamp Text" multiline />
+      <TextField path="elit.contact.address" label="Address" multiline />
+      <TextField path="elit.contact.phone" label="Phone" />
+      <TextField path="elit.contact.whatsapp" label="WhatsApp" />
+      <TextField path="elit.contact.hoursWeekday" label="Hours (Mon–Sat)" />
+      <TextField path="elit.contact.hoursSunday" label="Hours (Sunday)" />
+    </>
+  );
+}
+
+function ElitFooterEditor() {
+  return (
+    <>
+      <TextField path="elit.footer.tagline" label="Tagline" multiline autoFocus />
+      <TextField path="elit.footer.copyright" label="Copyright" />
+    </>
+  );
+}
+
 type FieldSet = { path: string; label: string; multiline?: boolean }[] | { component: React.ReactNode };
 
 const FIELD_SETS: Record<string, FieldSet> = {
@@ -610,6 +687,11 @@ const FIELD_SETS: Record<string, FieldSet> = {
   'physio.services': { component: <PhysioServicesEditor /> },
   'physio.specialists': { component: <PhysioSpecialistsEditor /> },
   'physio.cta': { component: <PhysioCtaEditor /> },
+  'elit.logo': { component: <SimpleImageEditor path="elit.logo" label="Site Logo" /> },
+  'elit.hero': { component: <ElitHeroEditor /> },
+  'elit.gallery': { component: <ElitGalleryEditor /> },
+  'elit.about': { component: <ElitAboutContactEditor /> },
+  'elit.footer': { component: <ElitFooterEditor /> },
 };
 
 export default function FieldEditor() {

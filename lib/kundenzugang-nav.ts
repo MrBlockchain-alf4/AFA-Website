@@ -98,6 +98,28 @@ export const NAV_TREES: Record<PageId, NavNode[]> = {
   physio: PHYSIO_NAV_TREE,
 };
 
+// Elit Juwelier — a single-page site with its own content shape (see
+// ElitContent in kundenzugang-store.ts), so it gets its own flat nav tree
+// rather than reusing Framework's. Every id is prefixed "elit." so it can't
+// collide with Framework's field ids in the shared FIELD_SETS map, and each
+// leaf here is a single composite editor (like Physio's own sub-sections)
+// rather than further nav-tree nesting.
+const ELIT_NAV_TREE: NavNode[] = [
+  { id: 'elit.logo', label: 'Logo', live: true },
+  { id: 'elit.hero', label: 'Goldkauf (Hero)', live: true },
+  { id: 'elit.gallery', label: 'Gallery', live: true },
+  { id: 'elit.about', label: 'About & Contact', live: true },
+  { id: 'elit.footer', label: 'Footer', live: true },
+];
+
+// Client-scoped nav tree lookup — Framework's clients (kind omitted/
+// 'framework') keep using NAV_TREES[page] exactly as before; Elit always
+// gets its one flat tree regardless of `page` (it only ever has 'home').
+export function getNavTreeFor(clientKind: 'framework' | 'elit' | undefined, page: PageId): NavNode[] {
+  if (clientKind === 'elit') return ELIT_NAV_TREE;
+  return NAV_TREES[page];
+}
+
 // Given a selected field id like "hero.headline" or "physio.intro", return
 // the top-level section id ("hero", "physio") used to auto-expand its nav
 // parent.

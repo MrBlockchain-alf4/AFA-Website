@@ -7,7 +7,9 @@ import {
   getClientSiteName,
   getClientLiveUrl,
   getClientPageUrl,
+  getClientKind,
   buildLivePreviewPayload,
+  buildElitLivePreviewPayload,
   type PageId,
 } from '@/lib/kundenzugang-store';
 import { mapLiveClickToField, getHighlightTarget } from '@/lib/kundenzugang-nav';
@@ -15,6 +17,7 @@ import { cn, hexToRgba } from '@/lib/utils';
 
 export default function PreviewPane() {
   const content = useContentStore((s) => s.content);
+  const elitContent = useContentStore((s) => s.elitContent);
   const dirty = useContentStore((s) => s.dirty);
   const liveLocationExtras = useContentStore((s) => s.liveLocationExtras);
   const selectedField = useContentStore((s) => s.selectedField);
@@ -26,6 +29,10 @@ export default function PreviewPane() {
   const sitePages = useContentStore((s) => s.sitePages);
   const clientId = useAuthStore((s) => s.clientId);
   const siteName = getClientSiteName(clientId);
+  const isElit = getClientKind(clientId) === 'elit';
+  const previewPayload = isElit
+    ? buildElitLivePreviewPayload(elitContent)
+    : buildLivePreviewPayload(content, liveLocationExtras);
   // liveUrl is the base origin (used for postMessage targeting/validation,
   // which is the same regardless of page); pageUrl is what's actually
   // loaded in the iframe — the live site is one unified data document
@@ -59,9 +66,9 @@ export default function PreviewPane() {
   // for the same message and only patches the data-fw elements that exist
   // on its own page, so it's safe to always send the full payload.
   useEffect(() => {
-    postToIframe({ type: 'FW_ADMIN_PREVIEW', data: buildLivePreviewPayload(content, liveLocationExtras) });
+    postToIframe({ type: 'FW_ADMIN_PREVIEW', data: previewPayload });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [content, liveLocationExtras, liveUrl, currentPage]);
+  }, [content, elitContent, liveLocationExtras, liveUrl, currentPage]);
 
   // Tell the iframe which element(s) to outline whenever the selected field
   // changes — from a nav-tree click OR a click inside the iframe itself.
@@ -161,7 +168,7 @@ export default function PreviewPane() {
         title={`${siteName} — live preview (${currentPage})`}
         onLoad={() => {
           readyRef.current = true;
-          postToIframe({ type: 'FW_ADMIN_PREVIEW', data: buildLivePreviewPayload(content, liveLocationExtras) });
+          postToIframe({ type: 'FW_ADMIN_PREVIEW', data: previewPayload });
           const { paths, section } = getHighlightTarget(selectedField);
           postToIframe({ type: 'FW_ADMIN_HIGHLIGHT', paths, section });
         }}
