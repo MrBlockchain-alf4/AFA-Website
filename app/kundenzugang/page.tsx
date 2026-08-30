@@ -11,7 +11,7 @@ export default function KundenzugangPage() {
 
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) return <div className="min-h-screen bg-[#0b0e0c]" />;
+  if (!mounted) return <div className="min-h-screen bg-zinc-950" />;
 
   return isAuthenticated ? <AdminShell /> : <LoginScreen />;
 }

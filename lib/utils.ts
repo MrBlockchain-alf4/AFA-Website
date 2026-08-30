@@ -27,11 +27,11 @@ export function hexToRgba(hex: string, alpha: number): string {
 // than assuming dark text always works.
 export function getContrastText(hex: string): string {
   const rgb = hexToRgbTuple(hex);
-  if (!rgb) return '#0b0e0c';
+  if (!rgb) return '#09090b';
   const [r, g, b] = rgb.map((c) => {
     const s = c / 255;
     return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
   });
   const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return luminance > 0.45 ? '#0b0e0c' : '#ffffff';
+  return luminance > 0.45 ? '#09090b' : '#ffffff';
 }

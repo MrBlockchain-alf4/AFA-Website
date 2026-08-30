@@ -99,7 +99,7 @@ export default function PreviewPane() {
 
   if (!liveUrl || !pageUrl) {
     return (
-      <div className="flex h-full items-center justify-center bg-[#0b0e0c] px-8 text-center">
+      <div className="flex h-full items-center justify-center bg-zinc-950 px-8 text-center">
         <div className="max-w-sm">
           <p className="mb-2 text-[13px] font-semibold text-zinc-300">No live site connected</p>
           <p className="text-[12px] leading-relaxed text-zinc-600">
@@ -112,7 +112,7 @@ export default function PreviewPane() {
   }
 
   return (
-    <div className="flex h-full flex-col bg-[#0b0e0c]">
+    <div className="flex h-full flex-col bg-zinc-950">
       <div className="flex flex-shrink-0 items-center justify-between border-b border-white/10 px-4 py-2.5">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 rounded-md border border-white/10 bg-white/5 p-0.5">

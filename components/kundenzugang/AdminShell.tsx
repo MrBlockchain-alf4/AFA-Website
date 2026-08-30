@@ -51,7 +51,7 @@ export default function AdminShell() {
 
   return (
     <div
-      className="flex h-screen flex-col bg-[#0b0e0c] text-zinc-100"
+      className="flex h-screen flex-col bg-zinc-950 text-zinc-100"
       style={accentCssVars(accent)}
     >
       {/* TOPBAR */}
