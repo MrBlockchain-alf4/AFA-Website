@@ -488,6 +488,17 @@ function findClient(username: string, password: string): Client | undefined {
 // shape back into our SiteContent shape. contact.email has no live-side
 // field (nothing on the page has a data-fw hook for it — it's hardcoded in
 // the footer's mailto link), so it falls back to the seed value.
+// Image fields need `undefined` (key missing from the live payload — the
+// live document predates this field, fall back to seed data) and explicit
+// `null` (an admin deliberately cleared the photo) to behave differently.
+// A plain `??` treats both the same, which would silently resurrect a
+// cleared photo from this file's offline-fallback seed on the next login —
+// exactly the "restore from old data" bug this must never do.
+function mapNullableImage(liveValue: unknown, fallback: string): string {
+  if (liveValue === undefined) return fallback;
+  return typeof liveValue === 'string' ? liveValue : '';
+}
+
 function mapStatArray(live: any, fallback: StatItem[]): StatItem[] {
   if (!Array.isArray(live)) return fallback;
   return live.map((s: any, i: number) => ({
@@ -516,7 +527,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
       headline: h.headline ?? fallback.hero.headline,
       subtext: h.sub ?? fallback.hero.subtext,
       buttonText: h.cta_text ?? fallback.hero.buttonText,
-      image: h.image ?? fallback.hero.image,
+      image: mapNullableImage(h.image, fallback.hero.image),
       imagePositionX: h.image_position?.x ?? fallback.hero.imagePositionX,
       imagePositionY: h.image_position?.y ?? fallback.hero.imagePositionY,
       imageScale: h.image_position?.scale ?? fallback.hero.imageScale,
@@ -545,7 +556,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
       heading: about.heading ?? fallback.about.heading,
       body1: about.body_1 ?? fallback.about.body1,
       body2: about.body_2 ?? fallback.about.body2,
-      image: about.image ?? fallback.about.image,
+      image: mapNullableImage(about.image, fallback.about.image),
       stats: mapStatArray(about.stats, fallback.about.stats),
       chips: Array.isArray(about.chips) ? about.chips : fallback.about.chips,
     },
@@ -561,7 +572,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
             name: l.name ?? '',
             address: l.address ?? '',
             hours: l.hours ?? '',
-            image: l.image ?? fallback.contact.locations[i]?.image ?? '',
+            image: mapNullableImage(l.image, fallback.contact.locations[i]?.image ?? ''),
           }))
         : fallback.contact.locations,
     },
@@ -598,7 +609,7 @@ function mapTeamContent(live: any, fallback: TeamContent): TeamContent {
       ? members.map((m: any, i: number) => ({
           name: m.name ?? fallback.members[i]?.name ?? '',
           role: m.role ?? fallback.members[i]?.role ?? '',
-          img: m.img ?? fallback.members[i]?.img ?? '',
+          img: mapNullableImage(m.img, fallback.members[i]?.img ?? ''),
         }))
       : fallback.members,
   };
@@ -618,7 +629,7 @@ function mapPhysioContent(live: any, fallback: PhysioContent): PhysioContent {
       title: hero.title ?? fallback.hero.title,
       desc: hero.desc ?? fallback.hero.desc,
       ctaText: hero.cta_text ?? fallback.hero.ctaText,
-      image: hero.image ?? fallback.hero.image,
+      image: mapNullableImage(hero.image, fallback.hero.image),
     },
     intro: {
       label: intro.label ?? fallback.intro.label,
@@ -647,7 +658,7 @@ function mapPhysioContent(live: any, fallback: PhysioContent): PhysioContent {
       ? specialists.map((sp: any, i: number) => ({
           name: sp.name ?? fallback.specialists[i]?.name ?? '',
           title: sp.title ?? fallback.specialists[i]?.title ?? '',
-          img: sp.img ?? fallback.specialists[i]?.img ?? '',
+          img: mapNullableImage(sp.img, fallback.specialists[i]?.img ?? ''),
           bio: Array.isArray(sp.bio) ? sp.bio : fallback.specialists[i]?.bio ?? ['', ''],
           tags: Array.isArray(sp.tags) ? sp.tags : fallback.specialists[i]?.tags ?? ['', '', '', ''],
         }))
