@@ -702,7 +702,7 @@ export const CLIENTS: Client[] = [
         secondaryBtnText: 'Kollektion ansehen',
         badgeNumber: '25',
         badgeText: 'Jahre\nErfahrung',
-        image: 'public/images/elit-hero-goldkauf.png',
+        image: 'public/images/elit-hero-goldbarren.jpg',
         imagePos: DEFAULT_IMAGE_POSITION,
       },
       banner: {
