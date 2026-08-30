@@ -95,14 +95,29 @@ function TextField({
   );
 }
 
-function HeroImageEditor() {
-  const image = useContentStore((s) => s.content.hero.image);
-  const posX = useContentStore((s) => s.content.hero.imagePositionX);
-  const posY = useContentStore((s) => s.content.hero.imagePositionY);
-  const scale = useContentStore((s) => s.content.hero.imageScale);
+// Universal photo editor: upload/replace/delete + drag-to-set-focal-point +
+// zoom slider. Used for every "photo" field on the site (hero, about,
+// locations, team, physio hero/specialists, class cards) — every one of
+// those images fills a responsive, CSS-sized container via object-fit/
+// background-size:cover, so this controls framing (which part is visible,
+// how zoomed in) rather than the container's own size, which stays correct
+// at every screen size. Not used for the site logo, which is object-fit:
+// contain (always shown whole, no crop/focal-point concept) — that keeps
+// using the simpler SimpleImageEditor below.
+function ImagePositionEditor({
+  imagePath,
+  posPath,
+  label,
+}: {
+  imagePath: string;
+  posPath: string;
+  label: string;
+}) {
+  const image = useContentStore((s) => getAtPath(s.content, imagePath));
+  const posX = useContentStore((s) => Number(getAtPath(s.content, `${posPath}.x`)) || 50);
+  const posY = useContentStore((s) => Number(getAtPath(s.content, `${posPath}.y`)) || 50);
+  const scale = useContentStore((s) => Number(getAtPath(s.content, `${posPath}.scale`)) || 100);
   const updateField = useContentStore((s) => s.updateField);
-  const setHeroImagePosition = useContentStore((s) => s.setHeroImagePosition);
-  const setHeroImageScale = useContentStore((s) => s.setHeroImageScale);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -124,7 +139,13 @@ function HeroImageEditor() {
         setUploadError('Image is still too large after compression — please choose a simpler photo.');
         return;
       }
-      updateField('hero.image', dataUrl);
+      updateField(imagePath, dataUrl);
+      // A new photo's composition rarely matches the old one's focal
+      // point/zoom — reset to centered/fit rather than carry over a crop
+      // that may now be pointing at the wrong part of the image.
+      updateField(`${posPath}.x`, 50);
+      updateField(`${posPath}.y`, 50);
+      updateField(`${posPath}.scale`, 100);
     } catch {
       setUploadError('Could not process that image — please try a different file.');
     } finally {
@@ -138,7 +159,8 @@ function HeroImageEditor() {
     const rect = box.getBoundingClientRect();
     const x = Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100));
     const y = Math.min(100, Math.max(0, ((clientY - rect.top) / rect.height) * 100));
-    setHeroImagePosition(Math.round(x), Math.round(y));
+    updateField(`${posPath}.x`, Math.round(x));
+    updateField(`${posPath}.y`, Math.round(y));
   }
 
   function onPointerDown(e: React.PointerEvent) {
@@ -158,7 +180,7 @@ function HeroImageEditor() {
 
   return (
     <div className="mb-4">
-      <Label>Image</Label>
+      <Label>{label}</Label>
 
       <input
         ref={fileInputRef}
@@ -179,7 +201,7 @@ function HeroImageEditor() {
         {image && (
           <button
             type="button"
-            onClick={() => updateField('hero.image', '')}
+            onClick={() => updateField(imagePath, '')}
             className="rounded-md border border-red-500/25 bg-red-500/10 px-3 text-[12px] font-semibold text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-500/20"
           >
             Delete Photo
@@ -195,7 +217,7 @@ function HeroImageEditor() {
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
-            className="relative mb-2 aspect-video w-full cursor-crosshair overflow-hidden rounded-md border border-white/10 bg-black"
+            className="relative mb-2 aspect-video w-full cursor-crosshair touch-none overflow-hidden rounded-md border border-white/10 bg-black"
             style={{
               backgroundImage: `url(${image})`,
               backgroundPosition: `${posX}% ${posY}%`,
@@ -218,7 +240,7 @@ function HeroImageEditor() {
             min={100}
             max={200}
             value={scale}
-            onChange={(e) => setHeroImageScale(Number(e.target.value))}
+            onChange={(e) => updateField(`${posPath}.scale`, Number(e.target.value))}
             className="mb-4 w-full accent-[var(--kz-accent)]"
           />
         </>
@@ -226,7 +248,7 @@ function HeroImageEditor() {
         <p className="mb-3 text-[11px] text-zinc-600">No image yet — upload one above.</p>
       )}
 
-      <TextField path="hero.image" label="Or paste an Image URL" />
+      <TextField path={imagePath} label="Or paste an Image URL" />
     </div>
   );
 }
@@ -267,7 +289,11 @@ function ContactEditor() {
           <TextField path={`contact.locations.${i}.name`} label="Studio Name" />
           <TextField path={`contact.locations.${i}.address`} label="Address" />
           <TextField path={`contact.locations.${i}.hours`} label="Hours" />
-          <SimpleImageEditor path={`contact.locations.${i}.image`} label="Studio Photo" />
+          <ImagePositionEditor
+            imagePath={`contact.locations.${i}.image`}
+            posPath={`contact.locations.${i}.imagePos`}
+            label="Studio Photo"
+          />
         </div>
       ))}
     </>
@@ -324,7 +350,11 @@ function TeamEditor() {
           </div>
           <TextField path={`team.members.${i}.name`} label="Name" />
           <TextField path={`team.members.${i}.role`} label="Role" />
-          <SimpleImageEditor path={`team.members.${i}.img`} label="Photo" />
+          <ImagePositionEditor
+            imagePath={`team.members.${i}.img`}
+            posPath={`team.members.${i}.imgPos`}
+            label="Photo"
+          />
         </div>
       ))}
     </>
@@ -336,7 +366,11 @@ function ServiceEditor({ index }: { index: number }) {
     <>
       <TextField path={`services.${index}.title`} label="Title" autoFocus />
       <TextField path={`services.${index}.desc`} label="Description" multiline />
-      <SimpleImageEditor path={`services.${index}.image`} label="Photo" />
+      <ImagePositionEditor
+        imagePath={`services.${index}.image`}
+        posPath={`services.${index}.imagePos`}
+        label="Photo"
+      />
     </>
   );
 }
@@ -348,7 +382,7 @@ function PhysioHeroEditor() {
       <TextField path="physio.hero.title" label="Title" multiline />
       <TextField path="physio.hero.desc" label="Description" multiline />
       <TextField path="physio.hero.ctaText" label="Button Text" />
-      <SimpleImageEditor path="physio.hero.image" label="Hero Image" />
+      <ImagePositionEditor imagePath="physio.hero.image" posPath="physio.hero.imagePos" label="Hero Image" />
     </>
   );
 }
@@ -412,7 +446,11 @@ function PhysioSpecialistsEditor() {
           </div>
           <TextField path={`physio.specialists.${i}.name`} label="Name" autoFocus={i === 0} />
           <TextField path={`physio.specialists.${i}.title`} label="Title" />
-          <SimpleImageEditor path={`physio.specialists.${i}.img`} label="Photo" />
+          <ImagePositionEditor
+            imagePath={`physio.specialists.${i}.img`}
+            posPath={`physio.specialists.${i}.imgPos`}
+            label="Photo"
+          />
           <TextField path={`physio.specialists.${i}.bio.0`} label="Bio Paragraph 1" multiline />
           <TextField path={`physio.specialists.${i}.bio.1`} label="Bio Paragraph 2" multiline />
           <ChipListEditor basePath={`physio.specialists.${i}.tags`} count={4} />
@@ -538,7 +576,7 @@ const FIELD_SETS: Record<string, FieldSet> = {
   'hero.headline': [{ path: 'hero.headline', label: 'Headline', multiline: true }],
   'hero.subtext': [{ path: 'hero.subtext', label: 'Subtext', multiline: true }],
   'hero.buttonText': [{ path: 'hero.buttonText', label: 'Button Text' }],
-  'hero.image': { component: <HeroImageEditor /> },
+  'hero.image': { component: <ImagePositionEditor imagePath="hero.image" posPath="hero.imagePos" label="Image" /> },
   stats: { component: <StatListEditor basePath="stats" count={4} /> },
   'services.header': [
     { path: 'classesSection.eyebrow', label: 'Section Eyebrow' },
@@ -551,7 +589,7 @@ const FIELD_SETS: Record<string, FieldSet> = {
   'about.heading': [{ path: 'about.heading', label: 'Heading', multiline: true }],
   'about.body1': [{ path: 'about.body1', label: 'Paragraph 1', multiline: true }],
   'about.body2': [{ path: 'about.body2', label: 'Paragraph 2', multiline: true }],
-  'about.image': { component: <SimpleImageEditor path="about.image" label="Image" /> },
+  'about.image': { component: <ImagePositionEditor imagePath="about.image" posPath="about.imagePos" label="Image" /> },
   'about.stats': { component: <StatListEditor basePath="about.stats" count={2} /> },
   'about.chips': { component: <ChipListEditor basePath="about.chips" count={4} /> },
   pricing: { component: <PricingEditor /> },

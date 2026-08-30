@@ -1,10 +1,29 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
+// Shared by every image field: how the photo is framed inside its
+// (responsive, container-filling) box — a focal point to pan to and a zoom
+// level, matching the pattern Hero's image editor already used before this
+// was generalized to every image on the site. Deliberately NOT a free-form
+// width/height/x/y box — every image container on the live site is sized by
+// CSS Grid/Flexbox for its own responsive layout (the 32-card team masonry,
+// the 3-card class grid, etc.), so the image always fills its container via
+// object-fit/background-size:cover; this only controls which part of the
+// photo is visible and how zoomed in it is, which stays correct at every
+// screen size.
+export interface ImagePosition {
+  x: number; // 0-100, focal point X (CSS background-position / object-position)
+  y: number; // 0-100, focal point Y
+  scale: number; // 100-200, zoom level
+}
+
+export const DEFAULT_IMAGE_POSITION: ImagePosition = { x: 50, y: 50, scale: 100 };
+
 export interface ServiceItem {
   title: string;
   desc: string;
   image: string;
+  imagePos: ImagePosition;
 }
 
 export interface TestimonialItem {
@@ -19,6 +38,7 @@ export interface LocationItem {
   address: string;
   hours: string;
   image: string;
+  imagePos: ImagePosition;
 }
 
 export interface PricingTier {
@@ -46,6 +66,7 @@ export interface TeamMember {
   name: string;
   role: string;
   img: string;
+  imgPos: ImagePosition;
 }
 
 export interface TeamContent {
@@ -68,12 +89,13 @@ export interface PhysioSpecialist {
   name: string;
   title: string;
   img: string;
+  imgPos: ImagePosition;
   bio: string[];
   tags: string[];
 }
 
 export interface PhysioContent {
-  hero: { eyebrow: string; title: string; desc: string; ctaText: string; image: string };
+  hero: { eyebrow: string; title: string; desc: string; ctaText: string; image: string; imagePos: ImagePosition };
   intro: { label: string; heading: string; body1: string; body2: string; body3: string };
   process: { label: string; heading: string; steps: PhysioStep[] };
   services: PhysioServiceItem[];
@@ -106,11 +128,7 @@ export interface SiteContent {
     subtext: string;
     buttonText: string;
     image: string;
-    /** Focal point as a percentage (CSS background-position), 0-100. */
-    imagePositionX: number;
-    imagePositionY: number;
-    /** Zoom as a percentage (CSS background-size), 100 = fit, up to 200. */
-    imageScale: number;
+    imagePos: ImagePosition;
   };
   stats: StatItem[];
   services: ServiceItem[];
@@ -123,6 +141,7 @@ export interface SiteContent {
     body1: string;
     body2: string;
     image: string;
+    imagePos: ImagePosition;
     stats: StatItem[];
     chips: string[];
   };
@@ -180,9 +199,7 @@ export const CLIENTS: Client[] = [
           "Transform your body with Berlin's premier Lagree training — science-backed, results-driven.",
         buttonText: 'Book Your First Class',
         image: '',
-        imagePositionX: 50,
-        imagePositionY: 50,
-        imageScale: 100,
+        imagePos: DEFAULT_IMAGE_POSITION,
       },
       stats: [
         { value: '2', label: 'Studio Locations' },
@@ -195,16 +212,19 @@ export const CLIENTS: Client[] = [
           title: 'Group Lagree',
           desc: 'High-intensity, low-impact full-body workouts on the Megaformer™. Perfect for building lean muscle, core strength, and endurance alongside a motivated community.',
           image: '',
+          imagePos: DEFAULT_IMAGE_POSITION,
         },
         {
           title: 'Personal Training',
           desc: 'One-on-one sessions tailored precisely to your fitness level and personal goals. Expert coaching for accelerated, lasting results on your schedule.',
           image: '',
+          imagePos: DEFAULT_IMAGE_POSITION,
         },
         {
           title: 'Physiotherapy',
           desc: 'Active physiotherapy for injury recovery and movement optimization. Qualified professionals provide personalized care to keep you moving freely and pain-free.',
           image: '',
+          imagePos: DEFAULT_IMAGE_POSITION,
         },
       ],
       classesSection: { eyebrow: 'What We Offer', heading: 'Our Classes' },
@@ -231,6 +251,7 @@ export const CLIENTS: Client[] = [
         body2:
           "The method focuses on slow-twitch muscle fibers, building lean muscle mass and core strength while staying low-impact on your joints. You'll feel the burn during — and for up to 24 hours after — every session.",
         image: '',
+        imagePos: DEFAULT_IMAGE_POSITION,
         stats: [
           { value: '2', label: 'Berlin Studios' },
           { value: '32+', label: 'Expert Trainers' },
@@ -284,6 +305,7 @@ export const CLIENTS: Client[] = [
             address: 'Christinenstraße 19a, 10119 Berlin',
             hours: 'Mon – Thu: 8:00 am – 5:30 pm',
             image: '/framework-berlin/website/public/studio/pberg.png',
+            imagePos: DEFAULT_IMAGE_POSITION,
           },
           {
             neighborhood: 'Kreuzberg',
@@ -291,6 +313,7 @@ export const CLIENTS: Client[] = [
             address: 'Oranienstraße 185, 10999 Berlin',
             hours: 'Mon – Thu: 8:00 am – 5:30 pm',
             image: '/framework-berlin/website/public/studio/xberg.png',
+            imagePos: DEFAULT_IMAGE_POSITION,
           },
         ],
       },
@@ -315,8 +338,8 @@ export const CLIENTS: Client[] = [
           body2: 'We are a community of movement specialists dedicated to helping you achieve real, lasting results — safely, efficiently, and with care.',
         },
         members: [
-          { name: 'Louise', role: 'Instructor · Front of House', img: 'public/team/louise.png' },
-          { name: 'Diya', role: 'Instructor', img: 'public/team/diya.png' },
+          { name: 'Louise', role: 'Instructor · Front of House', img: 'public/team/louise.png', imgPos: DEFAULT_IMAGE_POSITION },
+          { name: 'Diya', role: 'Instructor', img: 'public/team/diya.png', imgPos: DEFAULT_IMAGE_POSITION },
         ],
       },
       physio: {
@@ -326,6 +349,7 @@ export const CLIENTS: Client[] = [
           desc: 'Move better. Feel better. Perform better. Evidence-based physiotherapy tailored to your body, your goals, and your life.',
           ctaText: 'Book a Session →',
           image: '',
+          imagePos: DEFAULT_IMAGE_POSITION,
         },
         intro: {
           label: 'Our approach',
@@ -357,6 +381,7 @@ export const CLIENTS: Client[] = [
             name: 'Lisanne',
             title: 'Physiotherapist',
             img: 'public/team/lisanne.png',
+            imgPos: DEFAULT_IMAGE_POSITION,
             bio: [
               'Lisanne brings over 6 years of clinical experience to Framework Berlin. She holds a B.Sc. in International Physiotherapy from the Netherlands and has worked in high-performance sports environments and chronic pain clinics.',
               'Her practice is evidence-based and patient-centred — she takes the time to understand your full picture before designing a treatment plan that addresses the root cause, not just the symptoms.',
@@ -367,6 +392,7 @@ export const CLIENTS: Client[] = [
             name: 'Juni',
             title: 'Physiotherapist · Lagree Instructor',
             img: 'public/team/juni.png',
+            imgPos: DEFAULT_IMAGE_POSITION,
             bio: [
               'Juni is both a qualified physiotherapist and a certified Lagree instructor, giving her an integrated perspective on movement and rehabilitation that few practitioners can offer.',
               'She specializes in treatment for women during and post pregnancy, guiding clients safely through every stage with evidence-based care and genuine empathy.',
@@ -377,6 +403,7 @@ export const CLIENTS: Client[] = [
             name: 'Margot',
             title: 'Lagree Instructor · Level 1 Certified',
             img: 'public/team/margot.png',
+            imgPos: DEFAULT_IMAGE_POSITION,
             bio: [
               'Half-French, half-Italian and based in Berlin since 2019, Margot brings a distinctly European energy to every class. Her movement background spans multiple disciplines and her teaching style is both precise and encouraging.',
               "You'll find Margot on the reformer on weekend mornings at both studios — the ideal way to start your week.",
@@ -387,6 +414,7 @@ export const CLIENTS: Client[] = [
             name: 'Celia',
             title: 'Lagree Instructor · Level 2 Certified',
             img: 'public/team/celia.jpg',
+            imgPos: DEFAULT_IMAGE_POSITION,
             bio: [
               "With a background in dance, Celia brings a sharp eye for alignment and body mechanics to everything she teaches. Two years into Lagree, she's built a reputation for classes that challenge without compromising form.",
               'Her focus on functional strength and alignment makes her sessions ideal for clients who want to move well, not just train hard.',
@@ -416,9 +444,7 @@ export const CLIENTS: Client[] = [
         buttonText: 'Get Started',
         image:
           'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1600&auto=format&fit=crop',
-        imagePositionX: 50,
-        imagePositionY: 50,
-        imageScale: 100,
+        imagePos: DEFAULT_IMAGE_POSITION,
       },
       stats: [
         { value: '1', label: 'Stat One' },
@@ -427,9 +453,9 @@ export const CLIENTS: Client[] = [
         { value: '4', label: 'Stat Four' },
       ],
       services: [
-        { title: 'Service One', desc: 'Describe your first core service here.', image: '' },
-        { title: 'Service Two', desc: 'Describe your second core service here.', image: '' },
-        { title: 'Service Three', desc: 'Describe your third core service here.', image: '' },
+        { title: 'Service One', desc: 'Describe your first core service here.', image: '', imagePos: DEFAULT_IMAGE_POSITION },
+        { title: 'Service Two', desc: 'Describe your second core service here.', image: '', imagePos: DEFAULT_IMAGE_POSITION },
+        { title: 'Service Three', desc: 'Describe your third core service here.', image: '', imagePos: DEFAULT_IMAGE_POSITION },
       ],
       classesSection: { eyebrow: 'What We Offer', heading: 'Our Services' },
       pricing: [
@@ -444,6 +470,7 @@ export const CLIENTS: Client[] = [
         body1: 'Describe your business here — what you do and who you do it for.',
         body2: 'A second paragraph with more detail about your story or approach.',
         image: '',
+        imagePos: DEFAULT_IMAGE_POSITION,
         stats: [
           { value: '1', label: 'About Stat One' },
           { value: '2', label: 'About Stat Two' },
@@ -457,7 +484,7 @@ export const CLIENTS: Client[] = [
       contact: {
         email: 'hello@yourcompany.com',
         locations: [
-          { neighborhood: 'Downtown', name: 'Main Location', address: 'Your Street 1, 12345 City', hours: 'Mon – Fri: 9:00 – 18:00', image: '' },
+          { neighborhood: 'Downtown', name: 'Main Location', address: 'Your Street 1, 12345 City', hours: 'Mon – Fri: 9:00 – 18:00', image: '', imagePos: DEFAULT_IMAGE_POSITION },
         ],
       },
       locationsSection: { eyebrow: 'Where to Find Us', heading: 'Our Location' },
@@ -473,12 +500,19 @@ export const CLIENTS: Client[] = [
         header: { eyebrow: 'Our Team', title: 'The\nTeam', desc: 'Meet the people behind the business.' },
         philosophy: { heading: 'Our\nPhilosophy', body1: 'Describe what your team believes in.', body2: 'A second paragraph with more detail.' },
         members: [
-          { name: 'Team Member One', role: 'Role', img: '' },
-          { name: 'Team Member Two', role: 'Role', img: '' },
+          { name: 'Team Member One', role: 'Role', img: '', imgPos: DEFAULT_IMAGE_POSITION },
+          { name: 'Team Member Two', role: 'Role', img: '', imgPos: DEFAULT_IMAGE_POSITION },
         ],
       },
       physio: {
-        hero: { eyebrow: 'Our Services', title: 'Service Page', desc: 'Describe this service in more detail.', ctaText: 'Book Now →', image: '' },
+        hero: {
+          eyebrow: 'Our Services',
+          title: 'Service Page',
+          desc: 'Describe this service in more detail.',
+          ctaText: 'Book Now →',
+          image: '',
+          imagePos: DEFAULT_IMAGE_POSITION,
+        },
         intro: { label: 'Our approach', heading: 'How we work', body1: 'First paragraph.', body2: 'Second paragraph.', body3: 'Third paragraph.' },
         process: {
           label: 'How it works',
@@ -495,7 +529,14 @@ export const CLIENTS: Client[] = [
           { title: 'Service B', text: 'Describe this service.' },
         ],
         specialists: [
-          { name: 'Specialist Name', title: 'Title', img: '', bio: ['First bio paragraph.', 'Second bio paragraph.'], tags: ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4'] },
+          {
+            name: 'Specialist Name',
+            title: 'Title',
+            img: '',
+            imgPos: DEFAULT_IMAGE_POSITION,
+            bio: ['First bio paragraph.', 'Second bio paragraph.'],
+            tags: ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4'],
+          },
         ],
         cta: { heading: 'Ready to start?', sub: 'Get in touch to book your first session.', btnText: 'Get in touch →' },
       },
@@ -520,6 +561,17 @@ function findClient(username: string, password: string): Client | undefined {
 function mapNullableImage(liveValue: unknown, fallback: string): string {
   if (liveValue === undefined) return fallback;
   return typeof liveValue === 'string' ? liveValue : '';
+}
+
+// Every image field's live path stores its focal point/zoom alongside it as
+// image_position: {x,y,scale} — same convention hero.image_position already
+// used before this was generalized to every image on the site.
+function mapImagePos(live: any, fallback: ImagePosition): ImagePosition {
+  return {
+    x: typeof live?.x === 'number' ? live.x : fallback.x,
+    y: typeof live?.y === 'number' ? live.y : fallback.y,
+    scale: typeof live?.scale === 'number' ? live.scale : fallback.scale,
+  };
 }
 
 function mapStatArray(live: any, fallback: StatItem[]): StatItem[] {
@@ -552,9 +604,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
       subtext: h.sub ?? fallback.hero.subtext,
       buttonText: h.cta_text ?? fallback.hero.buttonText,
       image: mapNullableImage(h.image, fallback.hero.image),
-      imagePositionX: h.image_position?.x ?? fallback.hero.imagePositionX,
-      imagePositionY: h.image_position?.y ?? fallback.hero.imagePositionY,
-      imageScale: h.image_position?.scale ?? fallback.hero.imageScale,
+      imagePos: mapImagePos(h.image_position, fallback.hero.imagePos),
     },
     stats: mapStatArray(stats, fallback.stats),
     services: services
@@ -562,6 +612,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
           title: s.title ?? '',
           desc: s.desc ?? '',
           image: mapNullableImage(s.image, fallback.services[i]?.image ?? ''),
+          imagePos: mapImagePos(s.image_position, fallback.services[i]?.imagePos ?? DEFAULT_IMAGE_POSITION),
         }))
       : fallback.services,
     classesSection: mapSectionHeader(live?.home?.classes, fallback.classesSection),
@@ -586,6 +637,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
       body1: about.body_1 ?? fallback.about.body1,
       body2: about.body_2 ?? fallback.about.body2,
       image: mapNullableImage(about.image, fallback.about.image),
+      imagePos: mapImagePos(about.image_position, fallback.about.imagePos),
       stats: mapStatArray(about.stats, fallback.about.stats),
       chips: Array.isArray(about.chips) ? about.chips : fallback.about.chips,
     },
@@ -602,6 +654,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
             address: l.address ?? '',
             hours: l.hours ?? '',
             image: mapNullableImage(l.image, fallback.contact.locations[i]?.image ?? ''),
+            imagePos: mapImagePos(l.image_position, fallback.contact.locations[i]?.imagePos ?? DEFAULT_IMAGE_POSITION),
           }))
         : fallback.contact.locations,
     },
@@ -639,6 +692,7 @@ function mapTeamContent(live: any, fallback: TeamContent): TeamContent {
           name: m.name ?? fallback.members[i]?.name ?? '',
           role: m.role ?? fallback.members[i]?.role ?? '',
           img: mapNullableImage(m.img, fallback.members[i]?.img ?? ''),
+          imgPos: mapImagePos(m.img_position, fallback.members[i]?.imgPos ?? DEFAULT_IMAGE_POSITION),
         }))
       : fallback.members,
   };
@@ -659,6 +713,7 @@ function mapPhysioContent(live: any, fallback: PhysioContent): PhysioContent {
       desc: hero.desc ?? fallback.hero.desc,
       ctaText: hero.cta_text ?? fallback.hero.ctaText,
       image: mapNullableImage(hero.image, fallback.hero.image),
+      imagePos: mapImagePos(hero.image_position, fallback.hero.imagePos),
     },
     intro: {
       label: intro.label ?? fallback.intro.label,
@@ -688,6 +743,7 @@ function mapPhysioContent(live: any, fallback: PhysioContent): PhysioContent {
           name: sp.name ?? fallback.specialists[i]?.name ?? '',
           title: sp.title ?? fallback.specialists[i]?.title ?? '',
           img: mapNullableImage(sp.img, fallback.specialists[i]?.img ?? ''),
+          imgPos: mapImagePos(sp.img_position, fallback.specialists[i]?.imgPos ?? DEFAULT_IMAGE_POSITION),
           bio: Array.isArray(sp.bio) ? sp.bio : fallback.specialists[i]?.bio ?? ['', ''],
           tags: Array.isArray(sp.tags) ? sp.tags : fallback.specialists[i]?.tags ?? ['', '', '', ''],
         }))
@@ -764,13 +820,11 @@ interface ContentState {
   loadClient: (clientId: string) => Promise<void>;
   setCurrentPage: (page: PageId) => void;
   setSelectedField: (field: string | null) => void;
-  updateField: (path: string, value: string | boolean) => void;
-  setHeroImagePosition: (x: number, y: number) => void;
-  setHeroImageScale: (scale: number) => void;
+  updateField: (path: string, value: string | boolean | number) => void;
   save: () => Promise<void>;
 }
 
-function setAtPath(obj: any, path: string, value: string | boolean) {
+function setAtPath(obj: any, path: string, value: string | boolean | number) {
   const keys = path.split('.');
   const clone = structuredClone(obj);
   let cur = clone;
@@ -851,19 +905,6 @@ export const useContentStore = create<ContentState>()(
           content: setAtPath(state.content, path, value),
           dirty: true,
         })),
-      setHeroImagePosition: (x, y) =>
-        set((state) => ({
-          content: {
-            ...state.content,
-            hero: { ...state.content.hero, imagePositionX: x, imagePositionY: y },
-          },
-          dirty: true,
-        })),
-      setHeroImageScale: (scale) =>
-        set((state) => ({
-          content: { ...state.content, hero: { ...state.content.hero, imageScale: scale } },
-          dirty: true,
-        })),
       save: async () => {
         const state = get();
         if (!state.currentClientId) return;
@@ -899,18 +940,19 @@ export const useContentStore = create<ContentState>()(
           live.home.hero.sub = c.hero.subtext;
           live.home.hero.cta_text = c.hero.buttonText;
           live.home.hero.image = c.hero.image || null;
-          live.home.hero.image_position = {
-            x: c.hero.imagePositionX,
-            y: c.hero.imagePositionY,
-            scale: c.hero.imageScale,
-          };
+          live.home.hero.image_position = { ...c.hero.imagePos };
 
           live.home.stats = c.stats.map((s) => ({ value: s.value, label: s.label }));
 
           // home.services didn't exist before this integration — matches
           // the data-fw="home.services.N.title/desc/image" hooks added to
           // the three class cards.
-          live.home.services = c.services.map((s) => ({ title: s.title, desc: s.desc, image: s.image || null }));
+          live.home.services = c.services.map((s) => ({
+            title: s.title,
+            desc: s.desc,
+            image: s.image || null,
+            image_position: { ...s.imagePos },
+          }));
           live.home.classes = { eyebrow: c.classesSection.eyebrow, heading: c.classesSection.heading };
 
           live.home.pricing = c.pricing.map((p) => ({
@@ -933,6 +975,7 @@ export const useContentStore = create<ContentState>()(
           live.home.about.body_1 = c.about.body1;
           live.home.about.body_2 = c.about.body2;
           live.home.about.image = c.about.image || null;
+          live.home.about.image_position = { ...c.about.imagePos };
           live.home.about.stats = c.about.stats.map((s) => ({ value: s.value, label: s.label }));
           live.home.about.chips = c.about.chips;
 
@@ -949,8 +992,9 @@ export const useContentStore = create<ContentState>()(
           };
 
           // home.locations already existed too (id="fw-locations-root").
-          // Spread the live copy first so img_position (not tracked in our
-          // schema) survives, then overwrite every field we do track.
+          // Spread the live copy first so any untracked field survives,
+          // then overwrite every field we do track (image_position now
+          // included).
           const liveLocations = Array.isArray(live.home.locations) ? live.home.locations : [];
           live.home.locations = c.contact.locations.map((loc, i) => ({
             ...(liveLocations[i] || {}),
@@ -959,6 +1003,7 @@ export const useContentStore = create<ContentState>()(
             address: loc.address,
             hours: loc.hours,
             image: loc.image || null,
+            image_position: { ...loc.imagePos },
           }));
           live.home.locations_section = {
             eyebrow: c.locationsSection.eyebrow,
@@ -984,6 +1029,7 @@ export const useContentStore = create<ContentState>()(
             name: m.name,
             role: m.role,
             img: m.img || null,
+            img_position: { ...m.imgPos },
           }));
 
           live.physio = live.physio || {};
@@ -993,6 +1039,7 @@ export const useContentStore = create<ContentState>()(
           live.physio.hero.desc = c.physio.hero.desc;
           live.physio.hero.cta_text = c.physio.hero.ctaText;
           live.physio.hero.image = c.physio.hero.image || null;
+          live.physio.hero.image_position = { ...c.physio.hero.imagePos };
           live.physio.intro = {
             label: c.physio.intro.label,
             heading: c.physio.intro.heading,
@@ -1017,6 +1064,7 @@ export const useContentStore = create<ContentState>()(
             name: sp.name,
             title: sp.title,
             img: sp.img || null,
+            img_position: { ...sp.imgPos },
             bio: sp.bio,
             tags: sp.tags,
           }));
@@ -1093,14 +1141,15 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         sub: content.hero.subtext,
         cta_text: content.hero.buttonText,
         image: content.hero.image || null,
-        image_position: {
-          x: content.hero.imagePositionX,
-          y: content.hero.imagePositionY,
-          scale: content.hero.imageScale,
-        },
+        image_position: { ...content.hero.imagePos },
       },
       stats: content.stats.map((s) => ({ value: s.value, label: s.label })),
-      services: content.services.map((s) => ({ title: s.title, desc: s.desc, image: s.image || null })),
+      services: content.services.map((s) => ({
+        title: s.title,
+        desc: s.desc,
+        image: s.image || null,
+        image_position: { ...s.imagePos },
+      })),
       classes: { eyebrow: content.classesSection.eyebrow, heading: content.classesSection.heading },
       pricing: content.pricing.map((p) => ({
         credits: p.credits,
@@ -1121,6 +1170,7 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         body_1: content.about.body1,
         body_2: content.about.body2,
         image: content.about.image || null,
+        image_position: { ...content.about.imagePos },
         stats: content.about.stats.map((s) => ({ value: s.value, label: s.label })),
         chips: content.about.chips,
       },
@@ -1136,6 +1186,7 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         address: loc.address,
         hours: loc.hours,
         image: loc.image || null,
+        image_position: { ...loc.imagePos },
       })),
       locations_section: { eyebrow: content.locationsSection.eyebrow, heading: content.locationsSection.heading },
       cta: { heading: content.cta.heading, sub: content.cta.sub },
@@ -1152,7 +1203,12 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         body_1: content.team.philosophy.body1,
         body_2: content.team.philosophy.body2,
       },
-      members: content.team.members.map((m) => ({ name: m.name, role: m.role, img: m.img || null })),
+      members: content.team.members.map((m) => ({
+        name: m.name,
+        role: m.role,
+        img: m.img || null,
+        img_position: { ...m.imgPos },
+      })),
     },
     physio: {
       hero: {
@@ -1161,6 +1217,7 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         desc: content.physio.hero.desc,
         cta_text: content.physio.hero.ctaText,
         image: content.physio.hero.image || null,
+        image_position: { ...content.physio.hero.imagePos },
       },
       intro: {
         label: content.physio.intro.label,
@@ -1179,6 +1236,7 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         name: sp.name,
         title: sp.title,
         img: sp.img || null,
+        img_position: { ...sp.imgPos },
         bio: sp.bio,
         tags: sp.tags,
       })),
