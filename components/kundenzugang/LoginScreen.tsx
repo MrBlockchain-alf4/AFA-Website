@@ -197,20 +197,6 @@ export default function LoginScreen() {
         >
           Anmelden
         </button>
-
-        <p
-          style={{
-            fontFamily: C.M,
-            fontSize: 11,
-            color: C.muted,
-            textAlign: 'center',
-            marginTop: 26,
-            marginBottom: 0,
-            lineHeight: 1.6,
-          }}
-        >
-          Demo-Zugang: Benutzername: framework / Passwort: afa2026
-        </p>
       </motion.form>
     </div>
   );
