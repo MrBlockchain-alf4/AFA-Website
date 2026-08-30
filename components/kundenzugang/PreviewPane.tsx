@@ -136,8 +136,8 @@ export default function PreviewPane() {
           </div>
           <div className="flex items-center gap-2 text-[11px] text-zinc-500">
             <span
-              className={cn('h-1.5 w-1.5 flex-shrink-0 rounded-full', !dirty && 'bg-emerald-500')}
-              style={dirty ? { backgroundColor: accent } : undefined}
+              className="h-1.5 w-1.5 flex-shrink-0 rounded-full"
+              style={{ backgroundColor: accent, opacity: dirty ? 1 : 0.5 }}
             />
             <span className="hidden sm:inline">
               {dirty ? 'Unsaved draft, not in Supabase yet' : 'Showing saved data'}

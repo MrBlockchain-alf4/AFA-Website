@@ -61,7 +61,8 @@ export default function NavTree() {
               {node.live ? (
                 <span
                   title="Saves reach the live site"
-                  className="ml-auto h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-500"
+                  className="ml-auto h-1.5 w-1.5 flex-shrink-0 rounded-full"
+                  style={{ backgroundColor: accent }}
                 />
               ) : (
                 <span
