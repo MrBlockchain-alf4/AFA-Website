@@ -1,3 +1,5 @@
+import type { PageId } from './kundenzugang-store';
+
 export interface NavLeaf {
   id: string;
   label: string;
@@ -14,7 +16,7 @@ export interface NavNode {
   live: boolean;
 }
 
-export const NAV_TREE: NavNode[] = [
+const HOME_NAV_TREE: NavNode[] = [
   {
     id: 'hero',
     label: 'Hero',
@@ -60,8 +62,39 @@ export const NAV_TREE: NavNode[] = [
   { id: 'footer', label: 'Footer', live: true },
 ];
 
-// Given a selected field id like "hero.headline" or "about.stats", return the
-// top-level section id ("hero", "about") used to auto-expand its nav parent.
+// Team lives on its own page (team.html) as one long repeating grid of 32+
+// member cards — kept as a single flat leaf (like Testimonials/Contact) with
+// its own scrollable editor, rather than a nav entry per member.
+const TEAM_NAV_TREE: NavNode[] = [{ id: 'team', label: 'Team', live: true }];
+
+// Physiotherapy also lives on its own page, but has genuinely distinct
+// sub-sections (unlike Team's uniform cards), so it gets real nav children —
+// same shape as Home's Hero/Services/About.
+const PHYSIO_NAV_TREE: NavNode[] = [
+  {
+    id: 'physio',
+    label: 'Physiotherapy',
+    live: true,
+    children: [
+      { id: 'physio.hero', label: 'Hero' },
+      { id: 'physio.intro', label: 'Intro' },
+      { id: 'physio.process', label: 'Process' },
+      { id: 'physio.services', label: 'Services' },
+      { id: 'physio.specialists', label: 'Specialists' },
+      { id: 'physio.cta', label: 'Call to Action' },
+    ],
+  },
+];
+
+export const NAV_TREES: Record<PageId, NavNode[]> = {
+  home: HOME_NAV_TREE,
+  team: TEAM_NAV_TREE,
+  physio: PHYSIO_NAV_TREE,
+};
+
+// Given a selected field id like "hero.headline" or "physio.intro", return
+// the top-level section id ("hero", "physio") used to auto-expand its nav
+// parent.
 export function sectionOf(fieldId: string | null): string | null {
   if (!fieldId) return null;
   return fieldId.split('.')[0];
@@ -127,6 +160,21 @@ const LIVE_PATH_TO_FIELD: Record<string, string> = {
   'footer.copyright': 'footer',
 };
 
+// Path-prefix fallback for the Team/Physio pages — Team's 32+ members and
+// Physio's services/specialists arrays are open-ended, so listing every
+// exact "team.members.7.name"-style path by hand doesn't scale. Any live
+// path starting with one of these prefixes maps to the field on the right,
+// checked only after an exact LIVE_PATH_TO_FIELD match fails.
+const PREFIX_TO_FIELD: [prefix: string, field: string][] = [
+  ['team.', 'team'],
+  ['physio.hero.', 'physio.hero'],
+  ['physio.intro.', 'physio.intro'],
+  ['physio.process.', 'physio.process'],
+  ['physio.services.', 'physio.services'],
+  ['physio.specialists.', 'physio.specialists'],
+  ['physio.cta.', 'physio.cta'],
+];
+
 // Section-marker values the live site actually emits as data-fw-section —
 // these ARE field ids directly (chosen that way on purpose), unlike
 // data-fw paths which need the LIVE_PATH_TO_FIELD translation above.
@@ -138,6 +186,13 @@ const KNOWN_SECTION_FIELD_IDS = new Set([
   'services.0',
   'services.1',
   'services.2',
+  'team',
+  'physio.hero',
+  'physio.intro',
+  'physio.process',
+  'physio.services',
+  'physio.specialists',
+  'physio.cta',
 ]);
 
 // Click inside the iframe → which field to select in the left panel.
@@ -148,6 +203,10 @@ const KNOWN_SECTION_FIELD_IDS = new Set([
 // top of #hero-bg).
 export function mapLiveClickToField(path: string | null, section: string | null): string | null {
   if (path && LIVE_PATH_TO_FIELD[path]) return LIVE_PATH_TO_FIELD[path];
+  if (path) {
+    const hit = PREFIX_TO_FIELD.find(([prefix]) => path.startsWith(prefix));
+    if (hit) return hit[1];
+  }
   if (section && KNOWN_SECTION_FIELD_IDS.has(section)) return section;
   return null;
 }
@@ -182,9 +241,26 @@ const FIELD_TO_LIVE_PATHS: Record<string, string[]> = {
   footer: ['footer.tagline', 'footer.copyright'],
 };
 
+// Field ids that highlight by section (data-fw-section) rather than by a
+// fixed list of exact data-fw paths — used for bulk/repeating sections
+// (Testimonials, Contact, Pricing) and every Team/Physio section, whose
+// member/card counts are open-ended.
+const SECTION_HIGHLIGHT_FIELDS = new Set([
+  'testimonials',
+  'contact',
+  'pricing',
+  'team',
+  'physio.hero',
+  'physio.intro',
+  'physio.process',
+  'physio.services',
+  'physio.specialists',
+  'physio.cta',
+]);
+
 // Selected field in the left panel → what to highlight inside the iframe.
 export function getHighlightTarget(fieldId: string | null): { paths: string[] | null; section: string | null } {
   if (!fieldId) return { paths: null, section: null };
-  if (fieldId === 'testimonials' || fieldId === 'contact' || fieldId === 'pricing') return { paths: null, section: fieldId };
+  if (SECTION_HIGHLIGHT_FIELDS.has(fieldId)) return { paths: null, section: fieldId };
   return { paths: FIELD_TO_LIVE_PATHS[fieldId] || null, section: null };
 }

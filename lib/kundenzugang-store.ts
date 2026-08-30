@@ -28,6 +28,53 @@ export interface PricingTier {
   popular: boolean;
 }
 
+export type PageId = 'home' | 'team' | 'physio';
+
+export const PAGES: { id: PageId; label: string; path: string }[] = [
+  { id: 'home', label: 'Home', path: '' },
+  { id: 'team', label: 'Team', path: 'team.html' },
+  { id: 'physio', label: 'Fisioterapia', path: 'physiotherapy.html' },
+];
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  img: string;
+}
+
+export interface TeamContent {
+  header: { eyebrow: string; title: string; desc: string };
+  philosophy: { heading: string; body1: string; body2: string };
+  members: TeamMember[];
+}
+
+export interface PhysioStep {
+  title: string;
+  text: string;
+}
+
+export interface PhysioServiceItem {
+  title: string;
+  text: string;
+}
+
+export interface PhysioSpecialist {
+  name: string;
+  title: string;
+  img: string;
+  bio: string[];
+  tags: string[];
+}
+
+export interface PhysioContent {
+  hero: { eyebrow: string; title: string; desc: string; ctaText: string; image: string };
+  intro: { label: string; heading: string; body1: string; body2: string; body3: string };
+  process: { label: string; heading: string; steps: PhysioStep[] };
+  services: PhysioServiceItem[];
+  specialists: PhysioSpecialist[];
+  cta: { heading: string; sub: string; btnText: string };
+}
+
 export interface StatItem {
   /** Full display string, e.g. "50 min" or "32+" — edited as free text. */
   value: string;
@@ -81,6 +128,8 @@ export interface SiteContent {
     tagline: string;
     copyright: string;
   };
+  team: TeamContent;
+  physio: PhysioContent;
 }
 
 export interface Client {
@@ -228,6 +277,108 @@ export const CLIENTS: Client[] = [
         tagline: 'Premium Lagree & Physiotherapy Studio in Berlin',
         copyright: '© 2026 Framework Berlin. All rights reserved.',
       },
+      // team.members seeded with a couple of real entries (pulled from the
+      // live site 2026-08-30) rather than all 32 — this is only an
+      // offline/error fallback, loadClient() overwrites it with the full
+      // real roster on every login. mapLiveToContent() falls back per-field
+      // per-index, so a shorter seed array is safe.
+      team: {
+        header: {
+          eyebrow: 'Teacher-owned studio · Berlin',
+          title: 'The\nTeam',
+          desc: 'A collective of Lagree-certified instructors, physiotherapists, and movement specialists — here to push you, guide you, and celebrate every shake.',
+        },
+        philosophy: {
+          heading: 'Teacher-owned.\nMovement-first.',
+          body1: 'Framework Berlin was founded by teachers who believe the best fitness experience comes from instructors who practice what they teach. Every member of our team is trained to the highest standard in the Lagree method.',
+          body2: 'We are a community of movement specialists dedicated to helping you achieve real, lasting results — safely, efficiently, and with care.',
+        },
+        members: [
+          { name: 'Louise', role: 'Instructor · Front of House', img: 'public/team/louise.png' },
+          { name: 'Diya', role: 'Instructor', img: 'public/team/diya.png' },
+        ],
+      },
+      physio: {
+        hero: {
+          eyebrow: 'Personalized care',
+          title: 'PT & Physiotherapy',
+          desc: 'Move better. Feel better. Perform better. Evidence-based physiotherapy tailored to your body, your goals, and your life.',
+          ctaText: 'Book a Session →',
+          image: '',
+        },
+        intro: {
+          label: 'Our approach',
+          heading: 'Root cause over symptom relief',
+          body1: 'Are you dealing with pain, restrictions, or simply looking to improve your fitness and mobility? At Framework, we offer personalized sessions led by our experienced physiotherapists.',
+          body2: 'With a comprehensive medical assessment, our goal is to identify the root cause of your issues rather than simply treating the symptoms. We combine manual therapy, movement re-education, and exercise prescription tailored specifically to your needs.',
+          body3: "Whether you're recovering from an injury, managing a chronic condition, or optimizing performance — we work with you at every stage.",
+        },
+        process: {
+          label: 'How it works',
+          heading: 'From first session to full recovery',
+          steps: [
+            { title: 'Initial Assessment', text: 'Comprehensive evaluation of your history, movement patterns, and goals. We map the full picture before suggesting anything.' },
+            { title: 'Treatment Plan', text: 'A personalized plan targeting the root cause — combining manual therapy, exercise prescription, and lifestyle guidance.' },
+            { title: 'Hands-On Sessions', text: 'Focused 1:1 sessions in our studio, integrating treatment with movement re-education and progressive loading.' },
+            { title: 'Ongoing Support', text: 'Regular reassessment and plan adjustments to keep you progressing — all the way to your goal and beyond.' },
+          ],
+        },
+        services: [
+          { title: 'Medical Assessment', text: 'A thorough initial evaluation to understand your history, movement patterns, and underlying causes — not just your current complaint.' },
+          { title: 'Manual Therapy', text: 'Hands-on treatment to restore mobility, reduce pain, and improve tissue health — tailored to your specific needs.' },
+          { title: 'Movement Re-Education', text: 'Correcting faulty movement patterns that cause pain or inefficiency, and building lasting new habits through guided exercise.' },
+          { title: 'Injury Rehabilitation', text: 'Structured recovery programs following surgery, sports injuries, or accidents — from acute care through return to full activity.' },
+          { title: 'Pregnancy & Postnatal Care', text: 'Specialized treatment for women during and post pregnancy — safe, evidence-based support for every stage of the journey.' },
+          { title: 'Performance Optimization', text: 'For athletes and active individuals seeking to train smarter, prevent injury, and reach their peak potential safely.' },
+        ],
+        specialists: [
+          {
+            name: 'Lisanne',
+            title: 'Physiotherapist',
+            img: 'public/team/lisanne.png',
+            bio: [
+              'Lisanne brings over 6 years of clinical experience to Framework Berlin. She holds a B.Sc. in International Physiotherapy from the Netherlands and has worked in high-performance sports environments and chronic pain clinics.',
+              'Her practice is evidence-based and patient-centred — she takes the time to understand your full picture before designing a treatment plan that addresses the root cause, not just the symptoms.',
+            ],
+            tags: ['6+ years experience', 'B.Sc. International Physio', 'High-performance sports', 'Chronic pain'],
+          },
+          {
+            name: 'Juni',
+            title: 'Physiotherapist · Lagree Instructor',
+            img: 'public/team/juni.png',
+            bio: [
+              'Juni is both a qualified physiotherapist and a certified Lagree instructor, giving her an integrated perspective on movement and rehabilitation that few practitioners can offer.',
+              'She specializes in treatment for women during and post pregnancy, guiding clients safely through every stage with evidence-based care and genuine empathy.',
+            ],
+            tags: ['Lagree certified', 'Prenatal care', 'Postnatal rehab', "Women's health"],
+          },
+          {
+            name: 'Margot',
+            title: 'Lagree Instructor · Level 1 Certified',
+            img: 'public/team/margot.png',
+            bio: [
+              'Half-French, half-Italian and based in Berlin since 2019, Margot brings a distinctly European energy to every class. Her movement background spans multiple disciplines and her teaching style is both precise and encouraging.',
+              "You'll find Margot on the reformer on weekend mornings at both studios — the ideal way to start your week.",
+            ],
+            tags: ['Level 1 Lagree', 'Weekend mornings', 'Both studios', 'Berlin since 2019'],
+          },
+          {
+            name: 'Celia',
+            title: 'Lagree Instructor · Level 2 Certified',
+            img: 'public/team/celia.jpg',
+            bio: [
+              "With a background in dance, Celia brings a sharp eye for alignment and body mechanics to everything she teaches. Two years into Lagree, she's built a reputation for classes that challenge without compromising form.",
+              'Her focus on functional strength and alignment makes her sessions ideal for clients who want to move well, not just train hard.',
+            ],
+            tags: ['Level 2 Lagree', 'Dance background', 'Functional strength', 'Alignment specialist'],
+          },
+        ],
+        cta: {
+          heading: 'Ready to start?',
+          sub: 'Book a consultation with Lisanne or Juni, or join Margot or Celia on the reformer — take the first step towards moving better.',
+          btnText: 'Get in touch →',
+        },
+      },
     },
   },
   {
@@ -294,6 +445,36 @@ export const CLIENTS: Client[] = [
       footer: {
         tagline: 'Your tagline goes here.',
         copyright: '© 2026 Demo Client. All rights reserved.',
+      },
+      team: {
+        header: { eyebrow: 'Our Team', title: 'The\nTeam', desc: 'Meet the people behind the business.' },
+        philosophy: { heading: 'Our\nPhilosophy', body1: 'Describe what your team believes in.', body2: 'A second paragraph with more detail.' },
+        members: [
+          { name: 'Team Member One', role: 'Role', img: '' },
+          { name: 'Team Member Two', role: 'Role', img: '' },
+        ],
+      },
+      physio: {
+        hero: { eyebrow: 'Our Services', title: 'Service Page', desc: 'Describe this service in more detail.', ctaText: 'Book Now →', image: '' },
+        intro: { label: 'Our approach', heading: 'How we work', body1: 'First paragraph.', body2: 'Second paragraph.', body3: 'Third paragraph.' },
+        process: {
+          label: 'How it works',
+          heading: 'Our process',
+          steps: [
+            { title: 'Step One', text: 'Describe the first step.' },
+            { title: 'Step Two', text: 'Describe the second step.' },
+            { title: 'Step Three', text: 'Describe the third step.' },
+            { title: 'Step Four', text: 'Describe the fourth step.' },
+          ],
+        },
+        services: [
+          { title: 'Service A', text: 'Describe this service.' },
+          { title: 'Service B', text: 'Describe this service.' },
+        ],
+        specialists: [
+          { name: 'Specialist Name', title: 'Title', img: '', bio: ['First bio paragraph.', 'Second bio paragraph.'], tags: ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4'] },
+        ],
+        cta: { heading: 'Ready to start?', sub: 'Get in touch to book your first session.', btnText: 'Get in touch →' },
       },
     },
   },
@@ -393,6 +574,89 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
       tagline: footer.tagline ?? fallback.footer.tagline,
       copyright: footer.copyright ?? fallback.footer.copyright,
     },
+    team: mapTeamContent(live?.team, fallback.team),
+    physio: mapPhysioContent(live?.physio, fallback.physio),
+  };
+}
+
+function mapTeamContent(live: any, fallback: TeamContent): TeamContent {
+  const header = live?.header ?? {};
+  const philosophy = live?.philosophy ?? {};
+  const members = Array.isArray(live?.members) ? live.members : null;
+  return {
+    header: {
+      eyebrow: header.eyebrow ?? fallback.header.eyebrow,
+      title: header.title ?? fallback.header.title,
+      desc: header.desc ?? fallback.header.desc,
+    },
+    philosophy: {
+      heading: philosophy.heading ?? fallback.philosophy.heading,
+      body1: philosophy.body_1 ?? fallback.philosophy.body1,
+      body2: philosophy.body_2 ?? fallback.philosophy.body2,
+    },
+    members: members
+      ? members.map((m: any, i: number) => ({
+          name: m.name ?? fallback.members[i]?.name ?? '',
+          role: m.role ?? fallback.members[i]?.role ?? '',
+          img: m.img ?? fallback.members[i]?.img ?? '',
+        }))
+      : fallback.members,
+  };
+}
+
+function mapPhysioContent(live: any, fallback: PhysioContent): PhysioContent {
+  const hero = live?.hero ?? {};
+  const intro = live?.intro ?? {};
+  const process = live?.process ?? {};
+  const steps = Array.isArray(process.steps) ? process.steps : null;
+  const services = Array.isArray(live?.services) ? live.services : null;
+  const specialists = Array.isArray(live?.specialists) ? live.specialists : null;
+  const cta = live?.cta ?? {};
+  return {
+    hero: {
+      eyebrow: hero.eyebrow ?? fallback.hero.eyebrow,
+      title: hero.title ?? fallback.hero.title,
+      desc: hero.desc ?? fallback.hero.desc,
+      ctaText: hero.cta_text ?? fallback.hero.ctaText,
+      image: hero.image ?? fallback.hero.image,
+    },
+    intro: {
+      label: intro.label ?? fallback.intro.label,
+      heading: intro.heading ?? fallback.intro.heading,
+      body1: intro.body_1 ?? fallback.intro.body1,
+      body2: intro.body_2 ?? fallback.intro.body2,
+      body3: intro.body_3 ?? fallback.intro.body3,
+    },
+    process: {
+      label: process.label ?? fallback.process.label,
+      heading: process.heading ?? fallback.process.heading,
+      steps: steps
+        ? steps.map((s: any, i: number) => ({
+            title: s.title ?? fallback.process.steps[i]?.title ?? '',
+            text: s.text ?? fallback.process.steps[i]?.text ?? '',
+          }))
+        : fallback.process.steps,
+    },
+    services: services
+      ? services.map((s: any, i: number) => ({
+          title: s.title ?? fallback.services[i]?.title ?? '',
+          text: s.text ?? fallback.services[i]?.text ?? '',
+        }))
+      : fallback.services,
+    specialists: specialists
+      ? specialists.map((sp: any, i: number) => ({
+          name: sp.name ?? fallback.specialists[i]?.name ?? '',
+          title: sp.title ?? fallback.specialists[i]?.title ?? '',
+          img: sp.img ?? fallback.specialists[i]?.img ?? '',
+          bio: Array.isArray(sp.bio) ? sp.bio : fallback.specialists[i]?.bio ?? ['', ''],
+          tags: Array.isArray(sp.tags) ? sp.tags : fallback.specialists[i]?.tags ?? ['', '', '', ''],
+        }))
+      : fallback.specialists,
+    cta: {
+      heading: cta.heading ?? fallback.cta.heading,
+      sub: cta.sub ?? fallback.cta.sub,
+      btnText: cta.btn_text ?? fallback.cta.btnText,
+    },
   };
 }
 
@@ -434,6 +698,7 @@ export type LiveSyncStatus = 'idle' | 'syncing' | 'success' | 'error' | 'unsuppo
 
 interface ContentState {
   currentClientId: string | null;
+  currentPage: PageId;
   content: SiteContent;
   savedContentByClient: Record<string, SiteContent>;
   selectedField: string | null;
@@ -448,6 +713,7 @@ interface ContentState {
    */
   liveLocationExtras: Record<string, unknown>[];
   loadClient: (clientId: string) => Promise<void>;
+  setCurrentPage: (page: PageId) => void;
   setSelectedField: (field: string | null) => void;
   updateField: (path: string, value: string | boolean) => void;
   setHeroImagePosition: (x: number, y: number) => void;
@@ -474,6 +740,7 @@ export const useContentStore = create<ContentState>()(
   persist(
     (set, get) => ({
       currentClientId: null,
+      currentPage: 'home' as PageId,
       content: CLIENTS[0].content,
       savedContentByClient: {},
       selectedField: null,
@@ -485,7 +752,7 @@ export const useContentStore = create<ContentState>()(
         const client = CLIENTS.find((c) => c.username === clientId);
         if (!client) return;
         const saved = get().savedContentByClient[clientId] ?? client.content;
-        set({ currentClientId: clientId, content: saved, selectedField: null, dirty: false });
+        set({ currentClientId: clientId, currentPage: 'home', content: saved, selectedField: null, dirty: false });
 
         // Refresh from the real live data so the preview reflects whatever
         // was actually saved last (from any session, any device) — not a
@@ -512,6 +779,7 @@ export const useContentStore = create<ContentState>()(
           // content already set above rather than blocking login on it.
         }
       },
+      setCurrentPage: (page) => set({ currentPage: page, selectedField: null }),
       setSelectedField: (field) => set({ selectedField: field }),
       updateField: (path, value) =>
         set((state) => ({
@@ -634,6 +902,57 @@ export const useContentStore = create<ContentState>()(
           live.footer.tagline = c.footer.tagline;
           live.footer.copyright = c.footer.copyright;
 
+          live.team = live.team || {};
+          live.team.header = { eyebrow: c.team.header.eyebrow, title: c.team.header.title, desc: c.team.header.desc };
+          live.team.philosophy = {
+            heading: c.team.philosophy.heading,
+            body_1: c.team.philosophy.body1,
+            body_2: c.team.philosophy.body2,
+          };
+          const liveTeamMembers = Array.isArray(live.team.members) ? live.team.members : [];
+          live.team.members = c.team.members.map((m, i) => ({
+            ...(liveTeamMembers[i] || {}),
+            name: m.name,
+            role: m.role,
+            img: m.img || null,
+          }));
+
+          live.physio = live.physio || {};
+          live.physio.hero = live.physio.hero || {};
+          live.physio.hero.eyebrow = c.physio.hero.eyebrow;
+          live.physio.hero.title = c.physio.hero.title;
+          live.physio.hero.desc = c.physio.hero.desc;
+          live.physio.hero.cta_text = c.physio.hero.ctaText;
+          live.physio.hero.image = c.physio.hero.image || null;
+          live.physio.intro = {
+            label: c.physio.intro.label,
+            heading: c.physio.intro.heading,
+            body_1: c.physio.intro.body1,
+            body_2: c.physio.intro.body2,
+            body_3: c.physio.intro.body3,
+          };
+          live.physio.process = {
+            label: c.physio.process.label,
+            heading: c.physio.process.heading,
+            steps: c.physio.process.steps.map((s) => ({ title: s.title, text: s.text })),
+          };
+          const livePhysioServices = Array.isArray(live.physio.services) ? live.physio.services : [];
+          live.physio.services = c.physio.services.map((s, i) => ({
+            ...(livePhysioServices[i] || {}),
+            title: s.title,
+            text: s.text,
+          }));
+          const livePhysioSpecialists = Array.isArray(live.physio.specialists) ? live.physio.specialists : [];
+          live.physio.specialists = c.physio.specialists.map((sp, i) => ({
+            ...(livePhysioSpecialists[i] || {}),
+            name: sp.name,
+            title: sp.title,
+            img: sp.img || null,
+            bio: sp.bio,
+            tags: sp.tags,
+          }));
+          live.physio.cta = { heading: c.physio.cta.heading, sub: c.physio.cta.sub, btn_text: c.physio.cta.btnText };
+
           const postRes = await fetch(dataUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -667,6 +986,17 @@ export function getClientSiteName(clientId: string | null): string {
 
 export function getClientLiveUrl(clientId: string | null): string | undefined {
   return CLIENTS.find((c) => c.username === clientId)?.liveUrl;
+}
+
+// The live site is one unified data document (home/team/physio/footer/site
+// all in the same JSON row) rendered across three separate HTML pages —
+// this just picks which page's URL the iframe should point at. Save/load
+// always hit the same /admin/api/data endpoint regardless of page.
+export function getClientPageUrl(clientId: string | null, page: PageId): string | undefined {
+  const liveUrl = getClientLiveUrl(clientId);
+  if (!liveUrl) return undefined;
+  const path = PAGES.find((p) => p.id === page)?.path ?? '';
+  return path ? `${liveUrl}/${path}` : liveUrl;
 }
 
 // Builds the partial payload posted to the live iframe's page-loader.js
@@ -732,6 +1062,49 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
       cta: { heading: content.cta.heading, sub: content.cta.sub },
     },
     footer: { tagline: content.footer.tagline, copyright: content.footer.copyright },
+    team: {
+      header: {
+        eyebrow: content.team.header.eyebrow,
+        title: content.team.header.title,
+        desc: content.team.header.desc,
+      },
+      philosophy: {
+        heading: content.team.philosophy.heading,
+        body_1: content.team.philosophy.body1,
+        body_2: content.team.philosophy.body2,
+      },
+      members: content.team.members.map((m) => ({ name: m.name, role: m.role, img: m.img || null })),
+    },
+    physio: {
+      hero: {
+        eyebrow: content.physio.hero.eyebrow,
+        title: content.physio.hero.title,
+        desc: content.physio.hero.desc,
+        cta_text: content.physio.hero.ctaText,
+        image: content.physio.hero.image || null,
+      },
+      intro: {
+        label: content.physio.intro.label,
+        heading: content.physio.intro.heading,
+        body_1: content.physio.intro.body1,
+        body_2: content.physio.intro.body2,
+        body_3: content.physio.intro.body3,
+      },
+      process: {
+        label: content.physio.process.label,
+        heading: content.physio.process.heading,
+        steps: content.physio.process.steps.map((s) => ({ title: s.title, text: s.text })),
+      },
+      services: content.physio.services.map((s) => ({ title: s.title, text: s.text })),
+      specialists: content.physio.specialists.map((sp) => ({
+        name: sp.name,
+        title: sp.title,
+        img: sp.img || null,
+        bio: sp.bio,
+        tags: sp.tags,
+      })),
+      cta: { heading: content.physio.cta.heading, sub: content.physio.cta.sub, btn_text: content.physio.cta.btnText },
+    },
   };
 }
 

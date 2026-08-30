@@ -3,13 +3,15 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
-import { NAV_TREE, sectionOf } from '@/lib/kundenzugang-nav';
+import { NAV_TREES, sectionOf } from '@/lib/kundenzugang-nav';
 import { useContentStore } from '@/lib/kundenzugang-store';
 import { cn } from '@/lib/utils';
 
 export default function NavTree() {
   const selectedField = useContentStore((s) => s.selectedField);
   const setSelectedField = useContentStore((s) => s.setSelectedField);
+  const currentPage = useContentStore((s) => s.currentPage);
+  const navTree = NAV_TREES[currentPage];
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ hero: true, services: true });
 
   // Figma-style: whenever the selection changes (nav click, or a click
@@ -24,7 +26,7 @@ export default function NavTree() {
 
   return (
     <nav className="flex flex-col gap-0.5 px-2 py-3">
-      {NAV_TREE.map((node) => {
+      {navTree.map((node) => {
         const hasChildren = !!node.children?.length;
         const isOpen = expanded[node.id];
         const isSelected = selectedField === node.id;

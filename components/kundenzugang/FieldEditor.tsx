@@ -295,6 +295,121 @@ function PricingEditor() {
   );
 }
 
+function TeamEditor() {
+  const members = useContentStore((s) => s.content.team.members);
+  return (
+    <>
+      <TextField path="team.header.eyebrow" label="Header Eyebrow" autoFocus />
+      <TextField path="team.header.title" label="Header Title" multiline />
+      <TextField path="team.header.desc" label="Header Description" multiline />
+      <TextField path="team.philosophy.heading" label="Philosophy Heading" multiline />
+      <TextField path="team.philosophy.body1" label="Philosophy Paragraph 1" multiline />
+      <TextField path="team.philosophy.body2" label="Philosophy Paragraph 2" multiline />
+      {members.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Team Member {i + 1}
+          </div>
+          <TextField path={`team.members.${i}.name`} label="Name" />
+          <TextField path={`team.members.${i}.role`} label="Role" />
+          <SimpleImageEditor path={`team.members.${i}.img`} label="Photo" />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function PhysioHeroEditor() {
+  return (
+    <>
+      <TextField path="physio.hero.eyebrow" label="Eyebrow" autoFocus />
+      <TextField path="physio.hero.title" label="Title" multiline />
+      <TextField path="physio.hero.desc" label="Description" multiline />
+      <TextField path="physio.hero.ctaText" label="Button Text" />
+      <SimpleImageEditor path="physio.hero.image" label="Hero Image" />
+    </>
+  );
+}
+
+function PhysioIntroEditor() {
+  return (
+    <>
+      <TextField path="physio.intro.label" label="Label" autoFocus />
+      <TextField path="physio.intro.heading" label="Heading" multiline />
+      <TextField path="physio.intro.body1" label="Paragraph 1" multiline />
+      <TextField path="physio.intro.body2" label="Paragraph 2" multiline />
+      <TextField path="physio.intro.body3" label="Paragraph 3" multiline />
+    </>
+  );
+}
+
+function PhysioProcessEditor() {
+  const steps = useContentStore((s) => s.content.physio.process.steps);
+  return (
+    <>
+      <TextField path="physio.process.label" label="Label" autoFocus />
+      <TextField path="physio.process.heading" label="Heading" multiline />
+      {steps.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Step {i + 1}
+          </div>
+          <TextField path={`physio.process.steps.${i}.title`} label="Title" />
+          <TextField path={`physio.process.steps.${i}.text`} label="Text" multiline />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function PhysioServicesEditor() {
+  const services = useContentStore((s) => s.content.physio.services);
+  return (
+    <>
+      {services.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Service {i + 1}
+          </div>
+          <TextField path={`physio.services.${i}.title`} label="Title" autoFocus={i === 0} />
+          <TextField path={`physio.services.${i}.text`} label="Text" multiline />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function PhysioSpecialistsEditor() {
+  const specialists = useContentStore((s) => s.content.physio.specialists);
+  return (
+    <>
+      {specialists.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Specialist {i + 1}
+          </div>
+          <TextField path={`physio.specialists.${i}.name`} label="Name" autoFocus={i === 0} />
+          <TextField path={`physio.specialists.${i}.title`} label="Title" />
+          <SimpleImageEditor path={`physio.specialists.${i}.img`} label="Photo" />
+          <TextField path={`physio.specialists.${i}.bio.0`} label="Bio Paragraph 1" multiline />
+          <TextField path={`physio.specialists.${i}.bio.1`} label="Bio Paragraph 2" multiline />
+          <ChipListEditor basePath={`physio.specialists.${i}.tags`} count={4} />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function PhysioCtaEditor() {
+  return (
+    <>
+      <TextField path="physio.cta.heading" label="Heading" multiline autoFocus />
+      <TextField path="physio.cta.sub" label="Subtext" multiline />
+      <TextField path="physio.cta.btnText" label="Button Text" />
+    </>
+  );
+}
+
 function StatListEditor({ basePath, count }: { basePath: string; count: number }) {
   return (
     <>
@@ -425,6 +540,13 @@ const FIELD_SETS: Record<string, FieldSet> = {
     { path: 'footer.tagline', label: 'Tagline' },
     { path: 'footer.copyright', label: 'Copyright' },
   ],
+  team: { component: <TeamEditor /> },
+  'physio.hero': { component: <PhysioHeroEditor /> },
+  'physio.intro': { component: <PhysioIntroEditor /> },
+  'physio.process': { component: <PhysioProcessEditor /> },
+  'physio.services': { component: <PhysioServicesEditor /> },
+  'physio.specialists': { component: <PhysioSpecialistsEditor /> },
+  'physio.cta': { component: <PhysioCtaEditor /> },
 };
 
 export default function FieldEditor() {
