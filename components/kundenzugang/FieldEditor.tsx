@@ -167,14 +167,25 @@ function HeroImageEditor() {
         className="hidden"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
-      <button
-        type="button"
-        disabled={uploading}
-        onClick={() => fileInputRef.current?.click()}
-        className="mb-2 w-full rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {uploading ? 'Uploading…' : 'Upload Image'}
-      </button>
+      <div className="mb-2 flex gap-2">
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileInputRef.current?.click()}
+          className="flex-1 rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {uploading ? 'Uploading…' : image ? 'Replace Image' : 'Upload Image'}
+        </button>
+        {image && (
+          <button
+            type="button"
+            onClick={() => updateField('hero.image', '')}
+            className="rounded-md border border-red-500/25 bg-red-500/10 px-3 text-[12px] font-semibold text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-500/20"
+          >
+            Delete Photo
+          </button>
+        )}
+      </div>
       {uploadError && <p className="mb-2 text-[11px] text-red-400">{uploadError}</p>}
 
       {image ? (
@@ -271,6 +282,7 @@ function PricingEditor() {
       <TextField path="pricingSection.eyebrow" label="Section Eyebrow" autoFocus />
       <TextField path="pricingSection.heading" label="Section Heading" />
       <TextField path="pricingSection.sub" label="Section Subtext" multiline />
+      <TextField path="pricingSection.btnText" label="Button Text (all cards)" />
       {tiers.map((tier, i) => (
         <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
           <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
@@ -315,6 +327,16 @@ function TeamEditor() {
           <SimpleImageEditor path={`team.members.${i}.img`} label="Photo" />
         </div>
       ))}
+    </>
+  );
+}
+
+function ServiceEditor({ index }: { index: number }) {
+  return (
+    <>
+      <TextField path={`services.${index}.title`} label="Title" autoFocus />
+      <TextField path={`services.${index}.desc`} label="Description" multiline />
+      <SimpleImageEditor path={`services.${index}.image`} label="Photo" />
     </>
   );
 }
@@ -475,14 +497,25 @@ function SimpleImageEditor({ path, label }: { path: string; label: string }) {
         className="hidden"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
-      <button
-        type="button"
-        disabled={uploading}
-        onClick={() => fileInputRef.current?.click()}
-        className="mb-2 w-full rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {uploading ? 'Uploading…' : 'Upload Image'}
-      </button>
+      <div className="mb-2 flex gap-2">
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileInputRef.current?.click()}
+          className="flex-1 rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {uploading ? 'Uploading…' : image ? 'Replace Image' : 'Upload Image'}
+        </button>
+        {image && (
+          <button
+            type="button"
+            onClick={() => updateField(path, '')}
+            className="rounded-md border border-red-500/25 bg-red-500/10 px-3 text-[12px] font-semibold text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-500/20"
+          >
+            Delete Photo
+          </button>
+        )}
+      </div>
       {uploadError && <p className="mb-2 text-[11px] text-red-400">{uploadError}</p>}
       {image ? (
         <div
@@ -510,18 +543,9 @@ const FIELD_SETS: Record<string, FieldSet> = {
     { path: 'classesSection.eyebrow', label: 'Section Eyebrow' },
     { path: 'classesSection.heading', label: 'Section Heading' },
   ],
-  'services.0': [
-    { path: 'services.0.title', label: 'Title' },
-    { path: 'services.0.desc', label: 'Description', multiline: true },
-  ],
-  'services.1': [
-    { path: 'services.1.title', label: 'Title' },
-    { path: 'services.1.desc', label: 'Description', multiline: true },
-  ],
-  'services.2': [
-    { path: 'services.2.title', label: 'Title' },
-    { path: 'services.2.desc', label: 'Description', multiline: true },
-  ],
+  'services.0': { component: <ServiceEditor index={0} /> },
+  'services.1': { component: <ServiceEditor index={1} /> },
+  'services.2': { component: <ServiceEditor index={2} /> },
   'about.eyebrow': [{ path: 'about.eyebrow', label: 'Eyebrow' }],
   'about.heading': [{ path: 'about.heading', label: 'Heading', multiline: true }],
   'about.body1': [{ path: 'about.body1', label: 'Paragraph 1', multiline: true }],

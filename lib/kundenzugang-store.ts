@@ -4,6 +4,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 export interface ServiceItem {
   title: string;
   desc: string;
+  image: string;
 }
 
 export interface TestimonialItem {
@@ -103,7 +104,7 @@ export interface SiteContent {
   services: ServiceItem[];
   classesSection: SectionHeader;
   pricing: PricingTier[];
-  pricingSection: { eyebrow: string; heading: string; sub: string };
+  pricingSection: { eyebrow: string; heading: string; sub: string; btnText: string };
   about: {
     eyebrow: string;
     heading: string;
@@ -177,14 +178,17 @@ export const CLIENTS: Client[] = [
         {
           title: 'Group Lagree',
           desc: 'High-intensity, low-impact full-body workouts on the Megaformer™. Perfect for building lean muscle, core strength, and endurance alongside a motivated community.',
+          image: '',
         },
         {
           title: 'Personal Training',
           desc: 'One-on-one sessions tailored precisely to your fitness level and personal goals. Expert coaching for accelerated, lasting results on your schedule.',
+          image: '',
         },
         {
           title: 'Physiotherapy',
           desc: 'Active physiotherapy for injury recovery and movement optimization. Qualified professionals provide personalized care to keep you moving freely and pain-free.',
+          image: '',
         },
       ],
       classesSection: { eyebrow: 'What We Offer', heading: 'Our Classes' },
@@ -201,6 +205,7 @@ export const CLIENTS: Client[] = [
         eyebrow: 'Credit Packs',
         heading: 'Membership Options',
         sub: 'Same pricing at both Berlin studio locations. Credits valid at P-Berg & Kreuzberg.',
+        btnText: 'Book Now',
       },
       about: {
         eyebrow: 'The Lagree Method',
@@ -404,9 +409,9 @@ export const CLIENTS: Client[] = [
         { value: '4', label: 'Stat Four' },
       ],
       services: [
-        { title: 'Service One', desc: 'Describe your first core service here.' },
-        { title: 'Service Two', desc: 'Describe your second core service here.' },
-        { title: 'Service Three', desc: 'Describe your third core service here.' },
+        { title: 'Service One', desc: 'Describe your first core service here.', image: '' },
+        { title: 'Service Two', desc: 'Describe your second core service here.', image: '' },
+        { title: 'Service Three', desc: 'Describe your third core service here.', image: '' },
       ],
       classesSection: { eyebrow: 'What We Offer', heading: 'Our Services' },
       pricing: [
@@ -414,7 +419,7 @@ export const CLIENTS: Client[] = [
         { credits: '5 Credits', name: 'Basic Pack', amount: '€150', note: '€30 per class', popular: false },
         { credits: '10 Credits', name: 'Pro Pack', amount: '€280', note: '€28 per class', popular: true },
       ],
-      pricingSection: { eyebrow: 'Pricing', heading: 'Membership Options', sub: 'Choose the plan that fits you best.' },
+      pricingSection: { eyebrow: 'Pricing', heading: 'Membership Options', sub: 'Choose the plan that fits you best.', btnText: 'Book Now' },
       about: {
         eyebrow: 'About Us',
         heading: 'Who We\nAre',
@@ -534,7 +539,11 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
     },
     stats: mapStatArray(stats, fallback.stats),
     services: services
-      ? services.map((s: any) => ({ title: s.title ?? '', desc: s.desc ?? '' }))
+      ? services.map((s: any, i: number) => ({
+          title: s.title ?? '',
+          desc: s.desc ?? '',
+          image: mapNullableImage(s.image, fallback.services[i]?.image ?? ''),
+        }))
       : fallback.services,
     classesSection: mapSectionHeader(live?.home?.classes, fallback.classesSection),
     pricing: pricing
@@ -550,6 +559,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
       eyebrow: live?.home?.pricing_section?.eyebrow ?? fallback.pricingSection.eyebrow,
       heading: live?.home?.pricing_section?.heading ?? fallback.pricingSection.heading,
       sub: live?.home?.pricing_section?.sub ?? fallback.pricingSection.sub,
+      btnText: live?.home?.pricing_section?.btn_text ?? fallback.pricingSection.btnText,
     },
     about: {
       eyebrow: about.eyebrow ?? fallback.about.eyebrow,
@@ -851,9 +861,9 @@ export const useContentStore = create<ContentState>()(
           live.home.stats = c.stats.map((s) => ({ value: s.value, label: s.label }));
 
           // home.services didn't exist before this integration — matches
-          // the data-fw="home.services.N.title/desc" hooks added to the
-          // three class cards.
-          live.home.services = c.services.map((s) => ({ title: s.title, desc: s.desc }));
+          // the data-fw="home.services.N.title/desc/image" hooks added to
+          // the three class cards.
+          live.home.services = c.services.map((s) => ({ title: s.title, desc: s.desc, image: s.image || null }));
           live.home.classes = { eyebrow: c.classesSection.eyebrow, heading: c.classesSection.heading };
 
           live.home.pricing = c.pricing.map((p) => ({
@@ -867,6 +877,7 @@ export const useContentStore = create<ContentState>()(
             eyebrow: c.pricingSection.eyebrow,
             heading: c.pricingSection.heading,
             sub: c.pricingSection.sub,
+            btn_text: c.pricingSection.btnText,
           };
 
           live.home.about = live.home.about || {};
@@ -1033,7 +1044,7 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         },
       },
       stats: content.stats.map((s) => ({ value: s.value, label: s.label })),
-      services: content.services.map((s) => ({ title: s.title, desc: s.desc })),
+      services: content.services.map((s) => ({ title: s.title, desc: s.desc, image: s.image || null })),
       classes: { eyebrow: content.classesSection.eyebrow, heading: content.classesSection.heading },
       pricing: content.pricing.map((p) => ({
         credits: p.credits,
@@ -1046,6 +1057,7 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         eyebrow: content.pricingSection.eyebrow,
         heading: content.pricingSection.heading,
         sub: content.pricingSection.sub,
+        btn_text: content.pricingSection.btnText,
       },
       about: {
         eyebrow: content.about.eyebrow,
