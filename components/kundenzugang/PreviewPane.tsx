@@ -8,11 +8,10 @@ import {
   getClientLiveUrl,
   getClientPageUrl,
   buildLivePreviewPayload,
-  PAGES,
   type PageId,
 } from '@/lib/kundenzugang-store';
 import { mapLiveClickToField, getHighlightTarget } from '@/lib/kundenzugang-nav';
-import { cn } from '@/lib/utils';
+import { cn, hexToRgba } from '@/lib/utils';
 
 export default function PreviewPane() {
   const content = useContentStore((s) => s.content);
@@ -22,6 +21,10 @@ export default function PreviewPane() {
   const setSelectedField = useContentStore((s) => s.setSelectedField);
   const currentPage = useContentStore((s) => s.currentPage);
   const setCurrentPage = useContentStore((s) => s.setCurrentPage);
+  // Read from the live site's own site.pages, not hardcoded — the same
+  // admin works for any client's page structure and real page titles.
+  const sitePages = useContentStore((s) => s.sitePages);
+  const siteAccent = useContentStore((s) => s.siteAccent);
   const clientId = useAuthStore((s) => s.clientId);
   const siteName = getClientSiteName(clientId);
   // liveUrl is the base origin (used for postMessage targeting/validation,
@@ -31,7 +34,8 @@ export default function PreviewPane() {
   // separate HTML pages, so switching pages only changes the iframe src and
   // which nav tree is shown, never which document gets saved to.
   const liveUrl = getClientLiveUrl(clientId);
-  const pageUrl = getClientPageUrl(clientId, currentPage);
+  const pageUrl = getClientPageUrl(clientId, currentPage, sitePages);
+  const accent = siteAccent || '#00D4FF';
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const readyRef = useRef(false);
@@ -112,28 +116,28 @@ export default function PreviewPane() {
       <div className="flex flex-shrink-0 items-center justify-between border-b border-white/10 px-4 py-2.5">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 rounded-md border border-white/10 bg-white/5 p-0.5">
-            {PAGES.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => handlePageChange(p.id)}
-                className={cn(
-                  'rounded px-2.5 py-1 text-[11px] font-medium transition-colors',
-                  currentPage === p.id
-                    ? 'bg-[#00D4FF]/15 text-[#00D4FF]'
-                    : 'text-zinc-500 hover:bg-white/5 hover:text-zinc-300',
-                )}
-              >
-                {p.label}
-              </button>
-            ))}
+            {sitePages.map((p) => {
+              const active = currentPage === p.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => handlePageChange(p.id)}
+                  className={cn(
+                    'rounded px-2.5 py-1 text-[11px] font-medium transition-colors',
+                    !active && 'text-zinc-500 hover:bg-white/5 hover:text-zinc-300',
+                  )}
+                  style={active ? { backgroundColor: hexToRgba(accent, 0.15), color: accent } : undefined}
+                >
+                  {p.label}
+                </button>
+              );
+            })}
           </div>
           <div className="flex items-center gap-2 text-[11px] text-zinc-500">
             <span
-              className={cn(
-                'h-1.5 w-1.5 flex-shrink-0 rounded-full',
-                dirty ? 'bg-[#00D4FF]' : 'bg-emerald-500',
-              )}
+              className={cn('h-1.5 w-1.5 flex-shrink-0 rounded-full', !dirty && 'bg-emerald-500')}
+              style={dirty ? { backgroundColor: accent } : undefined}
             />
             <span className="hidden sm:inline">
               {dirty ? 'Unsaved draft, not in Supabase yet' : 'Showing saved data'}

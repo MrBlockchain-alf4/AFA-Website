@@ -16,7 +16,12 @@ export interface NavNode {
   live: boolean;
 }
 
+// Shared across every page — the logo appears in every page's navbar (and
+// footer), all driven by the same site.logo field.
+const LOGO_LEAF: NavNode = { id: 'logo', label: 'Logo', live: true };
+
 const HOME_NAV_TREE: NavNode[] = [
+  LOGO_LEAF,
   {
     id: 'hero',
     label: 'Hero',
@@ -65,15 +70,16 @@ const HOME_NAV_TREE: NavNode[] = [
 // Team lives on its own page (team.html) as one long repeating grid of 32+
 // member cards — kept as a single flat leaf (like Testimonials/Contact) with
 // its own scrollable editor, rather than a nav entry per member.
-const TEAM_NAV_TREE: NavNode[] = [{ id: 'team', label: 'Team', live: true }];
+const TEAM_NAV_TREE: NavNode[] = [LOGO_LEAF, { id: 'team', label: 'Team', live: true }];
 
 // Physiotherapy also lives on its own page, but has genuinely distinct
 // sub-sections (unlike Team's uniform cards), so it gets real nav children —
 // same shape as Home's Hero/Services/About.
 const PHYSIO_NAV_TREE: NavNode[] = [
+  LOGO_LEAF,
   {
     id: 'physio',
-    label: 'Physiotherapy',
+    label: 'PT & Physiotherapy',
     live: true,
     children: [
       { id: 'physio.hero', label: 'Hero' },
@@ -104,6 +110,7 @@ export function sectionOf(fieldId: string | null): string | null {
 // markers (click-to-select + highlight-on-select). Kept in one place so the
 // two directions can't drift apart.
 const LIVE_PATH_TO_FIELD: Record<string, string> = {
+  'site.logo': 'logo',
   'home.hero.eyebrow': 'hero.eyebrow',
   'home.hero.headline': 'hero.headline',
   'home.hero.sub': 'hero.subtext',
@@ -216,6 +223,7 @@ export function mapLiveClickToField(path: string | null, section: string | null)
 }
 
 const FIELD_TO_LIVE_PATHS: Record<string, string[]> = {
+  logo: ['site.logo'],
   'hero.eyebrow': ['home.hero.eyebrow'],
   'hero.headline': ['home.hero.headline'],
   'hero.subtext': ['home.hero.sub'],

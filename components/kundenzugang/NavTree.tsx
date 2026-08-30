@@ -5,13 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { NAV_TREES, sectionOf } from '@/lib/kundenzugang-nav';
 import { useContentStore } from '@/lib/kundenzugang-store';
-import { cn } from '@/lib/utils';
+import { cn, hexToRgba } from '@/lib/utils';
 
 export default function NavTree() {
   const selectedField = useContentStore((s) => s.selectedField);
   const setSelectedField = useContentStore((s) => s.setSelectedField);
   const currentPage = useContentStore((s) => s.currentPage);
   const navTree = NAV_TREES[currentPage];
+  const accent = useContentStore((s) => s.siteAccent) || '#00D4FF';
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ hero: true, services: true });
 
   // Figma-style: whenever the selection changes (nav click, or a click
@@ -41,10 +42,9 @@ export default function NavTree() {
               }
               className={cn(
                 'group flex w-full items-center gap-1.5 rounded-md px-2.5 py-2 text-left text-[13px] font-medium transition-colors',
-                isSelected
-                  ? 'bg-[#00D4FF]/10 text-[#00D4FF]'
-                  : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200',
+                !isSelected && 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200',
               )}
+              style={isSelected ? { backgroundColor: hexToRgba(accent, 0.1), color: accent } : undefined}
             >
               {hasChildren && (
                 <motion.span
@@ -90,10 +90,9 @@ export default function NavTree() {
                           onClick={() => setSelectedField(leaf.id)}
                           className={cn(
                             'rounded-md px-2.5 py-1.5 text-left text-[12.5px] transition-colors',
-                            leafSelected
-                              ? 'bg-[#00D4FF]/10 text-[#00D4FF] font-medium'
-                              : 'text-zinc-500 hover:bg-white/5 hover:text-zinc-300',
+                            leafSelected ? 'font-medium' : 'text-zinc-500 hover:bg-white/5 hover:text-zinc-300',
                           )}
+                          style={leafSelected ? { backgroundColor: hexToRgba(accent, 0.1), color: accent } : undefined}
                         >
                           {leaf.label}
                         </button>

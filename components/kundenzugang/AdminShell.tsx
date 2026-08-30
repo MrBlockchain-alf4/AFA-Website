@@ -6,6 +6,10 @@ import NavTree from './NavTree';
 import FieldEditor from './FieldEditor';
 import PreviewPane from './PreviewPane';
 import { useAuthStore, useContentStore, getClientSiteName } from '@/lib/kundenzugang-store';
+import { hexToRgba, getContrastText } from '@/lib/utils';
+
+const accentCssVars = (accent: string) =>
+  ({ '--kz-accent': accent, '--kz-accent-40': hexToRgba(accent, 0.4) }) as React.CSSProperties;
 
 export default function AdminShell() {
   const logout = useAuthStore((s) => s.logout);
@@ -14,7 +18,9 @@ export default function AdminShell() {
   const save = useContentStore((s) => s.save);
   const liveSyncStatus = useContentStore((s) => s.liveSyncStatus);
   const liveSyncMessage = useContentStore((s) => s.liveSyncMessage);
+  const siteAccent = useContentStore((s) => s.siteAccent);
   const siteName = getClientSiteName(clientId);
+  const accent = siteAccent || '#00D4FF';
 
   function handleSave() {
     save();
@@ -39,15 +45,20 @@ export default function AdminShell() {
           : liveSyncStatus === 'unsupported'
             ? 'Draft saved (no live site connected for this client).'
             : '';
-  const toastTone =
-    liveSyncStatus === 'error' ? 'bg-red-500/90 text-white' : 'bg-[#00D4FF] text-[#0b0e0c]';
+  const toastIsError = liveSyncStatus === 'error';
 
   return (
-    <div className="flex h-screen flex-col bg-[#0b0e0c] text-zinc-100">
+    <div
+      className="flex h-screen flex-col bg-[#0b0e0c] text-zinc-100"
+      style={accentCssVars(accent)}
+    >
       {/* TOPBAR */}
       <div className="flex h-13 flex-shrink-0 items-center justify-between border-b border-white/10 px-5 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00D4FF]">
+          <span
+            className="text-[11px] font-bold uppercase tracking-[0.18em]"
+            style={{ color: accent }}
+          >
             Kundenzugang
           </span>
           <span className="text-[11px] text-zinc-600">/ {siteName}</span>
@@ -74,7 +85,8 @@ export default function AdminShell() {
             <button
               onClick={handleSave}
               disabled={!dirty}
-              className="w-full rounded-md bg-[#00D4FF] py-2.5 text-[13px] font-bold text-[#0b0e0c] transition-opacity disabled:cursor-not-allowed disabled:opacity-30 hover:enabled:opacity-90"
+              className="w-full rounded-md py-2.5 text-[13px] font-bold transition-opacity disabled:cursor-not-allowed disabled:opacity-30 hover:enabled:opacity-90"
+              style={{ backgroundColor: accent, color: getContrastText(accent) }}
             >
               Save Changes
             </button>
@@ -94,7 +106,12 @@ export default function AdminShell() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2 }}
-            className={`fixed bottom-6 left-1/2 max-w-[90vw] -translate-x-1/2 rounded-md px-5 py-2.5 text-center text-[12px] font-bold shadow-lg ${toastTone}`}
+            className="fixed bottom-6 left-1/2 max-w-[90vw] -translate-x-1/2 rounded-md px-5 py-2.5 text-center text-[12px] font-bold shadow-lg"
+            style={
+              toastIsError
+                ? { backgroundColor: 'rgba(239, 68, 68, 0.9)', color: '#ffffff' }
+                : { backgroundColor: accent, color: getContrastText(accent) }
+            }
           >
             {toastText}
           </motion.div>

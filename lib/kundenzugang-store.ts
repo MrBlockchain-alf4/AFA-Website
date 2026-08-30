@@ -31,10 +31,15 @@ export interface PricingTier {
 
 export type PageId = 'home' | 'team' | 'physio';
 
-export const PAGES: { id: PageId; label: string; path: string }[] = [
+// Offline/pre-fetch fallback only — real page tabs are read from the live
+// site's own site.pages (labels sourced from that site's actual nav link
+// text, e.g. "PT & Physiotherapy", not a hardcoded translation). Every
+// client needs one of these as a seed since loadClient() renders
+// synchronously before the live fetch resolves.
+const DEFAULT_PAGES: PageManifestItem[] = [
   { id: 'home', label: 'Home', path: '' },
   { id: 'team', label: 'Team', path: 'team.html' },
-  { id: 'physio', label: 'Fisioterapia', path: 'physiotherapy.html' },
+  { id: 'physio', label: 'PT & Physiotherapy', path: 'physiotherapy.html' },
 ];
 
 export interface TeamMember {
@@ -87,7 +92,14 @@ export interface SectionHeader {
   heading: string;
 }
 
+export interface PageManifestItem {
+  id: PageId;
+  label: string;
+  path: string;
+}
+
 export interface SiteContent {
+  site: { logo: string };
   hero: {
     eyebrow: string;
     headline: string;
@@ -140,6 +152,8 @@ export interface Client {
   /** The real, deployed site this client's admin panel previews and edits. */
   liveUrl?: string;
   content: SiteContent;
+  /** Offline fallback for the page-tab manifest — see DEFAULT_PAGES. */
+  defaultPages: PageManifestItem[];
 }
 
 // Hardcoded multi-client roster. Adding a new client means adding an entry
@@ -151,12 +165,14 @@ export const CLIENTS: Client[] = [
     password: 'afa2026',
     siteName: 'Framework Berlin',
     liveUrl: 'https://framework-berlin.vercel.app',
+    defaultPages: DEFAULT_PAGES,
     // Pulled directly from the live site (https://framework-berlin.vercel.app),
     // verified via curl on 2026-08-29 — not invented. The hero image is
     // genuinely empty on the live site right now (shows an "Insert Photo"
     // placeholder), so it's left blank here too rather than filled with a
     // stock photo.
     content: {
+      site: { logo: '/public/images/Framework_White_Transparent.png' },
       hero: {
         eyebrow: 'Lagree · Megaformer · Berlin',
         headline: 'High-Intensity.\nLow-Impact.\nAll Results.',
@@ -390,7 +406,9 @@ export const CLIENTS: Client[] = [
     username: 'demo',
     password: 'demo2026',
     siteName: 'Demo Client',
+    defaultPages: [{ id: 'home', label: 'Home', path: '' }],
     content: {
+      site: { logo: '' },
       hero: {
         eyebrow: 'Your Eyebrow Text',
         headline: 'Welcome to\nYour Website.',
@@ -527,6 +545,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
   const cta = live?.home?.cta ?? {};
   const footer = live?.footer ?? {};
   return {
+    site: { logo: mapNullableImage(live?.site?.logo, fallback.site.logo) },
     hero: {
       eyebrow: h.eyebrow ?? fallback.hero.eyebrow,
       headline: h.headline ?? fallback.hero.headline,
@@ -733,6 +752,15 @@ interface ContentState {
    * Never edited, just passed through.
    */
   liveLocationExtras: Record<string, unknown>[];
+  /**
+   * Read-only admin metadata (not part of SiteContent, never sent through
+   * updateField/save) — the real page-tab manifest and brand accent color,
+   * read straight from the live site's own site.pages/site.accent so the
+   * same admin code works for any client without hardcoding their pages
+   * or theme.
+   */
+  sitePages: PageManifestItem[];
+  siteAccent: string | null;
   loadClient: (clientId: string) => Promise<void>;
   setCurrentPage: (page: PageId) => void;
   setSelectedField: (field: string | null) => void;
@@ -769,11 +797,21 @@ export const useContentStore = create<ContentState>()(
       liveSyncStatus: 'idle' as LiveSyncStatus,
       liveSyncMessage: null as string | null,
       liveLocationExtras: [] as Record<string, unknown>[],
+      sitePages: CLIENTS[0].defaultPages,
+      siteAccent: null as string | null,
       loadClient: async (clientId) => {
         const client = CLIENTS.find((c) => c.username === clientId);
         if (!client) return;
         const saved = get().savedContentByClient[clientId] ?? client.content;
-        set({ currentClientId: clientId, currentPage: 'home', content: saved, selectedField: null, dirty: false });
+        set({
+          currentClientId: clientId,
+          currentPage: 'home',
+          content: saved,
+          selectedField: null,
+          dirty: false,
+          sitePages: client.defaultPages,
+          siteAccent: null,
+        });
 
         // Refresh from the real live data so the preview reflects whatever
         // was actually saved last (from any session, any device) — not a
@@ -785,6 +823,10 @@ export const useContentStore = create<ContentState>()(
           const live = await res.json();
           const mapped = mapLiveToContent(live, client.content);
           const extras = Array.isArray(live?.home?.locations) ? live.home.locations : [];
+          const pages = Array.isArray(live?.site?.pages) && live.site.pages.length
+            ? live.site.pages
+            : client.defaultPages;
+          const accent = typeof live?.site?.accent === 'string' ? live.site.accent : null;
           set((state) =>
             state.currentClientId === clientId
               ? {
@@ -792,6 +834,8 @@ export const useContentStore = create<ContentState>()(
                   savedContentByClient: { ...state.savedContentByClient, [clientId]: mapped },
                   dirty: false,
                   liveLocationExtras: extras,
+                  sitePages: pages,
+                  siteAccent: accent,
                 }
               : state,
           );
@@ -844,6 +888,9 @@ export const useContentStore = create<ContentState>()(
           if (!getRes.ok) throw new Error(`Could not read live data (HTTP ${getRes.status})`);
           const live = await getRes.json();
           const c = state.content;
+
+          live.site = live.site || {};
+          live.site.logo = c.site.logo || null;
 
           live.home = live.home || {};
           live.home.hero = live.home.hero || {};
@@ -1014,10 +1061,14 @@ export function getClientLiveUrl(clientId: string | null): string | undefined {
 // all in the same JSON row) rendered across three separate HTML pages —
 // this just picks which page's URL the iframe should point at. Save/load
 // always hit the same /admin/api/data endpoint regardless of page.
-export function getClientPageUrl(clientId: string | null, page: PageId): string | undefined {
+export function getClientPageUrl(
+  clientId: string | null,
+  page: PageId,
+  pages: PageManifestItem[],
+): string | undefined {
   const liveUrl = getClientLiveUrl(clientId);
   if (!liveUrl) return undefined;
-  const path = PAGES.find((p) => p.id === page)?.path ?? '';
+  const path = pages.find((p) => p.id === page)?.path ?? '';
   return path ? `${liveUrl}/${path}` : liveUrl;
 }
 
@@ -1030,6 +1081,11 @@ export function getClientPageUrl(clientId: string | null, page: PageId): string 
 // doesn't track.
 export function buildLivePreviewPayload(content: SiteContent, locationExtras: Record<string, unknown>[]) {
   return {
+    // Unlike hero/about/etc, the logo has no placeholder overlay to fall
+    // back on, and applyData()'s generic patch loop skips null/undefined —
+    // so a deleted logo has to be sent as a real empty string, not
+    // coalesced to null, or the stale <img> src would never actually clear.
+    site: { logo: content.site.logo },
     home: {
       hero: {
         eyebrow: content.hero.eyebrow,

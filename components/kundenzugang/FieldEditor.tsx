@@ -56,7 +56,7 @@ function Label({ children }: { children: React.ReactNode }) {
 }
 
 const inputCls =
-  'w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-[13px] text-zinc-100 outline-none transition-colors focus:border-[#00D4FF]/50 focus:bg-white/[0.07] placeholder:text-zinc-600';
+  'w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-[13px] text-zinc-100 outline-none transition-colors focus:border-[var(--kz-accent)] focus:bg-white/[0.07] placeholder:text-zinc-600';
 
 function TextField({
   path,
@@ -172,7 +172,7 @@ function HeroImageEditor() {
           type="button"
           disabled={uploading}
           onClick={() => fileInputRef.current?.click()}
-          className="flex-1 rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex-1 rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[var(--kz-accent-40)] hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {uploading ? 'Uploading…' : image ? 'Replace Image' : 'Upload Image'}
         </button>
@@ -204,7 +204,7 @@ function HeroImageEditor() {
             }}
           >
             <div
-              className="pointer-events-none absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#00D4FF] bg-white/80 shadow"
+              className="pointer-events-none absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[var(--kz-accent)] bg-white/80 shadow"
               style={{ left: `${posX}%`, top: `${posY}%` }}
             />
           </div>
@@ -219,7 +219,7 @@ function HeroImageEditor() {
             max={200}
             value={scale}
             onChange={(e) => setHeroImageScale(Number(e.target.value))}
-            className="mb-4 w-full accent-[#00D4FF]"
+            className="mb-4 w-full accent-[var(--kz-accent)]"
           />
         </>
       ) : (
@@ -297,7 +297,7 @@ function PricingEditor() {
               type="checkbox"
               checked={tier.popular}
               onChange={(e) => updateField(`pricing.${i}.popular`, e.target.checked)}
-              className="accent-[#00D4FF]"
+              className="accent-[var(--kz-accent)]"
             />
             Mark as &quot;Most Popular&quot;
           </label>
@@ -502,7 +502,7 @@ function SimpleImageEditor({ path, label }: { path: string; label: string }) {
           type="button"
           disabled={uploading}
           onClick={() => fileInputRef.current?.click()}
-          className="flex-1 rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[#00D4FF]/40 hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex-1 rounded-md border border-white/10 bg-white/5 py-2 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-[var(--kz-accent-40)] hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {uploading ? 'Uploading…' : image ? 'Replace Image' : 'Upload Image'}
         </button>
@@ -533,6 +533,7 @@ function SimpleImageEditor({ path, label }: { path: string; label: string }) {
 type FieldSet = { path: string; label: string; multiline?: boolean }[] | { component: React.ReactNode };
 
 const FIELD_SETS: Record<string, FieldSet> = {
+  logo: { component: <SimpleImageEditor path="site.logo" label="Site Logo" /> },
   'hero.eyebrow': [{ path: 'hero.eyebrow', label: 'Eyebrow' }],
   'hero.headline': [{ path: 'hero.headline', label: 'Headline', multiline: true }],
   'hero.subtext': [{ path: 'hero.subtext', label: 'Subtext', multiline: true }],
