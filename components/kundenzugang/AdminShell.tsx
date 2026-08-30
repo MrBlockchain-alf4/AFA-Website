@@ -18,9 +18,11 @@ export default function AdminShell() {
   const save = useContentStore((s) => s.save);
   const liveSyncStatus = useContentStore((s) => s.liveSyncStatus);
   const liveSyncMessage = useContentStore((s) => s.liveSyncMessage);
-  const siteAccent = useContentStore((s) => s.siteAccent);
   const siteName = getClientSiteName(clientId);
-  const accent = siteAccent || '#00D4FF';
+  // Kundenzugang is AFA's own product, not the client's site — it keeps
+  // AFA's cyan brand color regardless of which client is logged in, rather
+  // than reskinning per client.
+  const accent = '#00D4FF';
 
   function handleSave() {
     save();

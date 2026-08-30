@@ -24,7 +24,6 @@ export default function PreviewPane() {
   // Read from the live site's own site.pages, not hardcoded — the same
   // admin works for any client's page structure and real page titles.
   const sitePages = useContentStore((s) => s.sitePages);
-  const siteAccent = useContentStore((s) => s.siteAccent);
   const clientId = useAuthStore((s) => s.clientId);
   const siteName = getClientSiteName(clientId);
   // liveUrl is the base origin (used for postMessage targeting/validation,
@@ -35,7 +34,8 @@ export default function PreviewPane() {
   // which nav tree is shown, never which document gets saved to.
   const liveUrl = getClientLiveUrl(clientId);
   const pageUrl = getClientPageUrl(clientId, currentPage, sitePages);
-  const accent = siteAccent || '#00D4FF';
+  // AFA's own brand cyan — kundenzugang is AFA's product, not themed per client.
+  const accent = '#00D4FF';
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const readyRef = useRef(false);

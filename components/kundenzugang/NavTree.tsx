@@ -12,7 +12,8 @@ export default function NavTree() {
   const setSelectedField = useContentStore((s) => s.setSelectedField);
   const currentPage = useContentStore((s) => s.currentPage);
   const navTree = NAV_TREES[currentPage];
-  const accent = useContentStore((s) => s.siteAccent) || '#00D4FF';
+  // AFA's own brand cyan — kundenzugang is AFA's product, not themed per client.
+  const accent = '#00D4FF';
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ hero: true, services: true });
 
   // Figma-style: whenever the selection changes (nav click, or a click
