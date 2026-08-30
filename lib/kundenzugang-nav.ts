@@ -191,6 +191,40 @@ const LIVE_PATH_TO_FIELD: Record<string, string> = {
   'home.cta.sub': 'cta',
   'footer.tagline': 'footer',
   'footer.copyright': 'footer',
+  // Elit Juwelier — every field has its own exact data-fw path (no bulk
+  // rebuild like Team/Locations), so this is a flat 1:1 list rather than a
+  // prefix match, except gallery items which use PREFIX_TO_FIELD below.
+  'elit.site.logo': 'elit.logo',
+  'elit.hero.eyebrow': 'elit.hero',
+  'elit.hero.headline': 'elit.hero',
+  'elit.hero.headline_em': 'elit.hero',
+  'elit.hero.subtitle': 'elit.hero',
+  'elit.hero.desc': 'elit.hero',
+  'elit.hero.chips.0': 'elit.hero', 'elit.hero.chips.1': 'elit.hero',
+  'elit.hero.chips.2': 'elit.hero', 'elit.hero.chips.3': 'elit.hero',
+  'elit.hero.primary_btn_text': 'elit.hero',
+  'elit.hero.secondary_btn_text': 'elit.hero',
+  'elit.hero.badge_number': 'elit.hero',
+  'elit.hero.badge_text': 'elit.hero',
+  'elit.hero.image': 'elit.hero',
+  'elit.gallery.eyebrow': 'elit.gallery',
+  'elit.gallery.heading': 'elit.gallery',
+  'elit.gallery.heading_em': 'elit.gallery',
+  'elit.about.eyebrow': 'elit.about',
+  'elit.about.heading': 'elit.about',
+  'elit.about.heading_em': 'elit.about',
+  'elit.about.body_1': 'elit.about',
+  'elit.about.body_2': 'elit.about',
+  'elit.about.image': 'elit.about',
+  'elit.about.stamp_number': 'elit.about',
+  'elit.about.stamp_text': 'elit.about',
+  'elit.contact.address': 'elit.about',
+  'elit.contact.phone': 'elit.about',
+  'elit.contact.whatsapp': 'elit.about',
+  'elit.contact.hours_weekday': 'elit.about',
+  'elit.contact.hours_sunday': 'elit.about',
+  'elit.footer.tagline': 'elit.footer',
+  'elit.footer.copyright': 'elit.footer',
 };
 
 // Path-prefix fallback for the Team/Physio pages — Team's 32+ members and
@@ -206,6 +240,9 @@ const PREFIX_TO_FIELD: [prefix: string, field: string][] = [
   ['physio.services.', 'physio.services'],
   ['physio.specialists.', 'physio.specialists'],
   ['physio.cta.', 'physio.cta'],
+  // Elit's 16-photo gallery is open-ended like Team's members — prefix
+  // match instead of listing every "elit.gallery.items.N.image"-style path.
+  ['elit.gallery.items.', 'elit.gallery'],
 ];
 
 // Section-marker values the live site actually emits as data-fw-section —
@@ -226,6 +263,11 @@ const KNOWN_SECTION_FIELD_IDS = new Set([
   'physio.services',
   'physio.specialists',
   'physio.cta',
+  'elit.logo',
+  'elit.hero',
+  'elit.gallery',
+  'elit.about',
+  'elit.footer',
 ]);
 
 // Click inside the iframe → which field to select in the left panel.
@@ -290,6 +332,11 @@ const SECTION_HIGHLIGHT_FIELDS = new Set([
   'physio.services',
   'physio.specialists',
   'physio.cta',
+  'elit.logo',
+  'elit.hero',
+  'elit.gallery',
+  'elit.about',
+  'elit.footer',
 ]);
 
 // Selected field in the left panel → what to highlight inside the iframe.
