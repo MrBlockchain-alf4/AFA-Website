@@ -228,6 +228,10 @@ const LIVE_PATH_TO_FIELD: Record<string, string> = {
   'elit.about.image': 'elit.about',
   'elit.about.stamp_number': 'elit.about',
   'elit.about.stamp_text': 'elit.about',
+  'elit.about.features.0.title': 'elit.about', 'elit.about.features.0.desc': 'elit.about',
+  'elit.about.features.1.title': 'elit.about', 'elit.about.features.1.desc': 'elit.about',
+  'elit.about.features.2.title': 'elit.about', 'elit.about.features.2.desc': 'elit.about',
+  'elit.about.features.3.title': 'elit.about', 'elit.about.features.3.desc': 'elit.about',
   'elit.contact.eyebrow': 'elit.contact',
   'elit.contact.heading': 'elit.contact',
   'elit.contact.heading_em': 'elit.contact',
@@ -402,6 +406,10 @@ const FIELD_TO_LIVE_PATHS: Record<string, string[]> = {
   'elit.about': [
     'elit.about.eyebrow', 'elit.about.heading', 'elit.about.heading_em', 'elit.about.body_1', 'elit.about.body_2',
     'elit.about.image', 'elit.about.stamp_number', 'elit.about.stamp_text',
+    'elit.about.features.0.title', 'elit.about.features.0.desc',
+    'elit.about.features.1.title', 'elit.about.features.1.desc',
+    'elit.about.features.2.title', 'elit.about.features.2.desc',
+    'elit.about.features.3.title', 'elit.about.features.3.desc',
   ],
   'elit.contact': [
     'elit.contact.eyebrow', 'elit.contact.heading', 'elit.contact.heading_em',

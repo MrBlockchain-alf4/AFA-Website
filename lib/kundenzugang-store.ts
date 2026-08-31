@@ -234,6 +234,7 @@ export interface ElitContent {
     imagePos: ImagePosition;
     stampNumber: string;
     stampText: string;
+    features: { title: string; desc: string }[]; // 4
   };
   contact: {
     eyebrow: string;
@@ -777,6 +778,12 @@ export const CLIENTS: Client[] = [
         imagePos: DEFAULT_IMAGE_POSITION,
         stampNumber: '25',
         stampText: 'Jahre\nTradition',
+        features: [
+          { title: 'Individuelle Anfertigung', desc: 'Nach Ihren Wünschen gefertigt' },
+          { title: 'Faire Goldpreise', desc: 'Tagesaktuelle Ankaufspreise' },
+          { title: 'Zertifizierte Qualität', desc: 'Geprüfte Goldlegierungen' },
+          { title: 'Persönliche Beratung', desc: 'Kein Online-Shop, echte Menschen' },
+        ],
       },
       contact: {
         eyebrow: 'Kontakt & Öffnungszeiten',
@@ -1182,6 +1189,12 @@ function mapElitLiveToContent(live: any, fallback: ElitContent): ElitContent {
       imagePos: mapImagePos(about.image_position, fallback.about.imagePos),
       stampNumber: about.stamp_number ?? fallback.about.stampNumber,
       stampText: about.stamp_text ?? fallback.about.stampText,
+      features: Array.isArray(about.features)
+        ? about.features.map((f: any, i: number) => ({
+            title: f.title ?? fallback.about.features[i]?.title ?? '',
+            desc: f.desc ?? fallback.about.features[i]?.desc ?? '',
+          }))
+        : fallback.about.features,
     },
     contact: {
       eyebrow: contact.eyebrow ?? fallback.contact.eyebrow,
@@ -1314,6 +1327,7 @@ function buildElitLiveSection(c: ElitContent) {
       image_position: { ...c.about.imagePos },
       stamp_number: c.about.stampNumber,
       stamp_text: c.about.stampText,
+      features: c.about.features.map((f) => ({ title: f.title, desc: f.desc })),
     },
     contact: {
       eyebrow: c.contact.eyebrow,

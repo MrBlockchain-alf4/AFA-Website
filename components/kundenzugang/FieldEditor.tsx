@@ -685,6 +685,7 @@ function ElitServicesEditor() {
 }
 
 function ElitAboutEditor() {
+  const features = useContentStore((s) => s.elitContent.about.features);
   return (
     <>
       <TextField path="elit.about.eyebrow" label="Eyebrow" autoFocus />
@@ -695,6 +696,15 @@ function ElitAboutEditor() {
       <ImagePositionEditor imagePath="elit.about.image" posPath="elit.about.imagePos" label="Image" />
       <TextField path="elit.about.stampNumber" label="Stamp Number" />
       <TextField path="elit.about.stampText" label="Stamp Text" multiline />
+      {features.map((_, i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Feature {i + 1}
+          </div>
+          <TextField path={`elit.about.features.${i}.title`} label="Title" />
+          <TextField path={`elit.about.features.${i}.desc`} label="Description" />
+        </div>
+      ))}
     </>
   );
 }
