@@ -16,6 +16,7 @@ export default function AdminShell() {
   const clientId = useAuthStore((s) => s.clientId);
   const dirty = useContentStore((s) => s.dirty);
   const save = useContentStore((s) => s.save);
+  const revertLastSave = useContentStore((s) => s.revertLastSave);
   const liveSyncStatus = useContentStore((s) => s.liveSyncStatus);
   const liveSyncMessage = useContentStore((s) => s.liveSyncMessage);
   const siteName = getClientSiteName(clientId);
@@ -26,6 +27,14 @@ export default function AdminShell() {
 
   function handleSave() {
     save();
+  }
+
+  function handleRevert() {
+    const msg = dirty
+      ? 'Revert to the version before your last save? This also discards your unsaved edits.'
+      : 'Revert to the version before your last save?';
+    if (!window.confirm(msg)) return;
+    revertLastSave();
   }
 
   useEffect(() => {
@@ -91,6 +100,12 @@ export default function AdminShell() {
               style={{ backgroundColor: accent, color: getContrastText(accent) }}
             >
               Save Changes
+            </button>
+            <button
+              onClick={handleRevert}
+              className="mt-2 w-full rounded-md border border-white/10 py-2 text-[12px] font-medium text-zinc-500 transition-colors hover:border-white/20 hover:text-zinc-300"
+            >
+              Undo Last Save
             </button>
           </div>
         </aside>

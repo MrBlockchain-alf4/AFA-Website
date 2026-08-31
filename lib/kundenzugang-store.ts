@@ -1454,6 +1454,7 @@ interface ContentState {
   setSelectedField: (field: string | null) => void;
   updateField: (path: string, value: string | boolean | number) => void;
   save: () => Promise<void>;
+  revertLastSave: () => Promise<void>;
 }
 
 function setAtPath(obj: any, path: string, value: string | boolean | number) {
@@ -1798,6 +1799,71 @@ export const useContentStore = create<ContentState>()(
               liveSyncMessage: postJson.error || `Live save failed (HTTP ${postRes.status}).`,
             });
           }
+        } catch (err) {
+          set({ liveSyncStatus: 'error', liveSyncMessage: String(err) });
+        }
+      },
+
+      revertLastSave: async () => {
+        const state = get();
+        if (!state.currentClientId) return;
+        const client = CLIENTS.find((c) => c.username === state.currentClientId);
+        const liveUrl = getClientLiveUrl(state.currentClientId);
+        if (!client || !liveUrl) {
+          set({ liveSyncStatus: 'unsupported', liveSyncMessage: null });
+          return;
+        }
+
+        set({ liveSyncStatus: 'syncing', liveSyncMessage: null });
+        try {
+          const res = await fetch(`${liveUrl}/admin/api/data?action=revert`, { method: 'POST' });
+          const json = await res.json().catch(() => ({}) as any);
+          if (!res.ok || !json.ok) {
+            set({
+              liveSyncStatus: 'error',
+              liveSyncMessage: json.error || `Revert failed (HTTP ${res.status}).`,
+            });
+            return;
+          }
+          const live = json.data;
+          const clientId = state.currentClientId;
+
+          if (client.kind === 'elit') {
+            const mapped = mapElitLiveToContent(live, client.elitContent!);
+            set((s) =>
+              s.currentClientId === clientId
+                ? {
+                    elitContent: mapped,
+                    savedElitContentByClient: { ...s.savedElitContentByClient, [clientId]: mapped },
+                    dirty: false,
+                    liveSyncStatus: 'success',
+                    liveSyncMessage: 'Reverted to the previous save.',
+                  }
+                : s,
+            );
+            return;
+          }
+
+          const mapped = mapLiveToContent(live, client.content!);
+          const extras = Array.isArray(live?.home?.locations) ? live.home.locations : [];
+          const pages = Array.isArray(live?.site?.pages) && live.site.pages.length
+            ? live.site.pages
+            : client.defaultPages;
+          const accent = typeof live?.site?.accent === 'string' ? live.site.accent : null;
+          set((s) =>
+            s.currentClientId === clientId
+              ? {
+                  content: mapped,
+                  savedContentByClient: { ...s.savedContentByClient, [clientId]: mapped },
+                  dirty: false,
+                  liveLocationExtras: extras,
+                  sitePages: pages,
+                  siteAccent: accent,
+                  liveSyncStatus: 'success',
+                  liveSyncMessage: 'Reverted to the previous save.',
+                }
+              : s,
+          );
         } catch (err) {
           set({ liveSyncStatus: 'error', liveSyncMessage: String(err) });
         }
