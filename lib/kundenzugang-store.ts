@@ -681,7 +681,7 @@ export const CLIENTS: Client[] = [
     username: 'elit',
     password: 'elit2026',
     siteName: 'Elit Juwelier',
-    liveUrl: 'https://elit-juwelier.vercel.app',
+    liveUrl: 'https://elit-juwelier-website.vercel.app',
     kind: 'elit',
     defaultPages: [{ id: 'home', label: 'Home', path: '' }],
     // Pulled directly from elit-juwelier/website/index.html's real current
