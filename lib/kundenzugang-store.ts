@@ -69,6 +69,10 @@ export interface TeamMember {
   role: string;
   img: string;
   imgPos: ImagePosition;
+  love: string;
+  fact: string;
+  f3l: string;
+  f3: string;
 }
 
 export interface TeamContent {
@@ -492,8 +496,8 @@ export const CLIENTS: Client[] = [
           body2: 'We are a community of movement specialists dedicated to helping you achieve real, lasting results — safely, efficiently, and with care.',
         },
         members: [
-          { name: 'Louise', role: 'Instructor · Front of House', img: 'public/team/louise.png', imgPos: DEFAULT_IMAGE_POSITION },
-          { name: 'Diya', role: 'Instructor', img: 'public/team/diya.png', imgPos: DEFAULT_IMAGE_POSITION },
+          { name: 'Louise', role: 'Instructor · Front of House', img: 'public/team/louise.png', imgPos: DEFAULT_IMAGE_POSITION, love: '', fact: '', f3l: '', f3: '' },
+          { name: 'Diya', role: 'Instructor', img: 'public/team/diya.png', imgPos: DEFAULT_IMAGE_POSITION, love: '', fact: '', f3l: '', f3: '' },
         ],
       },
       physio: {
@@ -687,8 +691,8 @@ export const CLIENTS: Client[] = [
         header: { eyebrow: 'Our Team', title: 'The\nTeam', desc: 'Meet the people behind the business.' },
         philosophy: { heading: 'Our\nPhilosophy', body1: 'Describe what your team believes in.', body2: 'A second paragraph with more detail.' },
         members: [
-          { name: 'Team Member One', role: 'Role', img: '', imgPos: DEFAULT_IMAGE_POSITION },
-          { name: 'Team Member Two', role: 'Role', img: '', imgPos: DEFAULT_IMAGE_POSITION },
+          { name: 'Team Member One', role: 'Role', img: '', imgPos: DEFAULT_IMAGE_POSITION, love: '', fact: '', f3l: '', f3: '' },
+          { name: 'Team Member Two', role: 'Role', img: '', imgPos: DEFAULT_IMAGE_POSITION, love: '', fact: '', f3l: '', f3: '' },
         ],
       },
       physio: {
@@ -1105,6 +1109,10 @@ function mapTeamContent(live: any, fallback: TeamContent): TeamContent {
           role: m.role ?? fallback.members[i]?.role ?? '',
           img: mapNullableImage(m.img, fallback.members[i]?.img ?? ''),
           imgPos: mapImagePos(m.img_position, fallback.members[i]?.imgPos ?? DEFAULT_IMAGE_POSITION),
+          love: m.love ?? fallback.members[i]?.love ?? '',
+          fact: m.fact ?? fallback.members[i]?.fact ?? '',
+          f3l: m.f3l ?? fallback.members[i]?.f3l ?? '',
+          f3: m.f3 ?? fallback.members[i]?.f3 ?? '',
         }))
       : fallback.members,
   };
@@ -1857,6 +1865,10 @@ export const useContentStore = create<ContentState>()(
             role: m.role,
             img: m.img || null,
             img_position: { ...m.imgPos },
+            love: m.love || null,
+            fact: m.fact || null,
+            f3l: m.f3l || null,
+            f3: m.f3 || null,
           }));
 
           live.physio = live.physio || {};
@@ -2108,6 +2120,10 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
         role: m.role,
         img: m.img || null,
         img_position: { ...m.imgPos },
+        love: m.love || null,
+        fact: m.fact || null,
+        f3l: m.f3l || null,
+        f3: m.f3 || null,
       })),
     },
     physio: {

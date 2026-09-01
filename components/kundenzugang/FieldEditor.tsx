@@ -355,6 +355,10 @@ function TeamEditor() {
             posPath={`team.members.${i}.imgPos`}
             label="Photo"
           />
+          <TextField path={`team.members.${i}.love`} label='"I love Lagree" Quote' multiline />
+          <TextField path={`team.members.${i}.fact`} label="Random Fact" multiline />
+          <TextField path={`team.members.${i}.f3l`} label="3rd Field Label" />
+          <TextField path={`team.members.${i}.f3`} label="3rd Field Value" multiline />
         </div>
       ))}
     </>
