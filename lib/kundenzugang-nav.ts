@@ -92,10 +92,18 @@ const PHYSIO_NAV_TREE: NavNode[] = [
   },
 ];
 
+// Each Schedule page is a single small page (address/hours reuse Home's own
+// location fields, so they're edited there — see Contact — not duplicated
+// here) — kept as one flat leaf with a composite editor, like Team.
+const PBERG_SCHEDULE_NAV_TREE: NavNode[] = [LOGO_LEAF, { id: 'schedule.pberg', label: 'Schedule Page', live: true }];
+const XBERG_SCHEDULE_NAV_TREE: NavNode[] = [LOGO_LEAF, { id: 'schedule.xberg', label: 'Schedule Page', live: true }];
+
 export const NAV_TREES: Record<PageId, NavNode[]> = {
   home: HOME_NAV_TREE,
   team: TEAM_NAV_TREE,
   physio: PHYSIO_NAV_TREE,
+  'pberg-schedule': PBERG_SCHEDULE_NAV_TREE,
+  'xberg-schedule': XBERG_SCHEDULE_NAV_TREE,
 };
 
 // Elit Juwelier — a single-page site with its own content shape (see
@@ -201,6 +209,27 @@ const LIVE_PATH_TO_FIELD: Record<string, string> = {
   'home.cta.sub': 'cta',
   'footer.tagline': 'footer',
   'footer.copyright': 'footer',
+  // Schedule pages — small, fixed-shape blocks, exact paths like elit.nav.
+  'schedule.pberg.eyebrow': 'schedule.pberg',
+  'schedule.pberg.title': 'schedule.pberg',
+  'schedule.pberg.desc': 'schedule.pberg',
+  'schedule.pberg.meta.0.num': 'schedule.pberg', 'schedule.pberg.meta.0.label': 'schedule.pberg',
+  'schedule.pberg.meta.1.num': 'schedule.pberg', 'schedule.pberg.meta.1.label': 'schedule.pberg',
+  'schedule.pberg.meta.2.num': 'schedule.pberg', 'schedule.pberg.meta.2.label': 'schedule.pberg',
+  'schedule.pberg.frame_label': 'schedule.pberg',
+  'schedule.pberg.bsport_title': 'schedule.pberg',
+  'schedule.pberg.bsport_desc': 'schedule.pberg',
+  'schedule.pberg.bsport_badge': 'schedule.pberg',
+  'schedule.xberg.eyebrow': 'schedule.xberg',
+  'schedule.xberg.title': 'schedule.xberg',
+  'schedule.xberg.desc': 'schedule.xberg',
+  'schedule.xberg.meta.0.num': 'schedule.xberg', 'schedule.xberg.meta.0.label': 'schedule.xberg',
+  'schedule.xberg.meta.1.num': 'schedule.xberg', 'schedule.xberg.meta.1.label': 'schedule.xberg',
+  'schedule.xberg.meta.2.num': 'schedule.xberg', 'schedule.xberg.meta.2.label': 'schedule.xberg',
+  'schedule.xberg.frame_label': 'schedule.xberg',
+  'schedule.xberg.bsport_title': 'schedule.xberg',
+  'schedule.xberg.bsport_desc': 'schedule.xberg',
+  'schedule.xberg.bsport_badge': 'schedule.xberg',
   // Elit Juwelier — every field has its own exact data-fw path (no bulk
   // rebuild like Team/Locations), so this is a flat 1:1 list rather than a
   // prefix match, except gallery items which use PREFIX_TO_FIELD below.
@@ -323,6 +352,8 @@ const KNOWN_SECTION_FIELD_IDS = new Set([
   'services.1',
   'services.2',
   'team',
+  'schedule.pberg',
+  'schedule.xberg',
   'physio.hero',
   'physio.intro',
   'physio.process',
@@ -391,6 +422,22 @@ const FIELD_TO_LIVE_PATHS: Record<string, string[]> = {
   'about.chips': ['home.about.chips.0', 'home.about.chips.1', 'home.about.chips.2', 'home.about.chips.3'],
   cta: ['home.cta.heading', 'home.cta.sub'],
   footer: ['footer.tagline', 'footer.copyright'],
+  'schedule.pberg': [
+    'schedule.pberg.eyebrow', 'schedule.pberg.title', 'schedule.pberg.desc',
+    'schedule.pberg.meta.0.num', 'schedule.pberg.meta.0.label',
+    'schedule.pberg.meta.1.num', 'schedule.pberg.meta.1.label',
+    'schedule.pberg.meta.2.num', 'schedule.pberg.meta.2.label',
+    'schedule.pberg.frame_label', 'schedule.pberg.bsport_title',
+    'schedule.pberg.bsport_desc', 'schedule.pberg.bsport_badge',
+  ],
+  'schedule.xberg': [
+    'schedule.xberg.eyebrow', 'schedule.xberg.title', 'schedule.xberg.desc',
+    'schedule.xberg.meta.0.num', 'schedule.xberg.meta.0.label',
+    'schedule.xberg.meta.1.num', 'schedule.xberg.meta.1.label',
+    'schedule.xberg.meta.2.num', 'schedule.xberg.meta.2.label',
+    'schedule.xberg.frame_label', 'schedule.xberg.bsport_title',
+    'schedule.xberg.bsport_desc', 'schedule.xberg.bsport_badge',
+  ],
   // Elit Juwelier — exact per-element paths, same convention as Framework's
   // Hero/About above (not section-based): the hero section alone is
   // min-height:100vh, so a single outline around the whole thing would be

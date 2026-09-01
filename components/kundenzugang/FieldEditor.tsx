@@ -470,6 +470,30 @@ function PhysioCtaEditor() {
   );
 }
 
+function ScheduleEditor({ location }: { location: 'pberg' | 'xberg' }) {
+  const base = `schedule.${location}`;
+  return (
+    <>
+      <TextField path={`${base}.eyebrow`} label="Eyebrow" autoFocus />
+      <TextField path={`${base}.title`} label="Title" multiline />
+      <TextField path={`${base}.desc`} label="Description" multiline />
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            Stat {i + 1}
+          </div>
+          <TextField path={`${base}.meta.${i}.num`} label="Number / Word" />
+          <TextField path={`${base}.meta.${i}.label`} label="Label" />
+        </div>
+      ))}
+      <TextField path={`${base}.frameLabel`} label="Widget Frame Label" />
+      <TextField path={`${base}.bsportTitle`} label="Placeholder Title" />
+      <TextField path={`${base}.bsportDesc`} label="Placeholder Description" multiline />
+      <TextField path={`${base}.bsportBadge`} label="Placeholder Badge" />
+    </>
+  );
+}
+
 function StatListEditor({ basePath, count }: { basePath: string; count: number }) {
   return (
     <>
@@ -897,6 +921,8 @@ const FIELD_SETS: Record<string, FieldSet> = {
   'physio.services': { component: <PhysioServicesEditor /> },
   'physio.specialists': { component: <PhysioSpecialistsEditor /> },
   'physio.cta': { component: <PhysioCtaEditor /> },
+  'schedule.pberg': { component: <ScheduleEditor location="pberg" /> },
+  'schedule.xberg': { component: <ScheduleEditor location="xberg" /> },
   'elit.logo': { component: <SimpleImageEditor path="elit.logo" label="Site Logo" /> },
   'elit.nav': { component: <ElitNavEditor /> },
   'elit.hero': { component: <ElitHeroEditor /> },

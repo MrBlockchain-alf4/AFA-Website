@@ -49,7 +49,7 @@ export interface PricingTier {
   popular: boolean;
 }
 
-export type PageId = 'home' | 'team' | 'physio';
+export type PageId = 'home' | 'team' | 'physio' | 'pberg-schedule' | 'xberg-schedule';
 
 // Offline/pre-fetch fallback only — real page tabs are read from the live
 // site's own site.pages (labels sourced from that site's actual nav link
@@ -60,6 +60,8 @@ const DEFAULT_PAGES: PageManifestItem[] = [
   { id: 'home', label: 'Home', path: '' },
   { id: 'team', label: 'Team', path: 'team.html' },
   { id: 'physio', label: 'PT & Physiotherapy', path: 'physiotherapy.html' },
+  { id: 'pberg-schedule', label: 'Pberg Schedule', path: 'pberg-schedule.html' },
+  { id: 'xberg-schedule', label: 'Xberg Schedule', path: 'xberg-schedule.html' },
 ];
 
 export interface TeamMember {
@@ -101,6 +103,22 @@ export interface PhysioContent {
   services: PhysioServiceItem[];
   specialists: PhysioSpecialist[];
   cta: { heading: string; sub: string; btnText: string };
+}
+
+export interface ScheduleMetaItem {
+  num: string;
+  label: string;
+}
+
+export interface ScheduleContent {
+  eyebrow: string;
+  title: string;
+  desc: string;
+  meta: ScheduleMetaItem[];
+  frameLabel: string;
+  bsportTitle: string;
+  bsportDesc: string;
+  bsportBadge: string;
 }
 
 export interface StatItem {
@@ -162,6 +180,7 @@ export interface SiteContent {
   };
   team: TeamContent;
   physio: PhysioContent;
+  schedule: { pberg: ScheduleContent; xberg: ScheduleContent };
 }
 
 // Elit Juwelier is the first client whose site genuinely doesn't fit
@@ -563,6 +582,39 @@ export const CLIENTS: Client[] = [
           btnText: 'Get in touch →',
         },
       },
+      // Pulled directly from pberg-schedule.html / xberg-schedule.html as
+      // generated — these pages have no live booking system wired in yet
+      // (bsport isn't connected), just a clearly-labeled placeholder panel.
+      schedule: {
+        pberg: {
+          eyebrow: 'Prenzlauer Berg Studio · Berlin',
+          title: 'Class\nSchedule',
+          desc: 'Browse upcoming Lagree and Physiotherapy sessions at our Prenzlauer Berg studio, check live availability, and reserve your spot instantly.',
+          meta: [
+            { num: 'Live', label: 'Real-time schedule' },
+            { num: 'Instant', label: 'Booking confirmation' },
+            { num: 'bsport', label: 'Booking platform' },
+          ],
+          frameLabel: 'Live Booking Widget — Prenzlauer Berg',
+          bsportTitle: 'Your live schedule appears here',
+          bsportDesc: 'Real-time class times, spots remaining, and instant booking for the Prenzlauer Berg studio — embedded directly on your site, right in this space.',
+          bsportBadge: 'Ready for bsport integration',
+        },
+        xberg: {
+          eyebrow: 'Kreuzberg Studio · Berlin',
+          title: 'Class\nSchedule',
+          desc: 'Browse upcoming Lagree and Physiotherapy sessions at our Kreuzberg studio, check live availability, and reserve your spot instantly.',
+          meta: [
+            { num: 'Live', label: 'Real-time schedule' },
+            { num: 'Instant', label: 'Booking confirmation' },
+            { num: 'bsport', label: 'Booking platform' },
+          ],
+          frameLabel: 'Live Booking Widget — Kreuzberg',
+          bsportTitle: 'Your live schedule appears here',
+          bsportDesc: 'Real-time class times, spots remaining, and instant booking for the Kreuzberg studio — embedded directly on your site, right in this space.',
+          bsportBadge: 'Ready for bsport integration',
+        },
+      },
     },
   },
   {
@@ -674,6 +726,36 @@ export const CLIENTS: Client[] = [
           },
         ],
         cta: { heading: 'Ready to start?', sub: 'Get in touch to book your first session.', btnText: 'Get in touch →' },
+      },
+      schedule: {
+        pberg: {
+          eyebrow: 'Location One · City',
+          title: 'Class\nSchedule',
+          desc: 'Describe what visitors can browse and book on this page.',
+          meta: [
+            { num: 'Live', label: 'Real-time schedule' },
+            { num: 'Instant', label: 'Booking confirmation' },
+            { num: 'bsport', label: 'Booking platform' },
+          ],
+          frameLabel: 'Live Booking Widget — Location One',
+          bsportTitle: 'Your live schedule appears here',
+          bsportDesc: 'Describe the live booking system that will appear in this space.',
+          bsportBadge: 'Ready for integration',
+        },
+        xberg: {
+          eyebrow: 'Location Two · City',
+          title: 'Class\nSchedule',
+          desc: 'Describe what visitors can browse and book on this page.',
+          meta: [
+            { num: 'Live', label: 'Real-time schedule' },
+            { num: 'Instant', label: 'Booking confirmation' },
+            { num: 'bsport', label: 'Booking platform' },
+          ],
+          frameLabel: 'Live Booking Widget — Location Two',
+          bsportTitle: 'Your live schedule appears here',
+          bsportDesc: 'Describe the live booking system that will appear in this space.',
+          bsportBadge: 'Ready for integration',
+        },
       },
     },
   },
@@ -998,6 +1080,7 @@ function mapLiveToContent(live: any, fallback: SiteContent): SiteContent {
     },
     team: mapTeamContent(live?.team, fallback.team),
     physio: mapPhysioContent(live?.physio, fallback.physio),
+    schedule: mapScheduleContent(live?.schedule, fallback.schedule),
   };
 }
 
@@ -1024,6 +1107,35 @@ function mapTeamContent(live: any, fallback: TeamContent): TeamContent {
           imgPos: mapImagePos(m.img_position, fallback.members[i]?.imgPos ?? DEFAULT_IMAGE_POSITION),
         }))
       : fallback.members,
+  };
+}
+
+function mapScheduleItemContent(live: any, fallback: ScheduleContent): ScheduleContent {
+  const meta = Array.isArray(live?.meta) ? live.meta : null;
+  return {
+    eyebrow: live?.eyebrow ?? fallback.eyebrow,
+    title: live?.title ?? fallback.title,
+    desc: live?.desc ?? fallback.desc,
+    meta: meta
+      ? meta.map((m: any, i: number) => ({
+          num: m.num ?? fallback.meta[i]?.num ?? '',
+          label: m.label ?? fallback.meta[i]?.label ?? '',
+        }))
+      : fallback.meta,
+    frameLabel: live?.frame_label ?? fallback.frameLabel,
+    bsportTitle: live?.bsport_title ?? fallback.bsportTitle,
+    bsportDesc: live?.bsport_desc ?? fallback.bsportDesc,
+    bsportBadge: live?.bsport_badge ?? fallback.bsportBadge,
+  };
+}
+
+function mapScheduleContent(
+  live: any,
+  fallback: { pberg: ScheduleContent; xberg: ScheduleContent }
+): { pberg: ScheduleContent; xberg: ScheduleContent } {
+  return {
+    pberg: mapScheduleItemContent(live?.pberg, fallback.pberg),
+    xberg: mapScheduleItemContent(live?.xberg, fallback.xberg),
   };
 }
 
@@ -1785,6 +1897,10 @@ export const useContentStore = create<ContentState>()(
           }));
           live.physio.cta = { heading: c.physio.cta.heading, sub: c.physio.cta.sub, btn_text: c.physio.cta.btnText };
 
+          live.schedule = live.schedule || {};
+          live.schedule.pberg = buildScheduleItemPayload(c.schedule.pberg);
+          live.schedule.xberg = buildScheduleItemPayload(c.schedule.xberg);
+
           const postRes = await fetch(dataUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2026,6 +2142,23 @@ export function buildLivePreviewPayload(content: SiteContent, locationExtras: Re
       })),
       cta: { heading: content.physio.cta.heading, sub: content.physio.cta.sub, btn_text: content.physio.cta.btnText },
     },
+    schedule: {
+      pberg: buildScheduleItemPayload(content.schedule.pberg),
+      xberg: buildScheduleItemPayload(content.schedule.xberg),
+    },
+  };
+}
+
+function buildScheduleItemPayload(s: ScheduleContent) {
+  return {
+    eyebrow: s.eyebrow,
+    title: s.title,
+    desc: s.desc,
+    meta: s.meta.map((m) => ({ num: m.num, label: m.label })),
+    frame_label: s.frameLabel,
+    bsport_title: s.bsportTitle,
+    bsport_desc: s.bsportDesc,
+    bsport_badge: s.bsportBadge,
   };
 }
 
