@@ -1,0 +1,140 @@
+{
+  "_schema": "goldschmiede-salzmann-v1",
+  "_updated": "2026-09-03",
+  "salzmann": {
+    "site": { "logo": "public/images/salzmann-logo.png" },
+    "nav": {
+      "links": ["Leistungen", "Maßanfertigung", "Über Uns", "Kontakt"],
+      "cta_text": "Kontakt aufnehmen"
+    },
+    "hero": {
+      "eyebrow": "Goldschmiede in Hagen",
+      "headline": "Gold",
+      "headline_em": "schmiede",
+      "subtitle": "Individueller Schmuck & Handwerkskunst",
+      "desc": "Ob neu entworfen, nach Ihren Wünschen angefertigt oder als Erbstück liebevoll umgearbeitet — bei Goldschmiede Salzmann entsteht Ihr Schmuckstück in persönlicher Beratung und mit viel Liebe zum Detail.",
+      "chips": ["Individuelle Anfertigung", "Umarbeitung & Reparatur", "Persönliche Beratung", "5,0★ bei Google"],
+      "primary_btn_text": "Kontakt aufnehmen →",
+      "secondary_btn_text": "Werkstatt entdecken",
+      "badge_number": "5,0",
+      "badge_text": "★ Google\nBewertung",
+      "image": "public/images/salzmann-about-main.png",
+      "image_position": { "x": 50, "y": 30, "scale": 100 }
+    },
+    "banner": {
+      "eyebrow": "Für Ihren besonderen Moment",
+      "headline_1": "Eheringe &",
+      "headline_2": "Maßanfertigung",
+      "sub": "Handgefertigte Eheringe und individueller Schmuck — entworfen und gefertigt in unserer Werkstatt in Hagen.",
+      "cta_text": "Kontakt aufnehmen →",
+      "items": [
+        { "title": "Individuelle Anfertigung", "desc": "Nach Ihren Wünschen gestaltet" },
+        { "title": "Umarbeitung möglich", "desc": "Auch Erbstücke werden neu gestaltet" },
+        { "title": "Persönliche Beratung", "desc": "Von der ersten Idee bis zur Fertigstellung" },
+        { "title": "5,0★ bei Google", "desc": "13 Bewertungen" }
+      ]
+    },
+    "stats": [
+      { "value": "5,0★", "label": "Google Bewertung" },
+      { "value": "13", "label": "Google Rezensionen" },
+      { "value": "∞", "label": "Einzigartige Designs" },
+      { "value": "100%", "label": "Persönliche Beratung" }
+    ],
+    "services": {
+      "eyebrow": "Unsere Leistungen",
+      "heading": "Alles für Ihren",
+      "heading_em": "besonderen Moment",
+      "lead": "Von der ersten Idee bis zum fertigen Schmuckstück — wir begleiten Sie mit Leidenschaft und Fachkenntnis.",
+      "featured_title": "Maßanfertigung",
+      "featured_desc": "Ob neu entworfen oder als besonderes Geschenk gedacht — wir fertigen Ihr Schmuckstück ganz nach Ihren Vorstellungen, in enger persönlicher Beratung von der ersten Idee bis zur Fertigstellung.",
+      "featured_list": [
+        "Individuelles Design nach Ihren Wünschen",
+        "Gemeinsame Gestaltung im persönlichen Gespräch",
+        "Umarbeitung & Reparatur von Erbstücken",
+        "Handwerkliche Fertigung in Hagen"
+      ],
+      "featured_cta_text": "Kontakt aufnehmen →",
+      "cards": [
+        { "title": "Trauringe & Eheringe", "desc": "Handgefertigte Eheringe, die gemeinsam mit Ihnen entworfen werden — für den Beginn Ihres gemeinsamen Weges.", "link_text": "Mehr erfahren →" },
+        { "title": "Umarbeitung & Reparatur", "desc": "Ein Erbstück mit neuer Bedeutung: Wir arbeiten Ihren bestehenden Schmuck fachkundig um oder bringen ihn wieder in Bestform.", "link_text": "Beratung anfragen →" },
+        { "title": "Ringe & Colliers", "desc": "Ringe mit und ohne Stein, Colliers und weitere Einzelstücke — entworfen und gefertigt nach Ihren ganz persönlichen Vorstellungen.", "link_text": "Kontakt aufnehmen →" }
+      ]
+    },
+    "about": {
+      "eyebrow": "Über Goldschmiede Salzmann",
+      "heading": "Handwerkskunst",
+      "heading_em": "aus Hagen",
+      "body_1": "Bei Goldschmiede Salzmann entsteht Schmuck in echter Handarbeit — individuell entworfen und mit Liebe zum Detail gefertigt, direkt in unserer Werkstatt in Hagen.",
+      "body_2": "Ob komplett neuer Entwurf oder die Umarbeitung eines besonderen Erbstücks — wir nehmen uns Zeit für eine ehrliche, kompetente Beratung und setzen Ihre Ideen gemeinsam mit Ihnen um.",
+      "image": "public/images/salzmann-about-secondary.png",
+      "image_position": { "x": 50, "y": 40, "scale": 100 },
+      "stamp_number": "✓",
+      "stamp_text": "Hand-\narbeit",
+      "features": [
+        { "title": "Individuelle Anfertigung", "desc": "Nach Ihren Wünschen gefertigt" },
+        { "title": "Umarbeitung & Reparatur", "desc": "Auch für Erbstücke geeignet" },
+        { "title": "Persönliche Beratung", "desc": "Ehrlich, kompetent, ohne Druck" },
+        { "title": "Handarbeit aus Hagen", "desc": "Direkt in unserer Werkstatt gefertigt" }
+      ]
+    },
+    "massanfertigung": {
+      "eyebrow": "Maßanfertigung",
+      "heading": "Ihr Schmuck,",
+      "heading_em": "individuell gestaltet",
+      "body_1": "Ob ein komplett neuer Entwurf, ein Ehering für den großen Tag oder ein Erbstück, das eine zweite Chance verdient — wir setzen Ihre Vorstellungen in unserer Werkstatt in Hagen um.",
+      "body_2": "In einem persönlichen Gespräch besprechen wir gemeinsam Design und Umsetzung, bevor Ihr Schmuckstück in Handarbeit entsteht.",
+      "cta_text": "Kontakt aufnehmen →",
+      "cards": [
+        { "title": "Neuanfertigung", "desc": "Ringe mit und ohne Stein, Colliers und weitere Einzelstücke nach Ihrem individuellen Entwurf." },
+        { "title": "Umarbeitung", "desc": "Erbstücke und bestehender Schmuck werden neu gestaltet und aufgearbeitet." },
+        { "title": "Trauringe", "desc": "Handgefertigte Eheringe, gemeinsam mit Ihnen entworfen." },
+        { "title": "Persönliche Beratung", "desc": "Ehrliche, kompetente Beratung von der Idee bis zur Fertigstellung." }
+      ]
+    },
+    "reviews": {
+      "eyebrow": "Kundenstimmen",
+      "heading": "Was unsere Kunden",
+      "heading_em": "über uns sagen",
+      "score": "5,0",
+      "score_label": "Google Bewertung",
+      "score_sub_label": "Basierend auf 13 Bewertungen",
+      "items": [
+        { "name": "Artemis Crete", "source": "Google Rezension · vor 8 Monaten", "text": "Ab sofort Stammkundin. Herr Salzmann macht sehr individuellen Schmuck, den ich so bisher nirgendwo gefunden habe…" },
+        { "name": "Karin S.", "source": "Google Rezension · vor 2 Jahren", "text": "Ich kann die Goldschmiede von Herrn Salzmann von ganzem Herzen weiterempfehlen. Ich habe einen Memoire-Ring zur Umarbeitung in Auftrag gegeben und die Beratung war hervorragend…" },
+        { "name": "Fj H.", "source": "Google Rezension · vor 6 Jahren", "text": "Ich habe bisher 2 verschiedene Schmuckstücke bei Herrn Salzmann in Auftrag gegeben. Bei der Planung hat er mir mit großem Sachverstand zur Seite gestanden…" },
+        { "name": "Smash Jack", "source": "Google Rezension · vor 7 Jahren", "text": "Immer wieder! Mein Partner und ich haben uns vor zwei Jahren einen tollen Ehering…" },
+        { "name": "Uschi Geisler", "source": "Google Rezension · vor 2 Jahren", "text": "Mein Mann und ich sind begeistert!!! Herr Salzmann ist nicht nur ausgesprochen freundlich, engagiert und voll guter Ideen…" },
+        { "name": "Klaus-Peter Spies", "source": "Google Rezension · vor 5 Jahren", "text": "Sehr freundlich und kompetent, habe Ringe und andere Schmuckstücke mit ihm zusammen entworfen…" },
+        { "name": "Leon Jalowietzki", "source": "Google Rezension · vor 11 Monaten", "text": "Unfassbar kompetent und freundlich! Wir sind begeistert vom professionellen und freundlichen Service!" },
+        { "name": "Monika Höpfer", "source": "Google Rezension · vor 3 Jahren", "text": "Freundliche Atmosphäre. Kreative Vorschläge, die zu wunderschönen, unvergleichlichen, individuellen Stücken mit großer Kompetenz verarbeitet werden." },
+        { "name": "Petra Rode", "source": "Google Rezension · vor 4 Jahren", "text": "Sehr gute Beratung von Herrn Salzmann." }
+      ],
+      "google_btn_text": "Alle Bewertungen auf Google ansehen"
+    },
+    "contact": {
+      "eyebrow": "Kontakt & Öffnungszeiten",
+      "heading": "Wir freuen uns",
+      "heading_em": "auf Sie",
+      "hours_tue_fri": "9:00–13:00, 15:00–18:00 Uhr",
+      "hours_saturday": "10:00–14:00 Uhr",
+      "hours_closed": "Geschlossen",
+      "address": "Konkordiastraße 14<br>58095 Hagen",
+      "phone": "02331 27069",
+      "email": "info@salzmann-goldschmie.de"
+    },
+    "footer": {
+      "tagline": "Ihre Goldschmiede für individuellen Schmuck, Umarbeitung und Reparatur in Hagen. Persönliche Beratung und Handwerkskunst.",
+      "col1_title": "Leistungen",
+      "col1_links": ["Maßanfertigung", "Umarbeitung & Reparatur", "Trauringe", "Ringe & Colliers"],
+      "col2_title": "Info",
+      "col2_links": ["Über Uns", "Kontakt", "Impressum", "Datenschutz"],
+      "copyright": "© 2026 Goldschmiede Salzmann Hagen. Alle Rechte vorbehalten.",
+      "legal_links": ["Impressum", "Datenschutz", "Cookie-Einstellungen"]
+    },
+    "cookie": {
+      "text": "Wir nutzen externe Dienste (Google Maps &amp; Google Fonts). Diese übertragen Daten an Google. Mit „Alle akzeptieren\" stimmen Sie zu.",
+      "essential_text": "Nur Notwendige",
+      "accept_text": "Alle akzeptieren"
+    }
+  }
+}
