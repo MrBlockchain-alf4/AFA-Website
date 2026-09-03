@@ -26,13 +26,18 @@ html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
 /* ── TYPOGRAPHY ─────────────────────────────────────────────────── */
-h1,h2,h3,h4{font-family:var(--serif);line-height:1.15;letter-spacing:-0.02em}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.12;letter-spacing:-0.025em}
 h1{font-size:clamp(2.8rem,5.5vw,4.8rem);font-weight:700}
-h2{font-size:clamp(2.4rem,4.4vw,3.6rem);font-weight:700}
-h3{font-size:clamp(1.25rem,2.2vw,1.55rem);font-weight:600}
-p{line-height:1.75;color:var(--muted)}
+h2{font-size:clamp(2.6rem,4.8vw,4rem);font-weight:700}
+h3{font-size:clamp(1.3rem,2.2vw,1.55rem);font-weight:600}
+p{line-height:1.75;color:var(--muted);font-size:.98rem}
 em{font-style:italic;color:var(--gold)}
 strong{font-weight:600;color:var(--ink)}
+.eyebrow{font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.7rem}
+.eyebrow.on-dark{color:var(--gold3)}
+.icon-box{width:52px;height:52px;min-width:52px;border-radius:var(--r);display:flex;align-items:center;justify-content:center}
+.icon-box.on-gold{background:var(--gold-bg);border:1px solid rgba(201,163,78,.25)}
+.icon-box.on-dark{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
 
 /* ── BUTTONS ─────────────────────────────────────────────────────── */
 .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:var(--r);font-family:var(--sans);font-size:.9rem;font-weight:500;cursor:pointer;border:none;text-decoration:none;transition:background .2s,color .2s,transform .15s,box-shadow .2s;letter-spacing:.01em}
@@ -77,6 +82,7 @@ strong{font-weight:600;color:var(--ink)}
 section{padding:3.75rem 0}
 .container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
 .section-label{font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.7rem}
+.banner-label,.why-label{font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold3);display:block;margin-bottom:.7rem}
 .fade-up{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
 .fade-up.visible{opacity:1;transform:none}
 
@@ -104,7 +110,6 @@ section{padding:3.75rem 0}
 /* ── BANNER ────────────────────────────────────────────────────────── */
 #banner{background:var(--dark);color:#fff}
 .banner-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
-.banner-label{font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold3);display:block;margin-bottom:.8rem}
 .banner-h2{color:#fff;margin-bottom:1rem}
 .banner-desc{color:rgba(255,255,255,.65);font-size:.95rem;line-height:1.75}
 .checklist{list-style:none;margin-top:2rem;display:flex;flex-direction:column;gap:1rem}
@@ -136,24 +141,23 @@ section{padding:3.75rem 0}
 /* ── SERVICES ─────────────────────────────────────────────────────── */
 #services{background:var(--cream)}
 .services-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;flex-wrap:wrap;gap:1rem}
-.services-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:auto auto;gap:1.25rem}
-.svc-card{border-radius:var(--r2);padding:2rem;display:flex;flex-direction:column;gap:1rem;transition:transform .25s,box-shadow .25s}
-.svc-card:hover{transform:translateY(-3px);box-shadow:var(--sh)}
-.svc-featured{grid-column:1;grid-row:1/3;background:var(--dark);color:#fff;padding:2.5rem}
-.svc-featured h3{color:#fff;font-size:1.6rem}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;align-items:stretch}
+.svc-card{border-radius:var(--r2);padding:2.25rem;display:flex;flex-direction:column;gap:1rem;transition:transform .25s,box-shadow .25s}
+.svc-card:hover{transform:translateY(-4px);box-shadow:var(--sh)}
+.svc-card h3{font-size:1.3rem}
+.svc-featured{background:var(--dark);color:#fff}
+.svc-featured h3{color:#fff}
 .svc-featured p{color:rgba(255,255,255,.65)}
-.svc-featured .svc-icon{font-size:2.5rem;margin-bottom:.5rem}
 .svc-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(201,163,78,.15);color:var(--gold3);font-size:.78rem;font-weight:600;padding:.3rem .8rem;border-radius:99px;border:1px solid rgba(201,163,78,.3);width:fit-content}
 .svc-light{background:var(--cream2);border:1.5px solid var(--cream3)}
 .svc-light h3{color:var(--ink)}
-.svc-icon-sm{width:40px;height:40px;background:var(--gold-bg);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
-.svc-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem}
-.svc-tag{font-size:.72rem;font-weight:500;color:var(--muted);background:var(--cream3);padding:.2rem .6rem;border-radius:99px}
+.svc-card p{font-size:.95rem}
+.svc-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.25rem}
+.svc-tag{font-size:.75rem;font-weight:500;color:var(--muted);background:var(--cream3);padding:.25rem .7rem;border-radius:99px}
+.svc-featured .svc-tag{background:rgba(255,255,255,.08);color:rgba(255,255,255,.65)}
 
-@media(max-width:768px){
-  .services-grid{grid-template-columns:1fr}
-  .svc-featured{grid-row:auto}
-}
+@media(max-width:900px){.services-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.services-grid{grid-template-columns:1fr}}
 
 /* ── ABOUT ─────────────────────────────────────────────────────────── */
 #about{background:var(--cream2)}
@@ -179,43 +183,45 @@ section{padding:3.75rem 0}
 /* ── WHY FARAH ─────────────────────────────────────────────────────── */
 #why{background:var(--dark)}
 .why-head{text-align:center;margin-bottom:3.5rem}
-.why-label{font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold3);display:block;margin-bottom:.6rem}
+.why-label{margin-left:auto;margin-right:auto}
 .why-h2{color:#fff}
-.why-desc{color:rgba(255,255,255,.55);max-width:520px;margin:.8rem auto 0;font-size:.95rem}
+.why-desc{color:rgba(255,255,255,.55);max-width:520px;margin:.8rem auto 0;font-size:.98rem}
 .why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem}
 .why-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r2);padding:2rem;transition:background .2s,border-color .2s}
 .why-card:hover{background:rgba(201,163,78,.06);border-color:rgba(201,163,78,.2)}
-.why-icon{font-size:1.8rem;margin-bottom:1rem}
-.why-card h3{color:#fff;font-size:1.1rem;margin-bottom:.5rem}
-.why-card p{color:rgba(255,255,255,.55);font-size:.9rem}
+.why-icon{margin-bottom:1.1rem}
+.why-icon svg{width:24px;height:24px;stroke:var(--gold3)}
+.why-card h3{color:#fff;font-size:1.2rem;margin-bottom:.5rem}
+.why-card p{color:rgba(255,255,255,.55);font-size:.95rem}
 
 @media(max-width:640px){.why-grid{grid-template-columns:1fr}}
 
 /* ── REVIEWS ──────────────────────────────────────────────────────── */
 #reviews{background:var(--cream2)}
-.rv-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
-.rv-score{display:flex;align-items:center;gap:1rem}
-.rv-score-num{font-family:var(--serif);font-size:3rem;font-weight:700;color:var(--ink);line-height:1}
-.rv-score-detail .stars{color:var(--gold);font-size:1.1rem;letter-spacing:2px;display:block}
-.rv-score-detail small{font-size:.8rem;color:var(--muted)}
+.rv-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem}
+.rv-score{display:flex;align-items:center;gap:1.25rem;background:#fff;border:1.5px solid var(--cream3);border-radius:var(--r2);padding:1rem 1.75rem;box-shadow:var(--sh)}
+.rv-score-num{font-family:var(--serif);font-size:3.2rem;font-weight:700;color:var(--ink);line-height:1}
+.rv-score-detail .stars{color:var(--gold);font-size:1.15rem;letter-spacing:2px;display:block}
+.rv-score-detail small{font-size:.85rem;color:var(--muted);font-weight:500}
 .rv-carousel{overflow:hidden;position:relative}
 .rv-track{display:flex;gap:1.25rem;transition:transform .45s cubic-bezier(.25,.46,.45,.94)}
-.rv-card{flex:0 0 calc(33.33% - .84rem);background:var(--cream);border:1.5px solid var(--cream3);border-radius:var(--r2);padding:1.75rem;transition:box-shadow .2s}
-.rv-card:hover{box-shadow:var(--sh)}
-.rv-header{display:flex;align-items:center;gap:.85rem;margin-bottom:1rem}
-.rv-avatar{width:42px;height:42px;min-width:42px;border-radius:50%;background:var(--gold);color:#fff;font-family:var(--serif);font-size:.9rem;font-weight:700;display:flex;align-items:center;justify-content:center}
-.rv-name{font-weight:600;font-size:.9rem;color:var(--ink)}
-.rv-time{font-size:.75rem;color:var(--muted);margin-top:.1rem}
-.rv-stars{margin-left:auto;color:var(--gold);font-size:.9rem;letter-spacing:1px}
-.rv-text{font-size:.88rem;color:var(--muted);line-height:1.65}
-.rv-controls{display:flex;align-items:center;gap:1.25rem;margin-top:2rem;justify-content:center}
-.rv-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--cream3);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.rv-card{flex:0 0 calc(33.33% - .84rem);background:var(--cream);border:1.5px solid var(--cream3);border-top:3px solid var(--gold);border-radius:var(--r2);padding:2rem;transition:box-shadow .2s,transform .2s;position:relative}
+.rv-card:hover{box-shadow:var(--sh2);transform:translateY(-3px)}
+.rv-quote{position:absolute;top:1.25rem;right:1.5rem;font-family:var(--serif);font-size:3rem;color:var(--gold-bg);line-height:1;font-weight:700;user-select:none}
+.rv-header{display:flex;align-items:center;gap:.85rem;margin-bottom:1.1rem}
+.rv-avatar{width:46px;height:46px;min-width:46px;border-radius:50%;background:var(--gold);color:#fff;font-family:var(--serif);font-size:.95rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.rv-name{font-weight:700;font-size:.95rem;color:var(--ink)}
+.rv-time{font-size:.78rem;color:var(--muted);margin-top:.15rem}
+.rv-stars{margin-left:auto;color:var(--gold);font-size:.85rem;letter-spacing:1px}
+.rv-text{font-size:.95rem;color:var(--ink2);line-height:1.7;position:relative;z-index:1}
+.rv-controls{display:flex;align-items:center;gap:1.25rem;margin-top:2.25rem;justify-content:center}
+.rv-btn{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--cream3);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
 .rv-btn:hover{background:var(--gold);border-color:var(--gold)}
 .rv-btn:hover svg{stroke:#fff}
 .rv-btn svg{width:16px;height:16px;stroke:var(--ink);stroke-width:2;fill:none}
 .rv-dots{display:flex;gap:.5rem}
 .rv-dot{width:7px;height:7px;border-radius:50%;background:var(--cream3);border:none;cursor:pointer;padding:0;transition:background .2s,transform .2s}
-.rv-dot.active{background:var(--gold);transform:scale(1.25)}
+.rv-dot.active{background:var(--gold);transform:scale(1.3)}
 .rv-cta{text-align:center;margin-top:2.5rem}
 
 @media(max-width:900px){.rv-card{flex:0 0 calc(50% - .625rem)}}
@@ -340,7 +346,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
         </div>
       </div>
       <div class="hero-img-wrap fade-up" style="transition-delay:.15s">
-        <img src="https://images.unsplash.com/photo-1600287792237-3f66db635a73?w=580&h=700&fit=crop&auto=format&q=80" alt="Schneiderei Farah – Brautkleid-Änderungen in Hagen" loading="eager" style="object-fit:cover;height:100%"/>
+        <img src="https://images.unsplash.com/photo-1753162659266-52616480ec81?w=580&h=700&fit=crop&auto=format&q=80" alt="Schneiderei Farah – Brautkleid-Änderungen in Hagen" loading="eager" style="object-fit:cover;height:100%"/>
         <div class="hero-img-deco"></div>
       </div>
     </div>
@@ -408,7 +414,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
     <div class="services-grid">
       <!-- Featured card -->
       <div class="svc-card svc-featured fade-up">
-        <div class="svc-icon"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
+        <div class="icon-box on-dark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
         <div class="svc-badge">Hauptleistung</div>
         <h3>Brautkleid-Änderungen</h3>
         <p>Ihr Traumkleid muss perfekt sitzen – wir kümmern uns um jede Anpassung: Verkürzen, Weiten, Enger machen, Rückenausschnitt, Träger und alles dazwischen.</p>
@@ -420,7 +426,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
       </div>
       <!-- Card 2 -->
       <div class="svc-card svc-light fade-up" style="transition-delay:.08s">
-        <div class="svc-icon-sm"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="icon-box on-gold"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
         <h3>Abendkleider &amp; Kleider</h3>
         <p style="font-size:.88rem;color:var(--muted)">Kleider, Abendroben und festliche Mode – wir passen alles an, damit Sie sich vollkommen wohlfühlen.</p>
         <div class="svc-tags">
@@ -430,7 +436,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
       </div>
       <!-- Card 3 -->
       <div class="svc-card svc-light fade-up" style="transition-delay:.12s">
-        <div class="svc-icon-sm"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
+        <div class="icon-box on-gold"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
         <h3>Hosen, Röcke &amp; mehr</h3>
         <p style="font-size:.88rem;color:var(--muted)">Alltags- und Businesskleidung für eine perfekte Passform – schnell und professionell erledigt.</p>
         <div class="svc-tags">
@@ -486,22 +492,22 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
     </div>
     <div class="why-grid">
       <div class="why-card fade-up">
-        <div class="why-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
+        <div class="why-icon icon-box on-dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
         <h3>Präzise Handarbeit</h3>
         <p>Jede Naht, jede Anpassung wird mit Sorgfalt ausgeführt. Wir arbeiten präzise, damit Ihr Kleid sitzt wie angegossen.</p>
       </div>
       <div class="why-card fade-up" style="transition-delay:.06s">
-        <div class="why-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="why-icon icon-box on-dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         <h3>Persönliche Beratung</h3>
         <p>Ihre Wünsche stehen im Mittelpunkt. Farah berät Sie individuell und nimmt sich die Zeit, die Ihr Kleid verdient.</p>
       </div>
       <div class="why-card fade-up" style="transition-delay:.12s">
-        <div class="why-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+        <div class="why-icon icon-box on-dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
         <h3>Erfahrung bei Brautkleidern</h3>
         <p>Besonders bei der Brautkleid-Anpassung gilt: keine Aufgabe ist zu komplex. Unsere Kundinnen kommen sogar aus Düsseldorf und dem Umland.</p>
       </div>
       <div class="why-card fade-up" style="transition-delay:.18s">
-        <div class="why-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="why-icon icon-box on-dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <h3>Zuverlässig &amp; termingerecht</h3>
         <p>Ihre Deadline ist unsere Deadline – gerade wenn der große Tag naht. Wir liefern pünktlich und ohne Kompromisse.</p>
       </div>
@@ -533,6 +539,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
 
         <!-- 1 -->
         <div class="rv-card">
+          <div class="rv-quote">"</div>
           <div class="rv-header">
             <div class="rv-avatar">PM</div>
             <div>
@@ -546,6 +553,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
 
         <!-- 2 -->
         <div class="rv-card">
+          <div class="rv-quote">"</div>
           <div class="rv-header">
             <div class="rv-avatar">PF</div>
             <div>
@@ -559,6 +567,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
 
         <!-- 3 -->
         <div class="rv-card">
+          <div class="rv-quote">"</div>
           <div class="rv-header">
             <div class="rv-avatar">AD</div>
             <div>
@@ -572,6 +581,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
 
         <!-- 4 -->
         <div class="rv-card">
+          <div class="rv-quote">"</div>
           <div class="rv-header">
             <div class="rv-avatar">IV</div>
             <div>
@@ -585,6 +595,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
 
         <!-- 5 -->
         <div class="rv-card">
+          <div class="rv-quote">"</div>
           <div class="rv-header">
             <div class="rv-avatar">CS</div>
             <div>
@@ -598,6 +609,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
 
         <!-- 6 -->
         <div class="rv-card">
+          <div class="rv-quote">"</div>
           <div class="rv-header">
             <div class="rv-avatar">MB</div>
             <div>
@@ -611,6 +623,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
 
         <!-- 7 -->
         <div class="rv-card">
+          <div class="rv-quote">"</div>
           <div class="rv-header">
             <div class="rv-avatar">PL</div>
             <div>
@@ -624,6 +637,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
 
         <!-- 8 -->
         <div class="rv-card">
+          <div class="rv-quote">"</div>
           <div class="rv-header">
             <div class="rv-avatar">MS</div>
             <div>
@@ -668,7 +682,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
     <div class="contact-inner">
       <div class="contact-panel fade-up" style="transition-delay:.06s">
         <div>
-          <h2 class="contact-h2" style="font-size:1.5rem">Schneiderei Farah</h2>
+          <h2 class="contact-h2" style="font-size:2rem">Schneiderei Farah</h2>
           <p class="contact-desc">Wir freuen uns auf Ihre Anfrage. Melden Sie sich telefonisch und vereinbaren Sie einen persönlichen Termin.</p>
         </div>
         <div class="contact-items">
@@ -884,9 +898,21 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
   }
 
   buildDots(); render();
-  btnNext.addEventListener('click', ()=>{ cur=(cur+1)%totalSlides(); render(); });
-  btnPrev.addEventListener('click', ()=>{ cur=(cur-1+totalSlides())%totalSlides(); render(); });
+
+  function nextSlide(){ cur=(cur+1)%totalSlides(); render(); }
+  function prevSlide(){ cur=(cur-1+totalSlides())%totalSlides(); render(); }
+
+  let rvTimer = null;
+  function startAutoplay(){ stopAutoplay(); rvTimer = setInterval(nextSlide, 4500); }
+  function stopAutoplay(){ if(rvTimer) clearInterval(rvTimer); }
+
+  btnNext.addEventListener('click', ()=>{ nextSlide(); startAutoplay(); });
+  btnPrev.addEventListener('click', ()=>{ prevSlide(); startAutoplay(); });
+  const rvCarousel = document.querySelector('.rv-carousel');
+  rvCarousel.addEventListener('mouseenter', stopAutoplay);
+  rvCarousel.addEventListener('mouseleave', startAutoplay);
   window.addEventListener('resize', ()=>{ buildDots(); render(); }, {passive:true});
+  startAutoplay();
 
   /* ── MAP GATE ─────────────────────────────────────────────────── */
   const mapAcceptBtn = document.getElementById('map-accept');
