@@ -28,8 +28,8 @@ body{font-family:var(--sans);background:var(--cream);color:var(--ink);-webkit-fo
 /* ── TYPOGRAPHY ─────────────────────────────────────────────────── */
 h1,h2,h3,h4{font-family:var(--serif);line-height:1.15;letter-spacing:-0.02em}
 h1{font-size:clamp(2.8rem,5.5vw,4.8rem);font-weight:700}
-h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700}
-h3{font-size:clamp(1.1rem,2vw,1.4rem);font-weight:600}
+h2{font-size:clamp(2.4rem,4.4vw,3.6rem);font-weight:700}
+h3{font-size:clamp(1.25rem,2.2vw,1.55rem);font-weight:600}
 p{line-height:1.75;color:var(--muted)}
 em{font-style:italic;color:var(--gold)}
 strong{font-weight:600;color:var(--ink)}
@@ -74,14 +74,14 @@ strong{font-weight:600;color:var(--ink)}
 }
 
 /* ── SECTIONS ─────────────────────────────────────────────────────── */
-section{padding:5rem 0}
+section{padding:3.75rem 0}
 .container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
-.section-label{font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.6rem}
+.section-label{font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.7rem}
 .fade-up{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
 .fade-up.visible{opacity:1;transform:none}
 
 /* ── HERO ─────────────────────────────────────────────────────────── */
-#hero{padding:8rem 0 5rem;background:var(--cream)}
+#hero{padding:7.5rem 0 3.5rem;background:var(--cream)}
 .hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
 .hero-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
 .chip{font-size:.78rem;font-weight:500;padding:.3rem .85rem;border-radius:99px;border:1.5px solid var(--cream3);color:var(--ink2);background:var(--cream2);letter-spacing:.01em}
@@ -222,28 +222,29 @@ section{padding:5rem 0}
 @media(max-width:600px){.rv-card{flex:0 0 100%}}
 
 /* ── CONTACT ──────────────────────────────────────────────────────── */
-#contact{background:var(--cream)}
-.contact-inner{display:grid;grid-template-columns:1fr 1.4fr;gap:2rem;align-items:stretch}
-.contact-panel{background:var(--cream2);border:1.5px solid var(--cream3);border-radius:var(--r2);padding:2.5rem;display:flex;flex-direction:column;gap:2rem}
-.contact-h2{color:var(--ink);margin-bottom:0}
-.contact-desc{color:var(--muted);font-size:.9rem;margin-top:.5rem}
-.contact-items{display:flex;flex-direction:column;gap:1.5rem}
-.ci-row{display:flex;align-items:flex-start;gap:1rem}
-.ci-icon{width:42px;height:42px;min-width:42px;background:var(--gold-bg);border:1px solid rgba(201,163,78,.2);border-radius:var(--r);display:flex;align-items:center;justify-content:center}
-.ci-icon svg{width:18px;height:18px;stroke:var(--gold);stroke-width:1.8;fill:none}
-.ci-label{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.2rem}
-.ci-val{font-size:.92rem;font-weight:500;color:var(--ink)}
+#contact{background:var(--cream);padding-bottom:5rem}
+.contact-inner{display:grid;grid-template-columns:1fr 1.4fr;gap:2rem;align-items:stretch;min-height:480px}
+.contact-panel{background:var(--cream2);border:1.5px solid var(--cream3);border-radius:var(--r2);padding:3rem;display:flex;flex-direction:column;gap:2.25rem}
+.contact-h2{color:var(--ink);margin-bottom:0;font-size:1.9rem}
+.contact-desc{color:var(--muted);font-size:.95rem;margin-top:.6rem;line-height:1.7}
+.contact-items{display:flex;flex-direction:column;gap:1.85rem}
+.ci-row{display:flex;align-items:flex-start;gap:1.15rem}
+.ci-icon{width:50px;height:50px;min-width:50px;background:var(--gold-bg);border:1px solid rgba(201,163,78,.2);border-radius:var(--r);display:flex;align-items:center;justify-content:center}
+.ci-icon svg{width:21px;height:21px;stroke:var(--gold);stroke-width:1.8;fill:none}
+.ci-label{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.3rem}
+.ci-val{font-size:1.05rem;font-weight:500;color:var(--ink)}
 .ci-val a{color:var(--gold);text-decoration:none;font-weight:600}
 .ci-val a:hover{text-decoration:underline}
-.map-panel{border-radius:var(--r2);overflow:hidden;position:relative;min-height:380px;background:var(--cream3);display:flex;align-items:center;justify-content:center}
+.map-panel{border-radius:var(--r2);overflow:hidden;position:relative;min-height:480px;background:var(--cream3);display:flex;align-items:center;justify-content:center}
 .map-gate{text-align:center;padding:2.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem}
 .map-gate-icon{font-size:2.5rem}
 .map-gate p{font-size:.9rem;color:var(--muted);max-width:260px}
 #map-frame{position:absolute;inset:0;width:100%;height:100%;border:none;display:none}
 
 @media(max-width:768px){
-  .contact-inner{grid-template-columns:1fr}
-  .map-panel{min-height:300px}
+  .contact-inner{grid-template-columns:1fr;min-height:0}
+  .contact-panel{padding:2.25rem}
+  .map-panel{min-height:320px}
 }
 
 /* ── FOOTER ───────────────────────────────────────────────────────── */
@@ -339,7 +340,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
         </div>
       </div>
       <div class="hero-img-wrap fade-up" style="transition-delay:.15s">
-        <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=580&h=700&fit=crop&auto=format&q=80" alt="Schneiderei Farah – Brautkleid-Änderungen in Hagen" loading="eager" style="object-fit:cover;height:100%"/>
+        <img src="https://images.unsplash.com/photo-1600287792237-3f66db635a73?w=580&h=700&fit=crop&auto=format&q=80" alt="Schneiderei Farah – Brautkleid-Änderungen in Hagen" loading="eager" style="object-fit:cover;height:100%"/>
         <div class="hero-img-deco"></div>
       </div>
     </div>
@@ -383,8 +384,8 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
       <span class="stat-label">Kundenstimmen</span>
     </div>
     <div class="stat-cell">
-      <span class="stat-num">♡</span>
-      <span class="stat-label">Mit Herzblut</span>
+      <span class="stat-num">Hagen</span>
+      <span class="stat-label">Unser Standort</span>
     </div>
     <div class="stat-cell">
       <span class="stat-num">100%</span>
@@ -450,7 +451,7 @@ footer{background:var(--dark);padding:3.5rem 0 2rem}
     <div class="about-inner">
       <div class="about-img-wrap fade-up">
         <div class="about-deco"></div>
-        <img src="https://images.unsplash.com/photo-1461533803954-0706a27cabb1?w=480&h=580&fit=crop&auto=format&q=80" alt="Schneiderei Farah – Atelier in Hagen" style="object-fit:cover;height:100%"/>
+        <img src="https://images.unsplash.com/photo-1673201229733-69d19c5c4a87?w=480&h=580&fit=crop&auto=format&q=80" alt="Schneiderei Farah – Atelier in Hagen" style="object-fit:cover;height:100%"/>
         <div class="about-stamp">
           <span class="stamp-num">4,9★</span>
           <span class="stamp-lbl">auf Google</span>
