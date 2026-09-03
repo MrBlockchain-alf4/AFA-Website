@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Schneiderei Farah – Brautkleid-Änderungen & Maßschneiderei in Hagen</title>
+<meta name="description" content="Schneiderei Farah in Hagen – spezialisiert auf Brautkleid-Änderungen, Abendkleider und Maßschneiderei. 4,9 Sterne auf Google."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{
+  --gold:#C9A34E;--gold2:#A8872A;--gold3:#E2C07A;--gold-bg:#F9F3E7;
+  --ink:#1A1A1A;--ink2:#3A3530;--muted:#7A7068;
+  --cream:#FFFFFF;--cream2:#F9F7F4;--cream3:#EDE9DF;
+  --dark:#1C1410;--dark2:#251C10;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+  --r:0.75rem;--r2:1.25rem;
+  --sh:0 2px 8px rgba(26,16,0,.06),0 8px 32px rgba(26,16,0,.08);
+  --sh2:0 4px 16px rgba(201,163,78,.15),0 16px 48px rgba(201,163,78,.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── TYPOGRAPHY ─────────────────────────────────────────────────── */
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.15;letter-spacing:-0.02em}
+h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700}
+h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700}
+h3{font-size:clamp(1.1rem,2vw,1.4rem);font-weight:600}
+p{line-height:1.75;color:var(--muted)}
+em{font-style:italic;color:var(--gold)}
+strong{font-weight:600;color:var(--ink)}
+
+/* ── BUTTONS ─────────────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:var(--r);font-family:var(--sans);font-size:.9rem;font-weight:500;cursor:pointer;border:none;text-decoration:none;transition:background .2s,color .2s,transform .15s,box-shadow .2s;letter-spacing:.01em}
+.btn:active{transform:scale(.97)}
+.btn-gold{background:var(--gold);color:#fff;box-shadow:0 2px 12px rgba(201,163,78,.35)}
+.btn-gold:hover{background:var(--gold2);box-shadow:0 4px 20px rgba(201,163,78,.45)}
+.btn-gold:focus-visible{outline:3px solid var(--gold3);outline-offset:3px}
+.btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--cream3)}
+.btn-outline:hover{background:var(--cream2);border-color:var(--gold);color:var(--gold)}
+.btn-outline:focus-visible{outline:3px solid var(--gold3);outline-offset:3px}
+.btn-ghost{background:transparent;color:var(--gold);border:1.5px solid rgba(201,163,78,.4)}
+.btn-ghost:hover{background:rgba(201,163,78,.08);border-color:var(--gold)}
+
+/* ── WORDMARK ────────────────────────────────────────────────────── */
+.wordmark{font-family:var(--serif);font-size:1.25rem;font-weight:700;color:var(--ink);letter-spacing:-.01em;line-height:1;text-decoration:none;display:inline-block}
+.wordmark em{font-style:italic;color:var(--gold)}
+
+/* ── NAVBAR ──────────────────────────────────────────────────────── */
+#nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:.9rem 0;transition:background .3s,box-shadow .3s,padding .3s}
+#nav.scrolled{background:rgba(255,255,255,.96);backdrop-filter:blur(16px);box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;gap:2rem}
+.nav-links{display:flex;gap:1.8rem;list-style:none;margin-left:auto}
+.nav-links a{font-size:.88rem;font-weight:500;color:var(--ink2);text-decoration:none;letter-spacing:.01em;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{margin-left:1rem}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.3rem;border:none;background:none;margin-left:auto}
+.hamburger span{width:24px;height:2px;background:var(--ink);border-radius:2px;transition:transform .25s,opacity .25s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-nav{display:none;position:fixed;inset:0;background:#fff;z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+.mobile-nav.open{display:flex}
+.mobile-nav a{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--ink);text-decoration:none;transition:color .2s}
+.mobile-nav a:hover{color:var(--gold)}
+
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+}
+
+/* ── SECTIONS ─────────────────────────────────────────────────────── */
+section{padding:5rem 0}
+.container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+.section-label{font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.6rem}
+.fade-up{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.fade-up.visible{opacity:1;transform:none}
+
+/* ── HERO ─────────────────────────────────────────────────────────── */
+#hero{padding:8rem 0 5rem;background:var(--cream)}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.hero-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.chip{font-size:.78rem;font-weight:500;padding:.3rem .85rem;border-radius:99px;border:1.5px solid var(--cream3);color:var(--ink2);background:var(--cream2);letter-spacing:.01em}
+.hero-h1{margin-bottom:1rem;color:var(--ink)}
+.hero-sub{font-size:1.05rem;font-weight:500;color:var(--gold);margin-bottom:.8rem;font-family:var(--serif)}
+.hero-desc{font-size:.95rem;margin-bottom:2rem;max-width:480px}
+.hero-btns{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:2rem}
+.hero-badge{display:inline-flex;align-items:center;gap:.6rem;background:var(--cream2);border:1px solid var(--cream3);padding:.5rem 1rem;border-radius:var(--r);font-size:.82rem;font-weight:500;color:var(--ink2)}
+.hero-badge .stars{color:var(--gold);letter-spacing:1px}
+.hero-img-wrap{position:relative}
+.hero-img-wrap img{width:100%;border-radius:var(--r2);display:block;box-shadow:var(--sh2)}
+.hero-img-deco{position:absolute;bottom:-1.5rem;right:-1.5rem;width:160px;height:160px;border-radius:50%;background:var(--gold-bg);border:2px solid var(--cream3);z-index:-1}
+
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;gap:2.5rem}
+  .hero-img-wrap{max-width:480px;margin:0 auto}
+  .hero-img-deco{display:none}
+}
+
+/* ── BANNER ────────────────────────────────────────────────────────── */
+#banner{background:var(--dark);color:#fff}
+.banner-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.banner-label{font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold3);display:block;margin-bottom:.8rem}
+.banner-h2{color:#fff;margin-bottom:1rem}
+.banner-desc{color:rgba(255,255,255,.65);font-size:.95rem;line-height:1.75}
+.checklist{list-style:none;margin-top:2rem;display:flex;flex-direction:column;gap:1rem}
+.checklist li{display:flex;align-items:flex-start;gap:.8rem;font-size:.9rem;color:rgba(255,255,255,.8)}
+.check-icon{width:20px;height:20px;min-width:20px;background:var(--gold);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-top:.15rem}
+.check-icon::after{content:'✓';font-size:.65rem;color:#fff;font-weight:700}
+
+@media(max-width:768px){.banner-inner{grid-template-columns:1fr;gap:2rem}}
+
+/* ── STATS ─────────────────────────────────────────────────────────── */
+#stats{padding:0;background:var(--cream2)}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr)}
+.stat-cell{padding:2.5rem 1.5rem;text-align:center;border-right:1px solid rgba(0,0,0,.06)}
+.stat-cell:last-child{border-right:none}
+.stat-cell:nth-child(odd){background:var(--gold);color:#fff}
+.stat-cell:nth-child(even){background:var(--dark);color:#fff}
+.stat-num{font-family:var(--serif);font-size:2.2rem;font-weight:700;line-height:1;letter-spacing:-0.02em;display:block;margin-bottom:.25rem}
+.stat-cell:nth-child(odd) .stat-num{color:#fff}
+.stat-cell:nth-child(even) .stat-num{color:var(--gold3)}
+.stat-label{font-size:.78rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;opacity:.8}
+
+@media(max-width:640px){
+  .stats-bar{grid-template-columns:1fr 1fr}
+  .stat-cell:nth-child(2){border-right:none}
+  .stat-cell:nth-child(3){border-right:1px solid rgba(0,0,0,.06)}
+  .stat-cell{border-bottom:1px solid rgba(0,0,0,.06)}
+}
+
+/* ── SERVICES ─────────────────────────────────────────────────────── */
+#services{background:var(--cream)}
+.services-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;flex-wrap:wrap;gap:1rem}
+.services-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:auto auto;gap:1.25rem}
+.svc-card{border-radius:var(--r2);padding:2rem;display:flex;flex-direction:column;gap:1rem;transition:transform .25s,box-shadow .25s}
+.svc-card:hover{transform:translateY(-3px);box-shadow:var(--sh)}
+.svc-featured{grid-column:1;grid-row:1/3;background:var(--dark);color:#fff;padding:2.5rem}
+.svc-featured h3{color:#fff;font-size:1.6rem}
+.svc-featured p{color:rgba(255,255,255,.65)}
+.svc-featured .svc-icon{font-size:2.5rem;margin-bottom:.5rem}
+.svc-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(201,163,78,.15);color:var(--gold3);font-size:.78rem;font-weight:600;padding:.3rem .8rem;border-radius:99px;border:1px solid rgba(201,163,78,.3);width:fit-content}
+.svc-light{background:var(--cream2);border:1.5px solid var(--cream3)}
+.svc-light h3{color:var(--ink)}
+.svc-icon-sm{width:40px;height:40px;background:var(--gold-bg);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.svc-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem}
+.svc-tag{font-size:.72rem;font-weight:500;color:var(--muted);background:var(--cream3);padding:.2rem .6rem;border-radius:99px}
+
+@media(max-width:768px){
+  .services-grid{grid-template-columns:1fr}
+  .svc-featured{grid-row:auto}
+}
+
+/* ── ABOUT ─────────────────────────────────────────────────────────── */
+#about{background:var(--cream2)}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:4.5rem;align-items:center}
+.about-img-wrap{position:relative}
+.about-img-wrap img{width:100%;border-radius:var(--r2);display:block;box-shadow:var(--sh)}
+.about-deco{position:absolute;top:-1.5rem;left:-1.5rem;width:80px;height:80px;border-radius:50%;background:var(--gold);opacity:.15}
+.about-stamp{position:absolute;bottom:1.5rem;right:-1.5rem;background:var(--dark);color:#fff;border-radius:var(--r);padding:1rem 1.25rem;min-width:130px;text-align:center;box-shadow:var(--sh)}
+.stamp-num{font-family:var(--serif);font-size:2rem;font-weight:700;color:var(--gold3);display:block;line-height:1}
+.stamp-lbl{font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.65);margin-top:.2rem}
+.about-h2{margin-bottom:1.25rem;color:var(--ink)}
+.about-lead{font-size:1rem;color:var(--muted);margin-bottom:1.5rem}
+.about-features{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+.af-item{display:flex;align-items:flex-start;gap:.75rem}
+.af-dot{width:8px;height:8px;min-width:8px;border-radius:50%;background:var(--gold);margin-top:.4rem}
+.af-text{font-size:.88rem;color:var(--ink2);font-weight:500}
+
+@media(max-width:900px){
+  .about-inner{grid-template-columns:1fr;gap:3rem}
+  .about-stamp{right:1rem}
+}
+
+/* ── WHY FARAH ─────────────────────────────────────────────────────── */
+#why{background:var(--dark)}
+.why-head{text-align:center;margin-bottom:3.5rem}
+.why-label{font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold3);display:block;margin-bottom:.6rem}
+.why-h2{color:#fff}
+.why-desc{color:rgba(255,255,255,.55);max-width:520px;margin:.8rem auto 0;font-size:.95rem}
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem}
+.why-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r2);padding:2rem;transition:background .2s,border-color .2s}
+.why-card:hover{background:rgba(201,163,78,.06);border-color:rgba(201,163,78,.2)}
+.why-icon{font-size:1.8rem;margin-bottom:1rem}
+.why-card h3{color:#fff;font-size:1.1rem;margin-bottom:.5rem}
+.why-card p{color:rgba(255,255,255,.55);font-size:.9rem}
+
+@media(max-width:640px){.why-grid{grid-template-columns:1fr}}
+
+/* ── REVIEWS ──────────────────────────────────────────────────────── */
+#reviews{background:var(--cream2)}
+.rv-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.rv-score{display:flex;align-items:center;gap:1rem}
+.rv-score-num{font-family:var(--serif);font-size:3rem;font-weight:700;color:var(--ink);line-height:1}
+.rv-score-detail .stars{color:var(--gold);font-size:1.1rem;letter-spacing:2px;display:block}
+.rv-score-detail small{font-size:.8rem;color:var(--muted)}
+.rv-carousel{overflow:hidden;position:relative}
+.rv-track{display:flex;gap:1.25rem;transition:transform .45s cubic-bezier(.25,.46,.45,.94)}
+.rv-card{flex:0 0 calc(33.33% - .84rem);background:var(--cream);border:1.5px solid var(--cream3);border-radius:var(--r2);padding:1.75rem;transition:box-shadow .2s}
+.rv-card:hover{box-shadow:var(--sh)}
+.rv-header{display:flex;align-items:center;gap:.85rem;margin-bottom:1rem}
+.rv-avatar{width:42px;height:42px;min-width:42px;border-radius:50%;background:var(--gold);color:#fff;font-family:var(--serif);font-size:.9rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.rv-name{font-weight:600;font-size:.9rem;color:var(--ink)}
+.rv-time{font-size:.75rem;color:var(--muted);margin-top:.1rem}
+.rv-stars{margin-left:auto;color:var(--gold);font-size:.9rem;letter-spacing:1px}
+.rv-text{font-size:.88rem;color:var(--muted);line-height:1.65}
+.rv-controls{display:flex;align-items:center;gap:1.25rem;margin-top:2rem;justify-content:center}
+.rv-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--cream3);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.rv-btn:hover{background:var(--gold);border-color:var(--gold)}
+.rv-btn:hover svg{stroke:#fff}
+.rv-btn svg{width:16px;height:16px;stroke:var(--ink);stroke-width:2;fill:none}
+.rv-dots{display:flex;gap:.5rem}
+.rv-dot{width:7px;height:7px;border-radius:50%;background:var(--cream3);border:none;cursor:pointer;padding:0;transition:background .2s,transform .2s}
+.rv-dot.active{background:var(--gold);transform:scale(1.25)}
+.rv-cta{text-align:center;margin-top:2.5rem}
+
+@media(max-width:900px){.rv-card{flex:0 0 calc(50% - .625rem)}}
+@media(max-width:600px){.rv-card{flex:0 0 100%}}
+
+/* ── CONTACT ──────────────────────────────────────────────────────── */
+#contact{background:var(--cream)}
+.contact-inner{display:grid;grid-template-columns:1fr 1.4fr;gap:2rem;align-items:stretch}
+.contact-panel{background:var(--cream2);border:1.5px solid var(--cream3);border-radius:var(--r2);padding:2.5rem;display:flex;flex-direction:column;gap:2rem}
+.contact-h2{color:var(--ink);margin-bottom:0}
+.contact-desc{color:var(--muted);font-size:.9rem;margin-top:.5rem}
+.contact-items{display:flex;flex-direction:column;gap:1.5rem}
+.ci-row{display:flex;align-items:flex-start;gap:1rem}
+.ci-icon{width:42px;height:42px;min-width:42px;background:var(--gold-bg);border:1px solid rgba(201,163,78,.2);border-radius:var(--r);display:flex;align-items:center;justify-content:center}
+.ci-icon svg{width:18px;height:18px;stroke:var(--gold);stroke-width:1.8;fill:none}
+.ci-label{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.2rem}
+.ci-val{font-size:.92rem;font-weight:500;color:var(--ink)}
+.ci-val a{color:var(--gold);text-decoration:none;font-weight:600}
+.ci-val a:hover{text-decoration:underline}
+.map-panel{border-radius:var(--r2);overflow:hidden;position:relative;min-height:380px;background:var(--cream3);display:flex;align-items:center;justify-content:center}
+.map-gate{text-align:center;padding:2.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem}
+.map-gate-icon{font-size:2.5rem}
+.map-gate p{font-size:.9rem;color:var(--muted);max-width:260px}
+#map-frame{position:absolute;inset:0;width:100%;height:100%;border:none;display:none}
+
+@media(max-width:768px){
+  .contact-inner{grid-template-columns:1fr}
+  .map-panel{min-height:300px}
+}
+
+/* ── FOOTER ───────────────────────────────────────────────────────── */
+footer{background:var(--dark);padding:3.5rem 0 2rem}
+.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-brand .wordmark{color:#fff;font-size:1.3rem}
+.footer-brand .wordmark em{color:var(--gold3)}
+.footer-tagline{font-size:.85rem;color:rgba(255,255,255,.45);margin-top:.75rem;line-height:1.6}
+.footer-col h4{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:1rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.7rem}
+.footer-col ul a{font-size:.88rem;color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s}
+.footer-col ul a:hover{color:var(--gold3)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem}
+.footer-bottom p{font-size:.78rem;color:rgba(255,255,255,.3)}
+.footer-bottom a{color:rgba(255,255,255,.35);text-decoration:none;font-size:.78rem;transition:color .2s}
+.footer-bottom a:hover{color:var(--gold3)}
+
+@media(max-width:768px){
+  .footer-inner{grid-template-columns:1fr;gap:2rem}
+}
+
+/* ── COOKIE BANNER ────────────────────────────────────────────────── */
+#cookie-bar{position:fixed;bottom:0;left:0;right:0;z-index:2000;background:var(--dark2);border-top:1px solid rgba(201,163,78,.15);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;transform:translateY(100%);transition:transform .4s cubic-bezier(.22,1,.36,1)}
+#cookie-bar.show{transform:none}
+#cookie-bar p{font-size:.82rem;color:rgba(255,255,255,.65);flex:1;min-width:200px}
+#cookie-bar p a{color:var(--gold3);text-decoration:none}
+.cookie-btns{display:flex;gap:.6rem;flex-wrap:wrap}
+
+/* ── MODALS ───────────────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3000;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:2rem 1rem}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:var(--r2);padding:2.5rem;max-width:680px;width:100%;position:relative;margin:auto}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);line-height:1;transition:color .2s}
+.modal-close:hover{color:var(--ink)}
+.modal-box h2{font-size:1.5rem;margin-bottom:1.5rem;color:var(--ink)}
+.modal-box h3{font-size:1rem;font-weight:600;color:var(--ink);margin:1.25rem 0 .4rem}
+.modal-box p,.modal-box li{font-size:.88rem;color:var(--muted);line-height:1.7}
+.modal-box ul{padding-left:1.25rem;margin:.5rem 0}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- NAVBAR                                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<nav id="nav" aria-label="Hauptnavigation">
+  <div class="nav-inner">
+    <a class="wordmark" href="#" aria-label="Schneiderei Farah – Startseite">Schneiderei <em>Farah</em></a>
+    <ul class="nav-links">
+      <li><a href="#services">Leistungen</a></li>
+      <li><a href="#about">Über uns</a></li>
+      <li><a href="#reviews">Bewertungen</a></li>
+      <li><a href="#contact">Kontakt</a></li>
+    </ul>
+    <a href="#contact" class="btn btn-gold nav-cta">Anfrage senden</a>
+    <button class="hamburger" id="hamburger" aria-label="Menü öffnen" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile nav -->
+<div class="mobile-nav" id="mobile-nav" role="dialog" aria-modal="true" aria-label="Mobilmenü">
+  <a href="#services" class="mobile-link">Leistungen</a>
+  <a href="#about" class="mobile-link">Über uns</a>
+  <a href="#reviews" class="mobile-link">Bewertungen</a>
+  <a href="#contact" class="mobile-link">Kontakt</a>
+  <a href="#contact" class="btn btn-gold" style="margin-top:1rem">Anfrage senden</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- HERO                                                            -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="fade-up">
+        <div class="hero-chips">
+          <span class="chip">Schneiderei · Hagen</span>
+          <span class="chip">Brautkleid-Änderungen</span>
+          <span class="chip">Maßschneiderei</span>
+        </div>
+        <h1 class="hero-h1">Ihr Kleid,<br/><em>perfekt angepasst</em></h1>
+        <p class="hero-sub">Brautkleid-Änderungen &amp; Maßschneiderei in Hagen</p>
+        <p class="hero-desc">Schneiderei Farah in Hagen steht für präzise, liebevolle Anpassungen – besonders wenn Ihr Hochzeitskleid auf den Millimeter sitzen soll. Vertrauen Sie auf persönliche Beratung und handwerkliches Können.</p>
+        <div class="hero-btns">
+          <a href="#contact" class="btn btn-gold">Jetzt anfragen →</a>
+          <a href="#about" class="btn btn-outline">Über Farah</a>
+        </div>
+        <div class="hero-badge">
+          <span class="stars">★★★★★</span>
+          <span>4,9 von 5,0 auf Google · 64 Bewertungen</span>
+        </div>
+      </div>
+      <div class="hero-img-wrap fade-up" style="transition-delay:.15s">
+        <img src="https://placehold.co/580x700/F9F7F4/C9A34E?text=Schneiderei+Farah" alt="Schneiderei Farah – Brautkleid-Änderungen in Hagen" loading="eager"/>
+        <div class="hero-img-deco"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- BANNER                                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="banner">
+  <div class="container">
+    <div class="banner-inner">
+      <div class="fade-up">
+        <span class="banner-label">Ihr Hochzeitskleid</span>
+        <h2 class="banner-h2">Das Kleid soll sitzen.<br/><em style="color:var(--gold3)">Perfekt.</em></h2>
+        <p class="banner-desc">Ob kleines Abnähen oder komplexe Umformung – wir passen Ihr Kleid mit Sorgfalt an Ihre Figur an. Besonders für Bräute, deren Hochzeitskleid auf den großen Tag makellos passen soll.</p>
+      </div>
+      <div class="fade-up" style="transition-delay:.12s">
+        <ul class="checklist">
+          <li><span class="check-icon"></span><span>Präzise Brautkleid-Anpassungen</span></li>
+          <li><span class="check-icon"></span><span>Erfahrene Hand und feines Handwerk</span></li>
+          <li><span class="check-icon"></span><span>Persönliche, individuelle Beratung</span></li>
+          <li><span class="check-icon"></span><span>Zuverlässige &amp; termingerechte Fertigstellung</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- STATS                                                           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="stats">
+  <div class="stats-bar">
+    <div class="stat-cell">
+      <span class="stat-num">4,9★</span>
+      <span class="stat-label">Google-Bewertung</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">64</span>
+      <span class="stat-label">Kundenstimmen</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">♡</span>
+      <span class="stat-label">Mit Herzblut</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">Persönliche Beratung</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SERVICES                                                        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="services">
+  <div class="container">
+    <div class="services-head fade-up">
+      <div>
+        <span class="section-label">Leistungen</span>
+        <h2 style="color:var(--ink)">Was wir für Sie tun</h2>
+      </div>
+    </div>
+    <div class="services-grid">
+      <!-- Featured card -->
+      <div class="svc-card svc-featured fade-up">
+        <div class="svc-icon">👗</div>
+        <div class="svc-badge">Hauptleistung</div>
+        <h3>Brautkleid-Änderungen</h3>
+        <p>Ihr Traumkleid muss perfekt sitzen – wir kümmern uns um jede Anpassung: Verkürzen, Weiten, Enger machen, Rückenausschnitt, Träger und alles dazwischen.</p>
+        <div class="svc-tags">
+          <span class="svc-tag" style="background:rgba(255,255,255,.07);color:rgba(255,255,255,.55)">Anpassung</span>
+          <span class="svc-tag" style="background:rgba(255,255,255,.07);color:rgba(255,255,255,.55)">Verkürzen</span>
+          <span class="svc-tag" style="background:rgba(255,255,255,.07);color:rgba(255,255,255,.55)">Figur-Schnitt</span>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="svc-card svc-light fade-up" style="transition-delay:.08s">
+        <div class="svc-icon-sm">👘</div>
+        <h3>Abendkleider &amp; Kleider</h3>
+        <p style="font-size:.88rem;color:var(--muted)">Kleider, Abendroben und festliche Mode – wir passen alles an, damit Sie sich vollkommen wohlfühlen.</p>
+        <div class="svc-tags">
+          <span class="svc-tag">Abendkleider</span>
+          <span class="svc-tag">Festmode</span>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="svc-card svc-light fade-up" style="transition-delay:.12s">
+        <div class="svc-icon-sm">✂️</div>
+        <h3>Hosen, Röcke &amp; mehr</h3>
+        <p style="font-size:.88rem;color:var(--muted)">Alltags- und Businesskleidung für eine perfekte Passform – schnell und professionell erledigt.</p>
+        <div class="svc-tags">
+          <span class="svc-tag">Hosen</span>
+          <span class="svc-tag">Röcke</span>
+          <span class="svc-tag">Alltagsmode</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ABOUT                                                           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-inner">
+      <div class="about-img-wrap fade-up">
+        <div class="about-deco"></div>
+        <img src="https://placehold.co/480x580/F0EAD6/A8872A?text=Schneiderei+Farah" alt="Schneiderei Farah – Atelier in Hagen"/>
+        <div class="about-stamp">
+          <span class="stamp-num">4,9★</span>
+          <span class="stamp-lbl">auf Google</span>
+        </div>
+      </div>
+      <div class="fade-up" style="transition-delay:.12s">
+        <span class="section-label">Über uns</span>
+        <h2 class="about-h2">Leidenschaft für das <em>perfekte Kleid</em></h2>
+        <p class="about-lead">Schneiderei Farah in Hagen ist Ihre Anlaufstelle für alle Kleidungsänderungen – vom einfachen Abnähen bis zur anspruchsvollen Brautkleid-Anpassung.</p>
+        <p style="font-size:.9rem;color:var(--muted)">Mit Herzblut, Erfahrung und dem Anspruch, dass jede Naht sitzt, begleiten wir Sie von der ersten Anprobe bis zum fertigen Kleidungsstück. Kundenzufriedenheit und persönliche Beratung stehen bei uns immer an erster Stelle.</p>
+        <div class="about-features">
+          <div class="af-item"><div class="af-dot"></div><div class="af-text">Präzise Handarbeit</div></div>
+          <div class="af-item"><div class="af-dot"></div><div class="af-text">Persönliche Beratung</div></div>
+          <div class="af-item"><div class="af-dot"></div><div class="af-text">Spezialisiert auf Bräute</div></div>
+          <div class="af-item"><div class="af-dot"></div><div class="af-text">Termingerechte Lieferung</div></div>
+        </div>
+        <a href="#contact" class="btn btn-gold" style="margin-top:2rem">Termin anfragen →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- WHY FARAH                                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="why">
+  <div class="container">
+    <div class="why-head fade-up">
+      <span class="why-label">Warum Farah?</span>
+      <h2 class="why-h2">Ihr Kleid ist in <em style="color:var(--gold3)">guten Händen</em></h2>
+      <p class="why-desc">Was uns auszeichnet – und warum so viele Bräute aus Hagen und der Region zu uns kommen.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card fade-up">
+        <div class="why-icon">✂️</div>
+        <h3>Präzise Handarbeit</h3>
+        <p>Jede Naht, jede Anpassung wird mit Sorgfalt ausgeführt. Wir arbeiten präzise, damit Ihr Kleid sitzt wie angegossen.</p>
+      </div>
+      <div class="why-card fade-up" style="transition-delay:.06s">
+        <div class="why-icon">💬</div>
+        <h3>Persönliche Beratung</h3>
+        <p>Ihre Wünsche stehen im Mittelpunkt. Farah berät Sie individuell und nimmt sich die Zeit, die Ihr Kleid verdient.</p>
+      </div>
+      <div class="why-card fade-up" style="transition-delay:.12s">
+        <div class="why-icon">👰</div>
+        <h3>Erfahrung bei Brautkleidern</h3>
+        <p>Besonders bei der Brautkleid-Anpassung gilt: keine Aufgabe ist zu komplex. Unsere Kundinnen kommen sogar aus Düsseldorf und dem Umland.</p>
+      </div>
+      <div class="why-card fade-up" style="transition-delay:.18s">
+        <div class="why-icon">📅</div>
+        <h3>Zuverlässig &amp; termingerecht</h3>
+        <p>Ihre Deadline ist unsere Deadline – gerade wenn der große Tag naht. Wir liefern pünktlich und ohne Kompromisse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- BEWERTUNGEN                                                     -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="reviews">
+  <div class="container">
+    <div class="rv-head fade-up">
+      <div>
+        <span class="section-label">Bewertungen</span>
+        <h2 style="color:var(--ink)">Was unsere Kundinnen sagen</h2>
+      </div>
+      <div class="rv-score">
+        <span class="rv-score-num">4,9</span>
+        <div class="rv-score-detail">
+          <span class="stars">★★★★★</span>
+          <small>64 Google-Bewertungen</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="rv-carousel fade-up" style="transition-delay:.08s">
+      <div class="rv-track" id="rv-track">
+
+        <!-- 1 -->
+        <div class="rv-card">
+          <div class="rv-header">
+            <div class="rv-avatar">PM</div>
+            <div>
+              <div class="rv-name">PM D</div>
+              <div class="rv-time">vor 3 Monaten</div>
+            </div>
+            <div class="rv-stars">★★★★★</div>
+          </div>
+          <p class="rv-text">Ich habe mein Brautkleid bei der lieben Farah anpassen lassen und bin sehr zufrieden mit den Änderungen. Farah war unglaublich freundlich, professionell…</p>
+        </div>
+
+        <!-- 2 -->
+        <div class="rv-card">
+          <div class="rv-header">
+            <div class="rv-avatar">PF</div>
+            <div>
+              <div class="rv-name">Pia Fri</div>
+              <div class="rv-time">vor einem Monat</div>
+            </div>
+            <div class="rv-stars">★★★★★</div>
+          </div>
+          <p class="rv-text">Sie hat mich gerettet!!</p>
+        </div>
+
+        <!-- 3 -->
+        <div class="rv-card">
+          <div class="rv-header">
+            <div class="rv-avatar">AD</div>
+            <div>
+              <div class="rv-name">Angelique Derks</div>
+              <div class="rv-time">vor 11 Monaten</div>
+            </div>
+            <div class="rv-stars">★★★★★</div>
+          </div>
+          <p class="rv-text">Ich komme aus Düsseldorf und habe mein Kleid damals im Kurvenschön gekauft. Auf deren Empfehlung bin ich zu Farah gegangen…</p>
+        </div>
+
+        <!-- 4 -->
+        <div class="rv-card">
+          <div class="rv-header">
+            <div class="rv-avatar">IV</div>
+            <div>
+              <div class="rv-name">Ivonne van Steegen</div>
+              <div class="rv-time">vor 10 Monaten</div>
+            </div>
+            <div class="rv-stars">★★★★★</div>
+          </div>
+          <p class="rv-text">Hier wurde mein Hochzeitskleid geändert. Die Schneiderin ist sehr kompetent und weiß was sie tut…</p>
+        </div>
+
+        <!-- 5 -->
+        <div class="rv-card">
+          <div class="rv-header">
+            <div class="rv-avatar">CS</div>
+            <div>
+              <div class="rv-name">Christina Sonnenschein</div>
+              <div class="rv-time">vor einem Monat</div>
+            </div>
+            <div class="rv-stars">★★★★★</div>
+          </div>
+          <p class="rv-text">Eine wunderbare, kompetente und erfahrene Schneiderin. Das Kleid passt wie angegossen.</p>
+        </div>
+
+        <!-- 6 -->
+        <div class="rv-card">
+          <div class="rv-header">
+            <div class="rv-avatar">MB</div>
+            <div>
+              <div class="rv-name">Marie Bruss</div>
+              <div class="rv-time">vor einem Jahr</div>
+            </div>
+            <div class="rv-stars">★★★★★</div>
+          </div>
+          <p class="rv-text">Vielen Dank für die ganze Mühe, die ihr euch mit meinem Kleid gegeben habt. Es saß perfekt und ich habe mich so wohl gefühlt.</p>
+        </div>
+
+        <!-- 7 -->
+        <div class="rv-card">
+          <div class="rv-header">
+            <div class="rv-avatar">PL</div>
+            <div>
+              <div class="rv-name">Pia Lindemann</div>
+              <div class="rv-time">vor 4 Monaten</div>
+            </div>
+            <div class="rv-stars">★★★★★</div>
+          </div>
+          <p class="rv-text">Absolute Herzensempfehlung für alle Bräute. Ich habe mich total gut aufgehoben gefühlt und das Ergebnis ist perfekt.</p>
+        </div>
+
+        <!-- 8 -->
+        <div class="rv-card">
+          <div class="rv-header">
+            <div class="rv-avatar">MS</div>
+            <div>
+              <div class="rv-name">Maria Sandkuhl</div>
+              <div class="rv-time">vor einem Jahr</div>
+            </div>
+            <div class="rv-stars">★★★★★</div>
+          </div>
+          <p class="rv-text">Farah hat eine sehr tolle Arbeit geleistet! Das Kleid sitzt jetzt perfekt!</p>
+        </div>
+
+      </div><!-- /rv-track -->
+    </div><!-- /rv-carousel -->
+
+    <div class="rv-controls fade-up" style="transition-delay:.12s">
+      <button class="rv-btn" id="rv-prev" aria-label="Vorherige Bewertungen">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="rv-dots" id="rv-dots"></div>
+      <button class="rv-btn" id="rv-next" aria-label="Nächste Bewertungen">
+        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
+    </div>
+
+    <div class="rv-cta fade-up" style="transition-delay:.16s">
+      <a href="https://g.page/r/schneiderei-farah-hagen/review" target="_blank" rel="noopener" class="btn btn-ghost">
+        Alle Bewertungen auf Google ansehen →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- CONTACT                                                         -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section id="contact">
+  <div class="container">
+    <div style="margin-bottom:2.5rem" class="fade-up">
+      <span class="section-label">Kontakt</span>
+      <h2 style="color:var(--ink)">So erreichen Sie uns</h2>
+    </div>
+    <div class="contact-inner">
+      <div class="contact-panel fade-up" style="transition-delay:.06s">
+        <div>
+          <h2 class="contact-h2" style="font-size:1.5rem">Schneiderei Farah</h2>
+          <p class="contact-desc">Wir freuen uns auf Ihre Anfrage. Melden Sie sich telefonisch und vereinbaren Sie einen persönlichen Termin.</p>
+        </div>
+        <div class="contact-items">
+          <div class="ci-row">
+            <div class="ci-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="ci-label">Adresse</div>
+              <div class="ci-val">Elberfelder Str. 80<br/>58095 Hagen</div>
+            </div>
+          </div>
+          <div class="ci-row">
+            <div class="ci-icon">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.17h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.73a16 16 0 0 0 6.29 6.29l1.92-1.92a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+              <div class="ci-label">Telefon</div>
+              <div class="ci-val"><a href="tel:+4917642761399">0176 42761399</a></div>
+            </div>
+          </div>
+          <div class="ci-row">
+            <div class="ci-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div>
+              <div class="ci-label">Google Maps</div>
+              <div class="ci-val">
+                <a href="https://www.google.com/maps/search/Elberfelder+Str.+80,+58095+Hagen" target="_blank" rel="noopener">Route planen →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map panel -->
+      <div class="map-panel fade-up" style="transition-delay:.1s">
+        <div class="map-gate" id="map-gate">
+          <div class="map-gate-icon">🗺️</div>
+          <p>Klicken Sie, um die Google-Karte zu laden. Google Maps kann Daten erheben.</p>
+          <button class="btn btn-gold" id="map-accept">Karte anzeigen</button>
+        </div>
+        <iframe id="map-frame"
+          title="Schneiderei Farah – Elberfelder Str. 80, Hagen"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- FOOTER                                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="wordmark footer-wordmark" href="#" aria-label="Schneiderei Farah">Schneiderei <em>Farah</em></a>
+        <p class="footer-tagline">Brautkleid-Änderungen &amp; Maßschneiderei<br/>Elberfelder Str. 80, 58095 Hagen</p>
+      </div>
+      <div class="footer-col">
+        <h4>Leistungen</h4>
+        <ul>
+          <li><a href="#services">Brautkleid-Änderungen</a></li>
+          <li><a href="#services">Abendkleider</a></li>
+          <li><a href="#services">Hosen &amp; Röcke</a></li>
+          <li><a href="#about">Über uns</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Informationen</h4>
+        <ul>
+          <li><a href="#reviews">Bewertungen</a></li>
+          <li><a href="#contact">Kontakt</a></li>
+          <li><a href="#" id="imp-link">Impressum</a></li>
+          <li><a href="#" id="dsg-link">Datenschutz</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Schneiderei Farah · Elberfelder Str. 80, 58095 Hagen</p>
+      <div style="display:flex;gap:1.25rem">
+        <a href="#" id="imp-link2">Impressum</a>
+        <a href="#" id="dsg-link2">Datenschutz</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- COOKIE BANNER                                                   -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="cookie-bar" role="region" aria-label="Cookie-Hinweis">
+  <p>Wir verwenden Google Maps. Durch Nutzung dieser Website stimmen Sie dem Einsatz von Cookies zu. <a href="#" id="dsg-cookie">Datenschutz</a></p>
+  <div class="cookie-btns">
+    <button class="btn btn-outline" id="cookie-decline" style="color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.15)">Ablehnen</button>
+    <button class="btn btn-gold" id="cookie-accept">Akzeptieren</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- MODALS                                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="imp-modal" role="dialog" aria-modal="true" aria-label="Impressum">
+  <div class="modal-box">
+    <button class="modal-close" data-close="imp-modal" aria-label="Schließen">&times;</button>
+    <h2>Impressum</h2>
+    <h3>Angaben gemäß § 5 TMG</h3>
+    <p>Schneiderei Farah<br/>Elberfelder Str. 80<br/>58095 Hagen</p>
+    <h3>Kontakt</h3>
+    <p>Telefon: <a href="tel:+4917642761399">0176 42761399</a></p>
+    <h3>Haftungsausschluss</h3>
+    <p>Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir keine Gewähr.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="dsg-modal" role="dialog" aria-modal="true" aria-label="Datenschutzerklärung">
+  <div class="modal-box">
+    <button class="modal-close" data-close="dsg-modal" aria-label="Schließen">&times;</button>
+    <h2>Datenschutzerklärung</h2>
+    <h3>Verantwortlicher</h3>
+    <p>Schneiderei Farah, Elberfelder Str. 80, 58095 Hagen</p>
+    <h3>Erhobene Daten</h3>
+    <p>Diese Website erhebt keine personenbezogenen Daten, solange Sie keine Google Maps-Karte laden. Beim Laden der Karte gelten die Datenschutzbestimmungen von Google.</p>
+    <h3>Google Maps</h3>
+    <p>Auf dieser Website nutzen wir Google Maps (Google LLC). Mit der Nutzung von Google Maps werden Daten an Google übermittelt. Weitere Informationen: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></p>
+    <h3>Cookies</h3>
+    <p>Wir verwenden ausschließlich technisch notwendige Cookies sowie Cookies von Google Maps bei expliziter Zustimmung.</p>
+    <h3>Ihre Rechte</h3>
+    <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung Ihrer personenbezogenen Daten gemäß DSGVO.</p>
+  </div>
+</div>
+
+<!-- Chatbot -->
+<script src="chatbot/chatbot.js"></script>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ── NAV SCROLL ───────────────────────────────────────────────── */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, {passive:true});
+
+  /* ── MOBILE NAV ───────────────────────────────────────────────── */
+  const burger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobile-nav');
+  burger.addEventListener('click', () => {
+    const open = mobileNav.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  document.querySelectorAll('.mobile-link, .mobile-nav .btn').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileNav.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    });
+  });
+
+  /* ── FADE-UP OBSERVER ─────────────────────────────────────────── */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, {threshold:.08, rootMargin:'0px 0px -20px 0px'});
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+  /* Fallback: ensure all are visible after load (also helps screenshot tools) */
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      document.querySelectorAll('.fade-up:not(.visible)').forEach(function(el){ el.classList.add('visible'); });
+    }, 400);
+  });
+
+  /* ── REVIEWS CAROUSEL ─────────────────────────────────────────── */
+  const track   = document.getElementById('rv-track');
+  const dotsEl  = document.getElementById('rv-dots');
+  const btnPrev = document.getElementById('rv-prev');
+  const btnNext = document.getElementById('rv-next');
+  const cards   = Array.from(track.children);
+  let cur = 0;
+
+  function perView(){
+    return window.innerWidth >= 900 ? 3 : window.innerWidth >= 600 ? 2 : 1;
+  }
+
+  function totalSlides(){ return Math.ceil(cards.length / perView()); }
+
+  function buildDots(){
+    dotsEl.innerHTML = '';
+    for(let i=0; i<totalSlides(); i++){
+      const d = document.createElement('button');
+      d.className = 'rv-dot' + (i===cur ? ' active':'');
+      d.setAttribute('aria-label', `Bewertung ${i+1}`);
+      d.addEventListener('click', ()=>{ cur=i; render(); });
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function render(){
+    const pv = perView();
+    const maxCur = totalSlides()-1;
+    if(cur > maxCur) cur = maxCur;
+    const gap = 20;
+    const cardW = (track.parentElement.offsetWidth - gap*(pv-1)) / pv;
+    track.style.transform = `translateX(-${cur*(cardW+gap)}px)`;
+    dotsEl.querySelectorAll('.rv-dot').forEach((d,i)=> d.classList.toggle('active',i===cur));
+  }
+
+  buildDots(); render();
+  btnNext.addEventListener('click', ()=>{ cur=(cur+1)%totalSlides(); render(); });
+  btnPrev.addEventListener('click', ()=>{ cur=(cur-1+totalSlides())%totalSlides(); render(); });
+  window.addEventListener('resize', ()=>{ buildDots(); render(); }, {passive:true});
+
+  /* ── MAP GATE ─────────────────────────────────────────────────── */
+  const mapAcceptBtn = document.getElementById('map-accept');
+  const mapGate      = document.getElementById('map-gate');
+  const mapFrame     = document.getElementById('map-frame');
+  const MAP_URL      = 'https://maps.google.com/maps?q=Elberfelder+Str.+80,+58095+Hagen,+Deutschland&output=embed';
+
+  function loadMap(){
+    mapFrame.src = MAP_URL;
+    mapFrame.style.display = 'block';
+    mapGate.style.display  = 'none';
+  }
+
+  if(localStorage.getItem('sf_cookie')==='1') loadMap();
+  mapAcceptBtn.addEventListener('click', ()=>{ localStorage.setItem('sf_cookie','1'); loadMap(); });
+
+  /* ── COOKIE BANNER ────────────────────────────────────────────── */
+  const bar = document.getElementById('cookie-bar');
+  if(!localStorage.getItem('sf_cookie')){
+    setTimeout(()=> bar.classList.add('show'), 900);
+  }
+  document.getElementById('cookie-accept').addEventListener('click',()=>{
+    localStorage.setItem('sf_cookie','1');
+    bar.classList.remove('show');
+    loadMap();
+  });
+  document.getElementById('cookie-decline').addEventListener('click',()=>{
+    localStorage.setItem('sf_cookie','0');
+    bar.classList.remove('show');
+  });
+
+  /* ── MODALS ───────────────────────────────────────────────────── */
+  function openModal(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+
+  ['imp-link','imp-link2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',e=>{ e.preventDefault(); openModal('imp-modal'); }); });
+  ['dsg-link','dsg-link2','dsg-cookie'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',e=>{ e.preventDefault(); openModal('dsg-modal'); }); });
+
+  document.querySelectorAll('.modal-close').forEach(btn=>{
+    btn.addEventListener('click',()=> closeModal(btn.dataset.close));
+  });
+  document.querySelectorAll('.modal-overlay').forEach(ov=>{
+    ov.addEventListener('click', e=>{ if(e.target===ov) closeModal(ov.id); });
+  });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=> closeModal(m.id)); });
+
+})();
+</script>
+</body>
+</html>
