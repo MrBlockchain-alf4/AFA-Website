@@ -892,7 +892,7 @@ export const CLIENTS: Client[] = [
           { title: 'Goldschmuck', desc: 'Ringe, Ketten, Armbänder, Ohrringe — alle Legierungen von 333er bis 999er Gold.' },
           { title: 'Goldmünzen & Barren', desc: 'Krugerrand, Maple Leaf, Wiener Philharmoniker und andere Anlagemünzen.' },
           { title: 'Zahngold', desc: 'Zahnkronen, Brücken und andere zahntechnische Goldlegierungen.' },
-          { title: 'Sofortauszahlung', desc: 'Kein Warten, keine Überweisungen — Barzahlung direkt bei der Bewertung.' },
+          { title: 'Sofortauszahlung', desc: 'Kein Warten — Barzahlung direkt bei der Bewertung, auf Wunsch auch per Überweisung.' },
         ],
       },
       reviews: {
@@ -951,7 +951,7 @@ export const CLIENTS: Client[] = [
           '<h4>1. Verantwortlicher</h4><p>Elit Juwelier, Elberfelder Str. 22, 58095 Hagen. Telefon: 02331 / 5936841.</p><h4>2. Erhebung und Verarbeitung personenbezogener Daten</h4><p>Diese Website erhebt keine personenbezogenen Daten aktiv. Es werden keine Analyse- oder Tracking-Tools eingesetzt. Keine Cookies werden ohne Ihre Einwilligung gesetzt.</p><h4>3. Lokale Speicherung (localStorage)</h4><p>Wir speichern Ihre Cookie-Einwilligung ausschließlich lokal in Ihrem Browser (localStorage). Diese Daten verlassen Ihr Gerät nicht und werden nicht an uns übertragen.</p><h4>4. Google Fonts (externe Schriftarten)</h4><p>Diese Website verwendet Schriftarten von Google Fonts, einem Dienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Beim Laden der Schriftarten wird Ihre IP-Adresse an Google übertragen. Dies geschieht nur mit Ihrer ausdrücklichen Einwilligung. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO. Datenschutzerklärung Google: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>.</p><h4>5. Google Maps</h4><p>Zur Darstellung unseres Standorts nutzen wir Google Maps, einen Dienst der Google Ireland Limited. Das Einbetten der Karte überträgt Ihre IP-Adresse an Google. Dies geschieht nur nach Ihrer Einwilligung durch Klick auf „Karte aktivieren". Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO.</p><h4>6. Ihre Rechte</h4><p>Sie haben das Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch (Art. 21 DSGVO). Zur Ausübung dieser Rechte wenden Sie sich an: 02331 / 5936841.</p><h4>7. Widerruf der Einwilligung / Cookie-Einstellungen</h4><p>Sie können Ihre Einwilligung jederzeit widerrufen. Klicken Sie dazu auf „Cookie-Einstellungen" im Footer.</p><h4>8. Beschwerderecht</h4><p>Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für NRW: Landesbeauftragte für Datenschutz und Informationsfreiheit NRW, <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener">www.ldi.nrw.de</a>.</p>',
       },
       cookie: {
-        text: 'Wir nutzen externe Dienste (Google Maps & Google Fonts). Diese übertragen Daten an Google. Mit „Alle akzeptieren" stimmen Sie zu.',
+        text: 'Wir nutzen einen externen Dienst (Google Maps). Dieser überträgt Daten an Google. Mit „Alle akzeptieren" stimmen Sie zu.',
         acceptText: 'Alle akzeptieren',
         essentialText: 'Nur Notwendige',
       },
