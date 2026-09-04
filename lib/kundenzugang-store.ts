@@ -801,7 +801,7 @@ export const CLIENTS: Client[] = [
         items: [
           { title: 'Individuelle Anfertigung', desc: 'Nach Ihren Wünschen gefertigt' },
           { title: '585er & 750er Gold', desc: 'Gelbgold, Weißgold oder Rosegold' },
-          { title: 'Echte Diamanten', desc: 'Diamanten, Labdiamanten oder Zirkonia' },
+          { title: 'Echte Diamanten', desc: 'Diamanten, Labordiamanten oder Zirkonia' },
           { title: '25 Jahre Erfahrung', desc: 'Persönliche Beratung seit 2001' },
         ],
       },
@@ -815,7 +815,7 @@ export const CLIENTS: Client[] = [
         eyebrow: 'Unsere Leistungen',
         heading: 'Alles für Ihren',
         headingEm: 'besonderen Moment',
-        lead: 'Von der Verlobung bis zur Goldene Hochzeit — wir begleiten Sie mit Leidenschaft und Fachkenntnis.',
+        lead: 'Von der Verlobung bis zur goldenen Hochzeit — wir begleiten Sie mit Leidenschaft und Fachkenntnis.',
         featuredTitle: 'Goldankauf',
         featuredDesc: 'Wir kaufen Ihr Altgold, Schmuckstücke, Münzen und Zahngold zu fairen Tagespreisen. Sofortige Auszahlung, keine versteckten Gebühren. Bringen Sie Ihren Schmuck direkt zu uns — wir bewerten kostenlos und unverbindlich.',
         featuredList: [
@@ -827,7 +827,7 @@ export const CLIENTS: Client[] = [
         featuredCtaText: 'Jetzt bewerten lassen →',
         cards: [
           { title: 'Trauringe & Eheringe', desc: 'Wählen Sie aus hunderten Designs oder lassen Sie Ihren Traumring individuell anfertigen. In Gelbgold, Weißgold oder Rosegold — mit oder ohne Steine.', linkText: 'Kollektion ansehen →' },
-          { title: 'Verlobungsringe', desc: 'Der perfekte Ring für den größten Moment. Mit echten Diamanten, Labdiamanten oder Zirkonia-Steinen — jeder Ring wird mit Liebe ausgewählt oder gefertigt.', linkText: 'Beratungstermin →' },
+          { title: 'Verlobungsringe', desc: 'Der perfekte Ring für den größten Moment. Mit echten Diamanten, Labordiamanten oder Zirkonia-Steinen — jeder Ring wird mit Liebe ausgewählt oder gefertigt.', linkText: 'Beratungstermin →' },
           { title: 'Schmuck & Accessoires', desc: 'Halsketten, Armbänder, Ohrringe und mehr — eine kuratierte Auswahl hochwertiger Goldschmuckstücke für jeden Anlass und Stil.', linkText: 'Kollektion ansehen →' },
         ],
       },
