@@ -1524,9 +1524,21 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'kundenzugang-auth',
       storage: createJSONStorage(() => sessionStorage),
+      // Deferred with setTimeout because sessionStorage rehydration runs
+      // synchronously, inline, as part of this very `create(persist(...))`
+      // call — i.e. while this module is still being evaluated. `useContentStore`
+      // is declared further down in this same file, so calling it here
+      // directly hits it in the temporal dead zone and throws a
+      // ReferenceError, which zustand swallows silently (no visible error,
+      // it just never finishes rehydrating). That only shows up once a
+      // session already exists to rehydrate — a first-ever visit has
+      // nothing to rehydrate yet, so the bug was invisible until a
+      // returning/reloaded session hit it. Pushing the call to a macrotask
+      // guarantees the whole module has finished evaluating first.
       onRehydrateStorage: () => (state) => {
         if (state?.isAuthenticated && state.clientId) {
-          useContentStore.getState().loadClient(state.clientId);
+          const clientId = state.clientId;
+          setTimeout(() => useContentStore.getState().loadClient(clientId), 0);
         }
       },
     },
