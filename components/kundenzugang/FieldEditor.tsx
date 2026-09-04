@@ -760,13 +760,16 @@ function ElitContactEditor() {
 
 function ElitGoldankaufInfoEditor() {
   const cards = useContentStore((s) => s.elitContent.goldankaufInfo.cards);
+  const checklist = useContentStore((s) => s.elitContent.goldankaufInfo.checklist);
   return (
     <>
       <TextField path="elit.goldankaufInfo.eyebrow" label="Eyebrow" autoFocus />
       <TextField path="elit.goldankaufInfo.heading" label="Heading" />
       <TextField path="elit.goldankaufInfo.headingEm" label="Heading (emphasized word)" />
+      <TextField path="elit.goldankaufInfo.subtitle" label="Subtitle" />
       <TextField path="elit.goldankaufInfo.body1" label="Paragraph 1" multiline />
       <TextField path="elit.goldankaufInfo.body2" label="Paragraph 2" multiline />
+      <TextField path="elit.goldankaufInfo.tagline" label="Tagline" />
       <TextField path="elit.goldankaufInfo.ctaText" label="Button Text" />
       {cards.map((_, i) => (
         <div key={i} className="mb-4 rounded-md border border-white/10 p-3">
@@ -777,6 +780,22 @@ function ElitGoldankaufInfoEditor() {
           <TextField path={`elit.goldankaufInfo.cards.${i}.desc`} label="Description" multiline />
         </div>
       ))}
+      <div className="mb-4 rounded-md border border-white/10 p-3">
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+          Trust Checklist
+        </div>
+        {checklist.map((_, i) => (
+          <TextField key={i} path={`elit.goldankaufInfo.checklist.${i}`} label={`Item ${i + 1}`} />
+        ))}
+      </div>
+      <div className="mb-4 rounded-md border border-white/10 p-3">
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+          Closing Statement
+        </div>
+        <TextField path="elit.goldankaufInfo.closingHeading" label="Heading" />
+        <TextField path="elit.goldankaufInfo.closingBody1" label="Paragraph 1" multiline />
+        <TextField path="elit.goldankaufInfo.closingBody2" label="Paragraph 2" multiline />
+      </div>
     </>
   );
 }

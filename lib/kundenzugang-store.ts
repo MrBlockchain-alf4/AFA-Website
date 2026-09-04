@@ -273,10 +273,16 @@ export interface ElitContent {
     eyebrow: string;
     heading: string;
     headingEm: string;
+    subtitle: string;
     body1: string;
     body2: string;
+    tagline: string;
     ctaText: string;
     cards: { title: string; desc: string }[]; // 4
+    checklist: string[]; // 6
+    closingHeading: string;
+    closingBody1: string;
+    closingBody2: string;
   };
   reviews: {
     eyebrow: string;
@@ -885,9 +891,22 @@ export const CLIENTS: Client[] = [
         eyebrow: 'Goldankauf in Hagen',
         heading: 'Vertrauen trifft',
         headingEm: 'Expertise',
+        subtitle: 'Ihre Werte in guten Händen',
         body1: 'Bei Elit Juwelier in Hagen stehen Vertrauen, Diskretion und eine transparente Bewertung im Mittelpunkt. Wenn Sie Goldschmuck, Altgold, Bruchgold oder Goldmünzen verkaufen möchten, bieten wir Ihnen eine persönliche und fachkundige Wertermittlung in angenehmer Atmosphäre.',
         body2: 'Jedes Stück wird sorgfältig geprüft. Dabei berücksichtigen wir Feingehalt, Gewicht und den aktuellen Goldpreis, um Ihnen ein nachvollziehbares und marktgerechtes Angebot zu unterbreiten.',
+        tagline: 'Seriös. Transparent. Persönlich.',
         ctaText: 'Gold bewerten lassen →',
+        checklist: [
+          'Fachkundige Bewertung Ihrer Wertgegenstände',
+          'Diskrete und persönliche Beratung',
+          'Transparente Wertermittlung',
+          'Marktgerechte Ankaufspreise',
+          'Unverbindliches Angebot',
+          'Direkt vor Ort in Hagen',
+        ],
+        closingHeading: 'Gold verkaufen mit einem guten Gefühl',
+        closingBody1: 'Wertgegenstände sind oft mehr als nur Gold. Deshalb nehmen wir uns bei Elit Juwelier die nötige Zeit für eine sorgfältige Prüfung und erklären Ihnen die Bewertung verständlich und transparent.',
+        closingBody2: 'Besuchen Sie Elit Juwelier in Hagen und lassen Sie Ihr Gold unverbindlich bewerten.',
         cards: [
           { title: 'Goldschmuck', desc: 'Ringe, Ketten, Armbänder, Ohrringe — alle Legierungen von 333er bis 999er Gold.' },
           { title: 'Goldmünzen & Barren', desc: 'Krugerrand, Maple Leaf, Wiener Philharmoniker und andere Anlagemünzen.' },
@@ -1330,8 +1349,10 @@ function mapElitLiveToContent(live: any, fallback: ElitContent): ElitContent {
       eyebrow: goldankaufInfo.eyebrow ?? fallback.goldankaufInfo.eyebrow,
       heading: goldankaufInfo.heading ?? fallback.goldankaufInfo.heading,
       headingEm: goldankaufInfo.heading_em ?? fallback.goldankaufInfo.headingEm,
+      subtitle: goldankaufInfo.subtitle ?? fallback.goldankaufInfo.subtitle,
       body1: goldankaufInfo.body_1 ?? fallback.goldankaufInfo.body1,
       body2: goldankaufInfo.body_2 ?? fallback.goldankaufInfo.body2,
+      tagline: goldankaufInfo.tagline ?? fallback.goldankaufInfo.tagline,
       ctaText: goldankaufInfo.cta_text ?? fallback.goldankaufInfo.ctaText,
       cards: goldankaufCards
         ? goldankaufCards.map((c: any, i: number) => ({
@@ -1339,6 +1360,12 @@ function mapElitLiveToContent(live: any, fallback: ElitContent): ElitContent {
             desc: c.desc ?? fallback.goldankaufInfo.cards[i]?.desc ?? '',
           }))
         : fallback.goldankaufInfo.cards,
+      checklist: Array.isArray(goldankaufInfo.checklist)
+        ? fallback.goldankaufInfo.checklist.map((fb: string, i: number) => goldankaufInfo.checklist[i] ?? fb)
+        : fallback.goldankaufInfo.checklist,
+      closingHeading: goldankaufInfo.closing_heading ?? fallback.goldankaufInfo.closingHeading,
+      closingBody1: goldankaufInfo.closing_body_1 ?? fallback.goldankaufInfo.closingBody1,
+      closingBody2: goldankaufInfo.closing_body_2 ?? fallback.goldankaufInfo.closingBody2,
     },
     reviews: {
       eyebrow: reviews.eyebrow ?? fallback.reviews.eyebrow,
@@ -1463,10 +1490,16 @@ function buildElitLiveSection(c: ElitContent) {
       eyebrow: c.goldankaufInfo.eyebrow,
       heading: c.goldankaufInfo.heading,
       heading_em: c.goldankaufInfo.headingEm,
+      subtitle: c.goldankaufInfo.subtitle,
       body_1: c.goldankaufInfo.body1,
       body_2: c.goldankaufInfo.body2,
+      tagline: c.goldankaufInfo.tagline,
       cta_text: c.goldankaufInfo.ctaText,
       cards: c.goldankaufInfo.cards.map((card) => ({ title: card.title, desc: card.desc })),
+      checklist: c.goldankaufInfo.checklist,
+      closing_heading: c.goldankaufInfo.closingHeading,
+      closing_body_1: c.goldankaufInfo.closingBody1,
+      closing_body_2: c.goldankaufInfo.closingBody2,
     },
     reviews: {
       eyebrow: c.reviews.eyebrow,
