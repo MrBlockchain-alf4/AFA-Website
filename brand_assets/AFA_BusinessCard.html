@@ -66,17 +66,22 @@
     .card-wrap .cm-bl   { bottom:-6px; left:-6px;  border-width:0 0 1px 1px; }
     .card-wrap .cm-br   { bottom:-6px; right:-6px; border-width:0 1px 1px 0; }
 
-    /* ── CARD ── */
+    /* ── CARD ──
+       Print-ready bleed size: trim is 85x55mm, Vistaprint's upload canvas
+       adds 1.5mm bleed per edge (88x58mm total, confirmed from their
+       studio's own ruler labels). The card box below IS the bleed box —
+       background/gold bar fill it edge-to-edge — while front-inner/
+       back-inner keep the original padding plus 1.5mm, so all text stays
+       exactly as far from the TRIM line as it did in the 85x55 version. No
+       border-radius/box-shadow here: those were an on-screen mockup
+       affordance and would otherwise bake mismatched corner pixels (the
+       page background peeking through the rounded corners) into the flat
+       print file. */
     .card {
-      width: 85mm;
-      height: 55mm;
-      border-radius: 5px;
+      width: 88mm;
+      height: 58mm;
       position: relative;
       overflow: hidden;
-      box-shadow:
-        0 24px 64px rgba(0,0,0,0.60),
-        0 4px 16px rgba(0,0,0,0.40),
-        0 0 0 1px rgba(255,216,74,0.10);
       display: block;
     }
 
@@ -93,12 +98,14 @@
       pointer-events: none;
       z-index: 0;
     }
-    /* gold left bar */
+    /* gold left bar — extends into the bleed so a slight cut drift still
+       shows gold, not white; after trimming at 1.5mm the visible sliver is
+       exactly the original 3px. */
     .card-front::after {
       content: '';
       position: absolute;
       top: 0; left: 0; bottom: 0;
-      width: 3px;
+      width: calc(3px + 1.5mm);
       background: linear-gradient(180deg, #FFD84A 0%, #B8960C 100%);
       z-index: 2;
     }
@@ -108,7 +115,7 @@
       width: 100%; height: 100%;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      padding: 12px 16px 12px 20px;
+      padding: calc(12px + 1.5mm) calc(16px + 1.5mm) calc(12px + 1.5mm) calc(20px + 1.5mm);
     }
 
     .front-logo img {
@@ -182,12 +189,12 @@
       pointer-events: none;
       z-index: 0;
     }
-    /* gold right bar */
+    /* gold right bar — same bleed logic as the front's left bar */
     .card-back::after {
       content: '';
       position: absolute;
       top: 0; right: 0; bottom: 0;
-      width: 3px;
+      width: calc(3px + 1.5mm);
       background: linear-gradient(180deg, #FFD84A 0%, #B8960C 100%);
       z-index: 2;
     }
@@ -198,7 +205,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 12px 20px 12px 16px;
+      padding: calc(12px + 1.5mm) calc(20px + 1.5mm) calc(12px + 1.5mm) calc(16px + 1.5mm);
       gap: 9px;
     }
 
