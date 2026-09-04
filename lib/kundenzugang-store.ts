@@ -822,7 +822,7 @@ export const CLIENTS: Client[] = [
           'Goldschmuck, Ketten, Ringe, Armbänder',
           'Goldmünzen & Barren',
           'Zahngold & Dentalschmuck',
-          'Sofortauszahlung in Bar',
+          'Sofortauszahlung in bar',
         ],
         featuredCtaText: 'Jetzt bewerten lassen →',
         cards: [
@@ -882,11 +882,11 @@ export const CLIENTS: Client[] = [
         hoursSunday: 'Geschlossen',
       },
       goldankaufInfo: {
-        eyebrow: 'Goldankauf',
-        heading: 'Ihr Altgold ist',
-        headingEm: 'mehr wert',
-        body1: 'Haben Sie alten Schmuck, Goldmünzen oder Zahngold? Wir bezahlen faire, tagesaktuelle Preise — sofort in Bar, ohne Wartezeit. Bringen Sie Ihr Gold einfach vorbei, wir bewerten kostenlos und ohne Verpflichtung.',
-        body2: 'Als langjähriger Familienbetrieb wissen wir: Vertrauen ist alles. Deshalb sind unsere Ankaufspreise stets transparent und nachvollziehbar.',
+        eyebrow: 'Goldankauf in Hagen',
+        heading: 'Vertrauen trifft',
+        headingEm: 'Expertise',
+        body1: 'Bei Elit Juwelier in Hagen stehen Vertrauen, Diskretion und eine transparente Bewertung im Mittelpunkt. Wenn Sie Goldschmuck, Altgold, Bruchgold oder Goldmünzen verkaufen möchten, bieten wir Ihnen eine persönliche und fachkundige Wertermittlung in angenehmer Atmosphäre.',
+        body2: 'Jedes Stück wird sorgfältig geprüft. Dabei berücksichtigen wir Feingehalt, Gewicht und den aktuellen Goldpreis, um Ihnen ein nachvollziehbares und marktgerechtes Angebot zu unterbreiten.',
         ctaText: 'Gold bewerten lassen →',
         cards: [
           { title: 'Goldschmuck', desc: 'Ringe, Ketten, Armbänder, Ohrringe — alle Legierungen von 333er bis 999er Gold.' },
