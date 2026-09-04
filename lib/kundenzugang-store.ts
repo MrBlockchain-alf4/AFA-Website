@@ -767,7 +767,7 @@ export const CLIENTS: Client[] = [
     username: 'elit',
     password: 'elit2026',
     siteName: 'Elit Juwelier',
-    liveUrl: 'https://elitjuwelier.de',
+    liveUrl: 'https://www.elitjuwelier.de',
     kind: 'elit',
     defaultPages: [{ id: 'home', label: 'Home', path: '' }],
     // Pulled directly from elit-juwelier/website/index.html's real current
